@@ -1,2 +1,3 @@
 # user
-user service, keeps the user's  basic info.
+All User is unique in the platform.
+Every developer got it's own users, the they are totally segregated.
