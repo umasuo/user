@@ -36,7 +36,7 @@ public class SignInService {
    * the key in map which in cache.
    */
   public final static String SIGN_IN_CACHE_KEY = "signin";
-  public final static String USER_IN_CACHE_KEY_PRE = "user:";
+  public final static String USER_CACHE_KEY_PRE = "user:";
 
   /**
    * redis ops.
@@ -81,11 +81,11 @@ public class SignInService {
     }
 
     UserView userView = UserViewMapper.toUserView(pUser, dUser);
-    String token = jwtUtil.generateToken(TokenType.CUSTOMER, dUser.getId(), jwtUtil.getExpiresIn(),
+    String token = jwtUtil.generateToken(TokenType.CUSTOMER, dUser.getId(), Integer.MAX_VALUE,
         new ArrayList<>());
     SignInResult signInResult = new SignInResult(userView, token);
 
-
+    cacheSignInStatus(signInResult, dUser.getId());
     logger.debug("SignInResult: {}", signInResult);
     return signInResult;
   }
@@ -97,7 +97,7 @@ public class SignInService {
    * @param userId
    */
   private void cacheSignInStatus(SignInResult signInResult, String userId) {
-    String userKey = USER_IN_CACHE_KEY_PRE + userId;
+    String userKey = USER_CACHE_KEY_PRE + userId;
     //cache the result
     redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, signInResult);
   }
