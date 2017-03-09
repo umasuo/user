@@ -14,12 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * User basic info on the platform. a user is unique in the platform, not for developer.
+ * PlatformUser basic info on the platform. a user is unique in the platform, not for developer.
  */
 @Entity
-@Table(name = "users")
+@Table(name = "platform_user")
 @Data
-public class User {
+public class PlatformUser {
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")

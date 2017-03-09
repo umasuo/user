@@ -21,9 +21,9 @@ import javax.persistence.Table;
  * TODO should we give a numerical id?
  */
 @Entity
-@Table(name = "user_info")
+@Table(name = "developer_user")
 @Data
-public class UserInfo {
+public class DeveloperUser {
   /**
    * unique id
    */
@@ -53,10 +53,10 @@ public class UserInfo {
   private Integer version;
 
   /**
-   * uid that saved in {@code User}
+   * pUid that saved in {@code PlatformUser}
    */
   @Column(unique = true, nullable = false)
-  private String uid;
+  private String pUid;
 
   /**
    * user's externalId.
@@ -90,12 +90,12 @@ public class UserInfo {
 
   @Override
   public String toString() {
-    return "UserInfo{"
+    return "DeveloperUser{"
         + "id='" + id + '\''
         + ", createdAt=" + createdAt
         + ", lastModifiedAt=" + lastModifiedAt
         + ", version=" + version
-        + ", uid='" + uid + '\''
+        + ", pUid='" + pUid + '\''
         + ", externalId='" + externalId + '\''
         + ", developerId='" + developerId + '\''
         + ", deviceDefinitionId='" + deviceDefinitionId + '\''

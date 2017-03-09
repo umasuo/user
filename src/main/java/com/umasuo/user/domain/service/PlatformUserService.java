@@ -1,7 +1,7 @@
 package com.umasuo.user.domain.service;
 
 import com.umasuo.exception.NotExistException;
-import com.umasuo.user.domain.model.User;
+import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.infrastructure.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +14,12 @@ import org.springframework.util.Assert;
  * Created by umasuo on 17/3/8.
  */
 @Service
-public class UserService {
+public class PlatformUserService {
 
   /**
    * logger.
    */
-  private final static Logger logger = LoggerFactory.getLogger(UserInfoService.class);
+  private final static Logger logger = LoggerFactory.getLogger(DeveloperUserService.class);
 
   /**
    * repository.
@@ -34,13 +34,13 @@ public class UserService {
    * @param user
    * @return
    */
-  public User createUser(User user) {
+  public PlatformUser createUser(PlatformUser user) {
     Assert.notNull(user);
     Assert.notNull(user.getPhone());
     logger.debug("CreateUser: user: {}", user);
 
-    Example<User> userExample = Example.of(user);
-    User userInDb = repository.findOne(userExample);
+    Example<PlatformUser> userExample = Example.of(user);
+    PlatformUser userInDb = repository.findOne(userExample);
 
     if (userInDb == null) {
       userInDb = repository.save(user);
@@ -55,10 +55,10 @@ public class UserService {
    * @param phone
    * @return
    */
-  public User createUserWithPhone(String phone) {
+  public PlatformUser createUserWithPhone(String phone) {
     Assert.notNull(phone);
     logger.debug("CreateUser: phone: {}", phone);
-    User user = new User();
+    PlatformUser user = new PlatformUser();
     user.setPhone(phone);
     return createUser(user);
   }
@@ -69,10 +69,10 @@ public class UserService {
    * @param email
    * @return
    */
-  public User createUserWithEmail(String email) {
+  public PlatformUser createUserWithEmail(String email) {
     Assert.notNull(email);
     logger.debug("CreateUser: email: {}", email);
-    User user = new User();
+    PlatformUser user = new PlatformUser();
     user.setEmail(email);
     return createUser(user);
   }
@@ -83,11 +83,11 @@ public class UserService {
    * @param phone
    * @return
    */
-  public User getWithPhone(String phone) {
+  public PlatformUser getWithPhone(String phone) {
     Assert.notNull(phone);
     logger.debug("GetUser: phone: {}", phone);
 
-    User user = this.repository.findOneByPhone(phone);
+    PlatformUser user = this.repository.findOneByPhone(phone);
     if (user == null) {
       throw new NotExistException("user not exist.");
     }
@@ -100,11 +100,11 @@ public class UserService {
    * @param email
    * @return
    */
-  public User getWithEmail(String email) {
+  public PlatformUser getWithEmail(String email) {
     Assert.notNull(email);
     logger.debug("GetUser: email: {}", email);
 
-    User user = this.repository.findOneByEmail(email);
+    PlatformUser user = this.repository.findOneByEmail(email);
     if (user == null) {
       throw new NotExistException("user not exist.");
     }
