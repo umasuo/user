@@ -47,10 +47,16 @@ public class StatusService {
       return false;
     }
 
-    return checkToken(signInResult.getToken());
+    return verifyToken(signInResult.getToken());
   }
 
-  private boolean checkToken(String tokenString) {
+  /**
+   * verify token.
+   *
+   * @param tokenString
+   * @return
+   */
+  private boolean verifyToken(String tokenString) {
     if (tokenString == null) {
       return false;
     }
