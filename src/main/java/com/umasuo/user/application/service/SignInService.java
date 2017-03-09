@@ -1,8 +1,8 @@
 package com.umasuo.user.application.service;
 
+import com.umasuo.exception.PasswordErrorException;
 import com.umasuo.user.application.dto.SignIn;
 import com.umasuo.user.application.dto.UserView;
-import com.umasuo.user.application.dto.mapper.SignInMapper;
 import com.umasuo.user.application.dto.mapper.UserViewMapper;
 import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.domain.model.PlatformUser;
@@ -17,16 +17,14 @@ import org.springframework.util.Assert;
 
 /**
  * Created by umasuo on 17/3/9.
- * PlatformUser sign up service.
- * TODO we should used transaction here.
  */
 @Service
-public class SignUpService {
+public class SignInService {
 
   /**
    * logger.
    */
-  private final static Logger logger = LoggerFactory.getLogger(SignUpService.class);
+  private final static Logger logger = LoggerFactory.getLogger(SignInService.class);
 
   /**
    * platform user service.
@@ -41,26 +39,23 @@ public class SignUpService {
   private transient DeveloperUserService developerUserService;
 
   /**
-   * sign up.
+   * sign in.
    *
-   * @param signUp SignIn
+   * @param signIn
    * @return
    */
-  public UserView signUp(SignIn signUp) {
-    logger.debug("SignUp: {}", signUp);
-    Assert.notNull(signUp);
-    //create platform user.
-    PlatformUser platformUser = SignInMapper.toPlatformUser(signUp);
-    PlatformUser pUser = platformUserService.createUser(platformUser);
+  public UserView signIn(SignIn signIn) {
+    logger.debug("SignUp: {}", signIn);
+    Assert.notNull(signIn);
 
-    //create developer user.
-    DeveloperUser developerUser = SignInMapper.toDeveloperUser(signUp);
-    developerUser.setPUid(pUser.getId());
-    String hashedPassword = PasswordUtil.hashPassword(developerUser.getPassword());
-    developerUser.setPassword(hashedPassword);
-    DeveloperUser dUser = developerUserService.createUser(developerUser);
+    PlatformUser pUser = platformUserService.getWithPhone(signIn.getPhone());
+    DeveloperUser dUser = developerUserService.getUserInfo(pUser.getId(), signIn.getDeveloperId());
 
-    //TODO add user sign in status to cache.
+    boolean isPwdRight = PasswordUtil.checkPassword(signIn.getPassword(), dUser.getPassword());
+    if (!isPwdRight) {
+      throw new PasswordErrorException("Password or phone is not correct.");
+    }
+    
     return UserViewMapper.toUserView(pUser, dUser);
   }
 }

@@ -16,7 +16,22 @@ public class UserViewMapper {
    * @param dUser DeveloperUser
    * @return UserView
    */
-  public static UserView fromUser(PlatformUser pUser, DeveloperUser dUser) {
-    return null;
+  public static UserView toUserView(PlatformUser pUser, DeveloperUser dUser) {
+    UserView view = null;
+    if (pUser != null && dUser != null) {
+      view = new UserView();
+      view.setUserId(dUser.getId());
+      view.setDeveloperId(dUser.getDeveloperId());
+      view.setDeviceDefinitionId(dUser.getDeviceDefinitionId());
+      view.setEmail(pUser.getEmail());
+      view.setPhone(pUser.getPhone());
+      view.setExternalId(pUser.getExternalId());
+      if (dUser.getUserDetail() != null) {
+        view.setAge(dUser.getUserDetail().getAge());
+        view.setIcon(dUser.getUserDetail().getIcon());
+        view.setName(dUser.getUserDetail().getName());
+      }
+    }
+    return view;
   }
 }
