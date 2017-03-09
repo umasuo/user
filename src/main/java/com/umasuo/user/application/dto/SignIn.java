@@ -3,6 +3,8 @@ package com.umasuo.user.application.dto;
 import lombok.Data;
 import org.hibernate.validator.constraints.Email;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -10,7 +12,7 @@ import javax.validation.constraints.Pattern;
  * Created by umasuo on 17/3/9.
  */
 @Data
-public class SignIn {
+public class SignIn implements Serializable{
 
   /**
    * user's email. unique on this platform.
@@ -52,4 +54,15 @@ public class SignIn {
   @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{8,}$")
   @NotNull
   private String password;
+
+  @Override
+  public String toString() {
+    return "SignIn{"
+        + "email='" + email + '\''
+        + ", phone='" + phone + '\''
+        + ", developerId='" + developerId + '\''
+        + ", deviceDefinitionId='" + deviceDefinitionId + '\''
+        + ", externalId='" + externalId + '\''
+        + '}';
+  }
 }

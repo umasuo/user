@@ -2,11 +2,13 @@ package com.umasuo.user.application.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * Created by umasuo on 17/3/9.
  */
 @Data
-public class UserView {
+public class UserView implements Serializable{
 
   /**
    * userId of the developer user.

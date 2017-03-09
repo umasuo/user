@@ -11,7 +11,6 @@ import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
-import com.umasuo.user.infrastructure.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,8 +73,6 @@ public class SignUpService {
     //create developer user.
     DeveloperUser developerUser = SignInMapper.toDeveloperUser(signUp);
     developerUser.setPUid(pUser.getId());
-    String hashedPassword = PasswordUtil.hashPassword(developerUser.getPassword());
-    developerUser.setPassword(hashedPassword);
     DeveloperUser dUser = developerUserService.createUser(developerUser);
 
     //TODO add user sign in status to cache.

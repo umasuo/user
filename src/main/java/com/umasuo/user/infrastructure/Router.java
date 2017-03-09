@@ -18,7 +18,7 @@ public class Router {
   /**
    * login.
    */
-  public static final String USER_SIGN_IN_STATUS = USER_SIGN_IN + "/status";
+  public static final String USER_SIGN_IN_STATUS = USER_SIGN_IN + "/status/{id}";
 
   /**
    * logout.
