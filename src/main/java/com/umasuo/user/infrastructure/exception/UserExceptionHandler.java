@@ -1,10 +1,10 @@
 package com.umasuo.user.infrastructure.exception;
 
-import com.umasuo.developer.infrastructure.util.JsonUtils;
 import com.umasuo.exception.AlreadyExistException;
 import com.umasuo.exception.NotExistException;
 import com.umasuo.exception.PasswordErrorException;
 import com.umasuo.exception.handler.ExceptionHandler;
+import com.umasuo.user.infrastructure.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

@@ -59,6 +59,14 @@ public class UserInfo {
   private String uid;
 
   /**
+   * user's externalId.
+   * if the user is sign up with another OAUTH2 provider, this will be the.
+   * this will be used only when the user only use it's own third party account.
+   */
+  @Column(unique = true, nullable = true)
+  private String externalId;
+
+  /**
    * which developer this user belong to.
    */
   @Column(nullable = false)
@@ -88,6 +96,7 @@ public class UserInfo {
         + ", lastModifiedAt=" + lastModifiedAt
         + ", version=" + version
         + ", uid='" + uid + '\''
+        + ", externalId='" + externalId + '\''
         + ", developerId='" + developerId + '\''
         + ", deviceDefinitionId='" + deviceDefinitionId + '\''
         + ", userDetail=" + userDetail

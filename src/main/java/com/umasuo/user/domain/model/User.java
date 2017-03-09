@@ -1,5 +1,6 @@
 package com.umasuo.user.domain.model;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -13,10 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * User basic info on the platform.
+ * User basic info on the platform. a user is unique in the platform, not for developer.
  */
 @Entity
 @Table(name = "users")
+@Data
 public class User {
   @Id
   @GeneratedValue(generator = "uuid")
@@ -58,6 +60,7 @@ public class User {
   /**
    * user's externalId.
    * if the user is sign up with another OAUTH2 provider, this will be the.
+   * this will be used only then they bind to the platform account.
    */
   @Column(unique = true, nullable = true)
   private String externalId;
