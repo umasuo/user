@@ -26,7 +26,6 @@ public class SignIn implements Serializable{
   @NotNull
   private String phone;
 
-
   /**
    * developer id.
    */

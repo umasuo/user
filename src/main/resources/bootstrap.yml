@@ -3,8 +3,8 @@ spring:
     config:
       uri: http://localhost:8888/
 
-endpoints:
-  cors:
-    allow-origins: *
-    allowed-methods: *
-    allowed-headers: *
+#endpoints:
+#  cors:
+#    allow-origins: *
+#    allowed-methods: *
+#    allowed-headers: *
