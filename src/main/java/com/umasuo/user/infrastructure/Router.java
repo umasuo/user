@@ -4,6 +4,7 @@ package com.umasuo.user.infrastructure;
  * Created by umasuo on 17/3/9.
  */
 public class Router {
+
   /**
    * authentication root.
    */
@@ -29,5 +30,15 @@ public class Router {
    * sign up.
    */
   public static final String USER_SIGN_UP = USER_ROOT + "/signup";
+
+  /**
+   * The constant VALIDATION_CODE.
+   */
+  public static final String VALIDATION_CODE = USER_ROOT + "/validationCode";
+
+  /**
+   * The constant PHONE_NUMBER.
+   */
+  public static final String PHONE_NUMBER = "phoneNumber";
 
 }

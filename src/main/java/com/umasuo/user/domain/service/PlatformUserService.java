@@ -10,6 +10,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import sun.rmi.runtime.Log;
+
 /**
  * Created by umasuo on 17/3/8.
  */
@@ -56,7 +58,7 @@ public class PlatformUserService {
    * @return
    */
   public PlatformUser createUserWithPhone(String phone) {
-    Assert.notNull(phone);
+    Assert.notNull(phone, "Phone can not be null");
     logger.debug("CreateUser: phone: {}", phone);
     PlatformUser user = new PlatformUser();
     user.setPhone(phone);
@@ -70,7 +72,7 @@ public class PlatformUserService {
    * @return
    */
   public PlatformUser createUserWithEmail(String email) {
-    Assert.notNull(email);
+    Assert.notNull(email, "Email can not be null");
     logger.debug("CreateUser: email: {}", email);
     PlatformUser user = new PlatformUser();
     user.setEmail(email);
@@ -84,13 +86,12 @@ public class PlatformUserService {
    * @return
    */
   public PlatformUser getWithPhone(String phone) {
-    Assert.notNull(phone);
+    Assert.notNull(phone, "Phone can not be null");
     logger.debug("GetUser: phone: {}", phone);
 
     PlatformUser user = this.repository.findOneByPhone(phone);
-    if (user == null) {
-      throw new NotExistException("user not exist.");
-    }
+
+    logger.debug("Exit.");
     return user;
   }
 
@@ -101,7 +102,7 @@ public class PlatformUserService {
    * @return
    */
   public PlatformUser getWithEmail(String email) {
-    Assert.notNull(email);
+    Assert.notNull(email, "Email can not be null");
     logger.debug("GetUser: email: {}", email);
 
     PlatformUser user = this.repository.findOneByEmail(email);

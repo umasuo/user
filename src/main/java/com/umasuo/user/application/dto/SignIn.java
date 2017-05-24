@@ -1,18 +1,20 @@
 package com.umasuo.user.application.dto;
 
 import lombok.Data;
+import lombok.ToString;
+
 import org.hibernate.validator.constraints.Email;
 
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 /**
  * Created by umasuo on 17/3/9.
  */
 @Data
-public class SignIn implements Serializable{
+@ToString
+public class SignIn implements Serializable {
 
   /**
    * user's email. unique on this platform.
@@ -50,18 +52,13 @@ public class SignIn implements Serializable{
    * .{8,}             # anything, at least eight places though
    * $                 # end-of-string
    */
-  @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{8,}$")
-  @NotNull
+//  @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{8,}$")
+//  @NotNull
   private String password;
 
-  @Override
-  public String toString() {
-    return "SignIn{"
-        + "email='" + email + '\''
-        + ", phone='" + phone + '\''
-        + ", developerId='" + developerId + '\''
-        + ", deviceDefinitionId='" + deviceDefinitionId + '\''
-        + ", externalId='" + externalId + '\''
-        + '}';
-  }
+  /**
+   * The validation code.
+   */
+  @NotNull
+  private String validationCode;
 }
