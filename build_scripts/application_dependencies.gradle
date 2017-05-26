@@ -29,4 +29,7 @@ dependencies {
 
     // For google collect lib
     compile('com.google.guava:guava:21.0')
+
+    // For sms service
+    compile('com.yunpian.sdk:yunpian-java-sdk:1.2.3')
 }

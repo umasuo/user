@@ -3,14 +3,13 @@ package com.umasuo.user.domain.service;
 import com.umasuo.exception.NotExistException;
 import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.infrastructure.repository.UserRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import sun.rmi.runtime.Log;
 
 /**
  * Created by umasuo on 17/3/8.

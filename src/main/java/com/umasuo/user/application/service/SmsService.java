@@ -1,19 +1,25 @@
 package com.umasuo.user.application.service;
 
-import com.umasuo.exception.AlreadyExistException;
-import com.umasuo.user.infrastructure.util.ValidateCodeGenerator;
+import static com.yunpian.sdk.util.HttpUtil.post;
+
+import com.umasuo.user.infrastructure.util.SmsUrlUtils;
+import com.yunpian.sdk.YunpianException;
+
+import lombok.Getter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * The type Sms service.
+ * Service for Sms.
+ * Created by Davis on 17/5/26.
  */
+@Getter
 @Service
 public class SmsService {
 
@@ -23,50 +29,34 @@ public class SmsService {
   private static final Logger LOG = LoggerFactory.getLogger(SmsService.class);
 
   /**
-   * Validation code expire time;
+   * Api key for yunpian.
    */
-  private static final long EXPIRE_TIME = 60 * 1000L;
+  @Value("${sms.yunpian.key}")
+  private String yunpianApiKey;
 
   /**
-   * Redis time util.
-   */
-  private static final TimeUnit TIME_UTIL = TimeUnit.MILLISECONDS;
-
-  /**
-   * redis ops.
-   */
-  @Autowired
-  private transient RedisTemplate redisTemplate;
-
-  /**
-   * Send validation code.
-   *
+   * Send Validation code.
+   *  @param validationCode the validation code
    * @param phoneNumber the phone number
    */
-  public void sendValidationCode(String phoneNumber) {
-    LOG.debug("Enter. phoneNumber: {}.", phoneNumber);
+  public String sendValidationCode(String validationCode, String phoneNumber)
+      throws YunpianException {
+    Map<String, String> params = new HashMap<String, String>();
 
-    String validationCode = ValidateCodeGenerator.generate();
+    params.put("apikey", yunpianApiKey);
+    params.put("text", createSmsText(validationCode));
+    params.put("mobile", phoneNumber);
 
-    // TODO: 17/5/24 send validation code to the phone
-
-    validateExistCode(phoneNumber);
-
-    redisTemplate.opsForValue().set(phoneNumber, validationCode, EXPIRE_TIME, TIME_UTIL);
-
-    LOG.debug("Exit.");
+    return post(SmsUrlUtils.URI_SEND_SMS, params);
   }
 
   /**
-   * Validate if this code exist.
+   * Create Sms text.
    *
-   * @param phoneNumber the phone number
+   * @param validationCode validation code.
+   * @return string
    */
-  private void validateExistCode(String phoneNumber) {
-    String existValidationCode = (String) redisTemplate.opsForValue().get(phoneNumber);
-    if (existValidationCode != null) {
-      LOG.debug("This phone has an exist validation code: {}.", existValidationCode);
-      throw new AlreadyExistException("ValidationCode already exist");
-    }
+  private String createSmsText(String validationCode) {
+    return validationCode;
   }
 }

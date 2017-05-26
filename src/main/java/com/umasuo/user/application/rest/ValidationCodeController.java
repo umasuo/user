@@ -3,7 +3,8 @@ package com.umasuo.user.application.rest;
 import static com.umasuo.user.infrastructure.Router.PHONE_NUMBER;
 import static com.umasuo.user.infrastructure.Router.VALIDATION_CODE;
 
-import com.umasuo.user.application.service.SmsService;
+import com.umasuo.user.application.service.ValidationService;
+import com.yunpian.sdk.YunpianException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class ValidationCodeController {
    * The sms service.
    */
   @Autowired
-  private transient SmsService smsService;
+  private transient ValidationService smsService;
 
   /**
    * Request validation code.
@@ -38,7 +39,11 @@ public class ValidationCodeController {
   public void getValidationCode(@RequestParam(PHONE_NUMBER) String phoneNumber) {
     LOG.info("Enter. phoneNumber: {}.", phoneNumber);
 
-    smsService.sendValidationCode(phoneNumber);
+    try {
+      smsService.sendValidationCode(phoneNumber);
+    } catch (YunpianException ex) {
+      LOG.info("Fail to send validation code.", ex);
+    }
 
     LOG.info("Exit");
   }
