@@ -57,7 +57,7 @@ public class ValidationService {
 
     validateExistPhone(phoneNumber);
 
-    smsService.sendValidationCode(validationCode, phoneNumber);
+    // smsService.sendValidationCode(validationCode, phoneNumber);
 
     redisTemplate.opsForValue().set(phoneNumber, validationCode, EXPIRE_TIME, TIME_UTIL);
 

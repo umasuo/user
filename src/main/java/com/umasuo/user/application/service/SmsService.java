@@ -6,6 +6,7 @@ import com.umasuo.user.infrastructure.util.SmsUrlUtils;
 import com.yunpian.sdk.YunpianException;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import java.util.Map;
  * Created by Davis on 17/5/26.
  */
 @Getter
+@Setter
 @Service
 public class SmsService {
 
@@ -36,7 +38,8 @@ public class SmsService {
 
   /**
    * Send Validation code.
-   *  @param validationCode the validation code
+   *
+   * @param validationCode the validation code
    * @param phoneNumber the phone number
    */
   public String sendValidationCode(String validationCode, String phoneNumber)
