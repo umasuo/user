@@ -41,4 +41,18 @@ public class Router {
    */
   public static final String PHONE_NUMBER = "phoneNumber";
 
+  /**
+   * The constant GROUP.
+   */
+  public static final String GROUP = USER_ROOT + "/group";
+
+  /**
+   * The constant GROUP_ID.
+   */
+  public static final String GROUP_ID = "groupId";
+
+  /**
+   * The constant GROUP_WITH_ID.
+   */
+  public static final String GROUP_WITH_ID = GROUP + "/{" + GROUP_ID + "}";
 }

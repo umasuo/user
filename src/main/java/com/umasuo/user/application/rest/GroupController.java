@@ -1,5 +1,9 @@
 package com.umasuo.user.application.rest;
 
+import static com.umasuo.user.infrastructure.Router.GROUP;
+import static com.umasuo.user.infrastructure.Router.GROUP_ID;
+import static com.umasuo.user.infrastructure.Router.GROUP_WITH_ID;
+
 import com.umasuo.user.application.dto.DeleteRequest;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.GroupView;
@@ -7,7 +11,11 @@ import com.umasuo.user.application.service.GroupApplication;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +38,7 @@ public class GroupController {
   /**
    * The Group application.
    */
+  @Autowired
   private GroupApplication groupApplication;
 
   /**
@@ -38,6 +47,7 @@ public class GroupController {
    * @param groupDraft the group draft
    * @return the group
    */
+  @PostMapping(GROUP)
   public GroupView create(@RequestBody GroupDraft groupDraft) {
     LOG.info("Enter. groupDraft: {}.", groupDraft);
 
@@ -53,7 +63,9 @@ public class GroupController {
    * @param groupId the group id
    * @param request the request
    */
-  public void delete(@PathVariable String groupId, @RequestBody @Valid DeleteRequest request) {
+  @DeleteMapping(GROUP_WITH_ID)
+  public void delete(@PathVariable(GROUP_ID) String groupId,
+      @RequestBody @Valid DeleteRequest request) {
     LOG.info("Enter. groupId: {}, deleteRequest: {}.", groupId, request);
 
     groupApplication.delete(groupId, request.getVersion());
@@ -67,7 +79,8 @@ public class GroupController {
    * @param groupId the group id
    * @return the group view
    */
-  public GroupView findOne(@PathVariable String groupId) {
+  @GetMapping(GROUP_WITH_ID)
+  public GroupView findOne(@PathVariable(GROUP_ID) String groupId) {
     LOG.info("Enter. groupId: {}.", groupId);
 
     GroupView result = groupApplication.findOne(groupId);
@@ -82,6 +95,7 @@ public class GroupController {
    *
    * @return the list
    */
+  @GetMapping(GROUP)
   public List<GroupView> findAll() {
     LOG.info("Enter.");
 
