@@ -1,6 +1,7 @@
 package com.umasuo.user.application.dto.mapper;
 
 import com.umasuo.user.application.dto.GroupDraft;
+import com.umasuo.user.application.dto.GroupView;
 import com.umasuo.user.domain.model.Group;
 
 /**
@@ -29,5 +30,16 @@ public final class GroupMapper {
     entity.setParent(parent);
 
     return entity;
+  }
+
+  /**
+   * Convert to GroupView.
+   *
+   * @param entity the entity
+   * @return the group view
+   */
+  public static GroupView toModel(Group entity) {
+    // TODO: 17/5/27
+    return null;
   }
 }

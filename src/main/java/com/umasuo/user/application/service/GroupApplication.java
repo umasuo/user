@@ -1,8 +1,12 @@
 package com.umasuo.user.application.service;
 
+import com.umasuo.exception.NotExistException;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.GroupView;
+import com.umasuo.user.application.dto.mapper.GroupMapper;
+import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.domain.service.GroupService;
+import com.umasuo.user.infrastructure.validator.VersionValidator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +41,14 @@ public class GroupApplication {
    */
   public GroupView create(GroupDraft groupDraft) {
     LOG.info("Enter. groupDraft: {}.", groupDraft);
-    // TODO: 17/5/27
+
+    Group createGroup = groupService.create(groupDraft);
+
+    GroupView result = GroupMapper.toModel(createGroup);
 
     LOG.debug("Exit.");
-    return null;
+
+    return result;
   }
 
   /**
@@ -50,8 +58,13 @@ public class GroupApplication {
    * @param version the version
    */
   public void delete(String groupId, Integer version) {
-    // TODO: 17/5/27
     LOG.info("Enter. groupId: {}, version: {}.", groupId, version);
+
+    Group group = groupService.findOne(groupId);
+
+    VersionValidator.validate(group, version);
+
+    groupService.delete(groupId);
 
     LOG.info("Exit");
   }
@@ -65,7 +78,14 @@ public class GroupApplication {
   public GroupView findOne(String groupId) {
     LOG.info("Enter. groupId: {}.", groupId);
 
-    // TODO: 17/5/27
+    Group group = groupService.findOne(groupId);
+
+    if (group == null) {
+      LOG.debug("Can not find group: {}.", groupId);
+      throw new NotExistException("Group not exist");
+    }
+
+    GroupView result = GroupMapper.toModel(group);
 
     LOG.info("Exit.");
 

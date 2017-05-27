@@ -21,6 +21,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 /**
  * User group entity.
@@ -54,6 +55,13 @@ public class Group {
   @LastModifiedDate
   @Column(name = "last_modified_at")
   private ZonedDateTime lastModifiedAt;
+
+  /**
+   * The version.
+   */
+  @Version
+  @Column(name = "version")
+  private Integer version;
 
   /**
    * The name of group.

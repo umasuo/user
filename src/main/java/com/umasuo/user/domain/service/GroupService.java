@@ -32,12 +32,12 @@ public class GroupService {
   private GroupRepository groupRepository;
 
   /**
-   * Save group.
+   * Create group.
    *
    * @param groupDraft the group draft
    * @return the group
    */
-  public Group save(GroupDraft groupDraft) {
+  public Group create(GroupDraft groupDraft) {
     LOG.debug("Enter. groupDraft: {}.", groupDraft);
     Group parent = groupRepository.findOne(groupDraft.getParentId());
     Assert.notNull(parent, "Parent Can not be null");
@@ -48,6 +48,19 @@ public class GroupService {
     LOG.debug("Exit. groupId: {}.", savedGroup.getId());
 
     return savedGroup;
+  }
+
+  /**
+   * Delete.
+   *
+   * @param groupId the group id
+   */
+  public void delete(String groupId) {
+    LOG.debug("Enter. groupId: {}.", groupId);
+
+    groupRepository.delete(groupId);
+
+    LOG.debug("Exit.");
   }
 
   /**
