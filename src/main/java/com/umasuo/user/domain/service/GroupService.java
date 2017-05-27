@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 /**
  * Service for group.
  * Created by Davis on 17/5/27.
@@ -61,6 +63,41 @@ public class GroupService {
 
     LOG.debug("Find group: {}.", result);
     LOG.debug("Exit.");
+
+    return result;
+  }
+
+  /**
+   * Find parent group.
+   *
+   * @param groupId the group id
+   * @return the group
+   */
+  public Group findParentGroup(String groupId) {
+    LOG.debug("Enter. groupId: {}.", groupId);
+    Group group = groupRepository.findOne(groupId);
+
+    Group result = group.getParent();
+
+    LOG.trace("Parent group: {}.", result);
+    LOG.debug("Exit.");
+    return result;
+  }
+
+  /**
+   * Gets sub group.
+   *
+   * @param groupId the group id
+   * @return the sub group
+   */
+  public List<Group> getSubGroup(String groupId) {
+    LOG.debug("Enter. groupId: {}.", groupId);
+    Group group = groupRepository.findOne(groupId);
+
+    List<Group> result = group.getChildren();
+
+    LOG.trace("subGroup: {}.", result);
+    LOG.debug("Exit. subGroup count: {}.", result.size());
 
     return result;
   }
