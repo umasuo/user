@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -71,4 +72,16 @@ public class Group {
    */
   @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "parent")
   private List<Group> children;
+
+  /**
+   * Id for manager.
+   */
+  @ElementCollection
+  private List<String> manager;
+
+  /**
+   * Id for user.
+   */
+  @ElementCollection
+  private List<String> user;
 }
