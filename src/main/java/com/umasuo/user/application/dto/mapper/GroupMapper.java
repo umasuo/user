@@ -53,6 +53,8 @@ public final class GroupMapper {
     model.setName(entity.getName());
     model.setManagers(entity.getOrganization().getManagers());
     model.setUsers(entity.getOrganization().getUsers());
+    model.setChildrenId(entity.getChildrenId());
+    model.setParentId(entity.getParent());
 
     return model;
   }

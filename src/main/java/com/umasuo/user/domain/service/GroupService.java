@@ -1,5 +1,6 @@
 package com.umasuo.user.domain.service;
 
+import com.google.common.collect.Lists;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.mapper.GroupMapper;
 import com.umasuo.user.domain.model.Group;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Service for group.
@@ -79,6 +81,7 @@ public class GroupService {
     LOG.debug("Enter. groupId: {}.", groupId);
 
     groupRepository.delete(groupId);
+    removeFromParentGroup(groupId);
 
     LOG.debug("Exit.");
   }
@@ -166,4 +169,17 @@ public class GroupService {
     return result;
   }
 
+  /**
+   * Remove group id from parent group.
+   *
+   * @param groupId the group id
+   */
+  private void removeFromParentGroup(String groupId) {
+    Group parent = groupRepository.findByChildrenId(groupId);
+
+    Predicate<String> predicate = string -> string.equals(groupId);
+    parent.getChildrenId().removeIf(predicate);
+
+    groupRepository.save(parent);
+  }
 }

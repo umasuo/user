@@ -35,4 +35,14 @@ public class GroupView {
    * The id for users.
    */
   private List<String> users;
+
+  /**
+   * The parent id.
+   */
+  private String parentId;
+
+  /**
+   * The children id.
+   */
+  private List<String> childrenId;
 }

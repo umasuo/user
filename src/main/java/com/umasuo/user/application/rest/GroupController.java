@@ -63,14 +63,14 @@ public class GroupController {
    * Delete.
    *
    * @param groupId the group id
-   * @param request the request
+   * @param version the version
    */
   @DeleteMapping(GROUP_WITH_ID)
   public void delete(@PathVariable(GROUP_ID) String groupId,
-      @RequestBody @Valid DeleteRequest request) {
-    LOG.info("Enter. groupId: {}, deleteRequest: {}.", groupId, request);
+      @RequestParam("version") Integer version) {
+    LOG.info("Enter. groupId: {}, version: {}.", groupId, version);
 
-    groupApplication.delete(groupId, request.getVersion());
+    groupApplication.delete(groupId, version);
 
     LOG.info("Exit");
   }

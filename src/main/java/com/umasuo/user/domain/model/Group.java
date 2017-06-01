@@ -1,6 +1,8 @@
 package com.umasuo.user.domain.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,7 +28,8 @@ import javax.persistence.Version;
  * User group entity.
  * Created by Davis on 17/5/27.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "groups")
 @EntityListeners(AuditingEntityListener.class)

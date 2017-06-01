@@ -1,6 +1,8 @@
 package com.umasuo.user.domain.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,7 +28,8 @@ import javax.persistence.Version;
  *
  * Created by Davis on 17/6/1.
  */
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "organization")
 @EntityListeners(AuditingEntityListener.class)

@@ -1,5 +1,6 @@
 package com.umasuo.user.application.service;
 
+import com.umasuo.exception.ConflictException;
 import com.umasuo.exception.NotExistException;
 import com.umasuo.exception.ParametersException;
 import com.umasuo.user.application.dto.GroupDraft;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * The type Group application.
@@ -78,7 +80,25 @@ public class GroupApplication {
 
     Group group = groupService.findOne(groupId);
 
+    if (group == null) {
+      LOG.debug("Can not null group by id: {}.", groupId);
+      throw new NotExistException("Group not exist");
+    }
+
     VersionValidator.validate(group, version);
+
+    if (group.getOrganization().getUsers() != null &&
+        !group.getOrganization().getUsers().isEmpty()) {
+      LOG.debug("Can not delete group when there is {} users.",
+          group.getOrganization().getUsers().size());
+      throw new ConflictException("Users is not null");
+    }
+
+    if (group.getChildrenId() != null && !group.getChildrenId().isEmpty()) {
+      LOG.debug("Can not delete group when there is {} sub groups.",
+          group.getChildrenId().size());
+      throw new ConflictException("Sub groups is not null");
+    }
 
     groupService.delete(groupId);
 
