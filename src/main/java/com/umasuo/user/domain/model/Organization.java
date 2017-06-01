@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -23,14 +22,15 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
- * User group entity.
- * Created by Davis on 17/5/27.
+ * Organization entity, use to manager the relationship between user and group.
+ *
+ * Created by Davis on 17/6/1.
  */
 @Data
 @Entity
-@Table(name = "groups")
+@Table(name = "organization")
 @EntityListeners(AuditingEntityListener.class)
-public class Group {
+public class Organization {
 
   /**
    * unique id
@@ -41,55 +41,25 @@ public class Group {
   @Column(name = "id")
   private String id;
 
-  /**
-   * The Created at.
-   */
-  @CreatedDate
-  @Column(name = "created_at")
-  private ZonedDateTime createdAt;
 
   /**
-   * The Last modified at.
+   * The group id.
+   * One group should only have one organization.
    */
-  @LastModifiedDate
-  @Column(name = "last_modified_at")
-  private ZonedDateTime lastModifiedAt;
+  @OneToOne(mappedBy = "organization")
+  private Group group;
 
   /**
-   * The version.
-   */
-  @Version
-  @Column(name = "version")
-  private Integer version;
-
-  /**
-   * The name of group.
-   */
-  @Column(name = "name")
-  private String name;
-
-  /**
-   * The parent group.
-   */
-  @Column(name = "parent_id")
-  private String parent;
-
-  /**
-   * The children group.
+   * The managers id.
+   * One group can have multi managers, manager should be the user of this group.
    */
   @ElementCollection
-  private List<String> childrenId;
+  private List<String> managers;
 
   /**
-   * Id for developer.
+   * The users id.
+   * One group can have multi users.
    */
-  @Column(name = "developer_id")
-  private String developerId;
-
-  /**
-   * The organization.
-   */
-  @OneToOne(cascade= CascadeType.ALL)
-  @JoinColumn(name = "organization_id")
-  private Organization organization;
+  @ElementCollection
+  private List<String> users;
 }

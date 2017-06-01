@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.GroupView;
 import com.umasuo.user.domain.model.Group;
+import com.umasuo.user.domain.model.Organization;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -32,6 +33,7 @@ public final class GroupMapper {
     entity.setParent(draft.getParentId());
     entity.setName(draft.getName());
     entity.setDeveloperId(draft.getDeveloperId());
+    entity.setOrganization(new Organization());
 
     return entity;
   }
@@ -49,6 +51,8 @@ public final class GroupMapper {
     model.setId(entity.getId());
     model.setDeveloperId(entity.getDeveloperId());
     model.setName(entity.getName());
+    model.setManagers(entity.getOrganization().getManagers());
+    model.setUsers(entity.getOrganization().getUsers());
 
     return model;
   }

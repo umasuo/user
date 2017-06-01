@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -41,24 +42,25 @@ public class GroupApplication {
    * @param groupDraft the group draft
    * @return the group
    */
+  @Transactional
   public GroupView create(GroupDraft groupDraft) {
     LOG.info("Enter. groupDraft: {}.", groupDraft);
 
     List<Group> groups = groupService.findAllGroup(groupDraft.getDeveloperId());
 
-    Group createGroup = null;
+    Group createdGroup = null;
 
     if (groups == null || groups.isEmpty()) {
       if (StringUtils.isNotBlank(groupDraft.getParentId())) {
         LOG.debug("Basic group is not exist.");
         throw new ParametersException("Basic group is not exist");
       }
-      createGroup = groupService.createBasic(groupDraft);
+      createdGroup = groupService.createBasic(groupDraft);
     } else {
-      createGroup = groupService.create(groupDraft);
+      createdGroup = groupService.create(groupDraft);
     }
 
-    GroupView result = GroupMapper.toModel(createGroup);
+    GroupView result = GroupMapper.toModel(createdGroup);
 
     LOG.debug("Exit.");
 

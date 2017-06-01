@@ -38,7 +38,6 @@ public class GroupService {
    * @param groupDraft the group draft
    * @return the group
    */
-  @Transactional
   public Group create(GroupDraft groupDraft) {
     LOG.debug("Enter. groupDraft: {}.", groupDraft);
 
