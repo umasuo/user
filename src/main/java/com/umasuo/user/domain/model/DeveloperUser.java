@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 /**
  * Created by umasuo on 17/3/8.
@@ -50,6 +51,7 @@ public class DeveloperUser {
   /**
    * version used for update date check.
    */
+  @Version
   private Integer version;
 
   /**

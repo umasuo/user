@@ -1,6 +1,7 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.exception.NotExistException;
+import com.umasuo.exception.ParametersException;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.GroupView;
 import com.umasuo.user.application.dto.mapper.GroupMapper;
@@ -8,6 +9,7 @@ import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.domain.service.GroupService;
 import com.umasuo.user.infrastructure.validator.VersionValidator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,19 @@ public class GroupApplication {
   public GroupView create(GroupDraft groupDraft) {
     LOG.info("Enter. groupDraft: {}.", groupDraft);
 
-    Group createGroup = groupService.create(groupDraft);
+    List<Group> groups = groupService.findAllGroup(groupDraft.getDeveloperId());
+
+    Group createGroup = null;
+
+    if (groups == null || groups.isEmpty()) {
+      if (StringUtils.isNotBlank(groupDraft.getParentId())) {
+        LOG.debug("Basic group is not exist.");
+        throw new ParametersException("Basic group is not exist");
+      }
+      createGroup = groupService.createBasic(groupDraft);
+    } else {
+      createGroup = groupService.create(groupDraft);
+    }
 
     GroupView result = GroupMapper.toModel(createGroup);
 
@@ -89,21 +103,24 @@ public class GroupApplication {
 
     LOG.info("Exit.");
 
-    return null;
+    return result;
   }
 
   /**
-   * Find all group.
+   * Find all group by developer id.
    *
+   * @param developerId the developer id
    * @return the list
    */
-  public List<GroupView> findAll() {
-    LOG.info("Enter.");
+  public List<GroupView> findAll(String developerId) {
+    LOG.info("Enter. developerId: {}.", developerId);
 
-    // TODO: 17/5/27
+    List<Group> groups = groupService.findAllGroup(developerId);
+
+    List<GroupView> result = GroupMapper.toModel(groups);
 
     LOG.info("Exit.");
 
-    return null;
+    return result;
   }
 }

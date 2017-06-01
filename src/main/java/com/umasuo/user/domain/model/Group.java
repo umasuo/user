@@ -10,16 +10,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -29,7 +25,7 @@ import javax.persistence.Version;
  */
 @Data
 @Entity
-@Table(name = "group")
+@Table(name = "groups")
 @EntityListeners(AuditingEntityListener.class)
 public class Group {
 
@@ -72,24 +68,18 @@ public class Group {
   /**
    * The parent group.
    */
-  @ManyToOne(fetch = FetchType.LAZY)
-  private Group parent;
+  @Column(name = "parent_id")
+  private String parent;
 
   /**
    * The children group.
    */
-  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "parent")
-  private List<Group> children;
+  @ElementCollection
+  private List<String> childrenId;
 
   /**
-   * Id for manager.
+   * Id for developer.
    */
-  @ElementCollection
-  private List<String> manager;
-
-  /**
-   * Id for user.
-   */
-  @ElementCollection
-  private List<String> user;
+  @Column(name = "developer_id")
+  private String developerId;
 }

@@ -55,4 +55,9 @@ public class Router {
    * The constant GROUP_WITH_ID.
    */
   public static final String GROUP_WITH_ID = GROUP + "/{" + GROUP_ID + "}";
+
+  /**
+   * The constant developer_id.
+   */
+  public static final String DEVELOPER_ID = "developerId";
 }

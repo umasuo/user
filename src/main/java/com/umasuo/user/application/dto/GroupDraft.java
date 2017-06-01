@@ -20,12 +20,18 @@ public class GroupDraft {
    * The Name.
    */
   @NotNull(message = "group name can not be null")
+  @Size(min = 1, message = "group name can not be null")
   private String name;
 
   /**
    * The Parent id.
    */
-  @NotNull(message = "parent id can not be null")
-  @Size(min = 1)
   private String parentId;
+
+  /**
+   * The developer Id.
+   */
+  @NotNull(message = "developer id can not be null")
+  @Size(min = 1, message = "developer id can not be null")
+  private String developerId;
 }

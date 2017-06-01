@@ -9,4 +9,18 @@ import lombok.Data;
 @Data
 public class GroupView {
 
+  /**
+   * The id for group.
+   */
+  private String id;
+
+  /**
+   * The name for group.
+   */
+  private String name;
+
+  /**
+   * The id for developer.
+   */
+  private String developerId;
 }

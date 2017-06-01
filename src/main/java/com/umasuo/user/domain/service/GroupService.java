@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -37,13 +38,33 @@ public class GroupService {
    * @param groupDraft the group draft
    * @return the group
    */
+  @Transactional
   public Group create(GroupDraft groupDraft) {
     LOG.debug("Enter. groupDraft: {}.", groupDraft);
+
     Group parent = groupRepository.findOne(groupDraft.getParentId());
     Assert.notNull(parent, "Parent Can not be null");
 
-    Group group = GroupMapper.toEntity(groupDraft, parent);
-    Group savedGroup = groupRepository.save(group);
+    Group savedGroup = saveGroup(groupDraft);
+
+    parent.getChildrenId().add(savedGroup.getId());
+    groupRepository.save(parent);
+
+    LOG.debug("Exit. groupId: {}.", savedGroup.getId());
+
+    return savedGroup;
+  }
+
+  /**
+   * Create basic group.
+   *
+   * @param groupDraft the GroupDraft.
+   * @return the group
+   */
+  public Group createBasic(GroupDraft groupDraft) {
+    LOG.debug("Enter. groupDraft: {}.", groupDraft);
+
+    Group savedGroup = saveGroup(groupDraft);
 
     LOG.debug("Exit. groupId: {}.", savedGroup.getId());
 
@@ -88,9 +109,8 @@ public class GroupService {
    */
   public Group findParentGroup(String groupId) {
     LOG.debug("Enter. groupId: {}.", groupId);
-    Group group = groupRepository.findOne(groupId);
 
-    Group result = group.getParent();
+    Group result = groupRepository.findByChildrenId(groupId);
 
     LOG.trace("Parent group: {}.", result);
     LOG.debug("Exit.");
@@ -105,13 +125,46 @@ public class GroupService {
    */
   public List<Group> getSubGroup(String groupId) {
     LOG.debug("Enter. groupId: {}.", groupId);
-    Group group = groupRepository.findOne(groupId);
 
-    List<Group> result = group.getChildren();
+    List<Group> result = groupRepository.findByParent(groupId);
 
     LOG.trace("subGroup: {}.", result);
     LOG.debug("Exit. subGroup count: {}.", result.size());
 
     return result;
   }
+
+  /**
+   * Find all group list.
+   *
+   * @param developerId the developer id
+   * @return the list
+   */
+  public List<Group> findAllGroup(String developerId) {
+    LOG.debug("Enter. developerId: {}.", developerId);
+
+    List<Group> groups = groupRepository.findByDeveloperId(developerId);
+
+    LOG.debug("Exit. group count: {}.", groups.size());
+
+    return groups;
+  }
+
+  /**
+   * Save group.
+   *
+   * @param groupDraft the group draft
+   * @return the group
+   */
+  private Group saveGroup(GroupDraft groupDraft) {
+    LOG.debug("Enter. groupDraft: {}.", groupDraft);
+
+    Group group = GroupMapper.toEntity(groupDraft);
+    Group result = groupRepository.save(group);
+
+    LOG.debug("Exit. groupId: {}.", result.getId());
+
+    return result;
+  }
+
 }

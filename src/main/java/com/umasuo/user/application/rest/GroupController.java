@@ -1,5 +1,6 @@
 package com.umasuo.user.application.rest;
 
+import static com.umasuo.user.infrastructure.Router.DEVELOPER_ID;
 import static com.umasuo.user.infrastructure.Router.GROUP;
 import static com.umasuo.user.infrastructure.Router.GROUP_ID;
 import static com.umasuo.user.infrastructure.Router.GROUP_WITH_ID;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -48,7 +50,7 @@ public class GroupController {
    * @return the group
    */
   @PostMapping(GROUP)
-  public GroupView create(@RequestBody GroupDraft groupDraft) {
+  public GroupView create(@RequestBody @Valid GroupDraft groupDraft) {
     LOG.info("Enter. groupDraft: {}.", groupDraft);
 
     GroupView result = groupApplication.create(groupDraft);
@@ -96,10 +98,10 @@ public class GroupController {
    * @return the list
    */
   @GetMapping(GROUP)
-  public List<GroupView> findAll() {
-    LOG.info("Enter.");
+  public List<GroupView> findAll(@RequestParam(DEVELOPER_ID) String developerId) {
+    LOG.info("Enter. developerId: {}.", developerId);
 
-    List<GroupView> result = groupApplication.findAll();
+    List<GroupView> result = groupApplication.findAll(developerId);
 
     LOG.info("Exit.");
 
