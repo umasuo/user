@@ -7,6 +7,8 @@ import com.umasuo.user.infrastructure.update.UpdateAction;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Update action for set group name.
  * Created by Davis on 17/6/1.
@@ -18,6 +20,7 @@ public class SetGroupName implements UpdateAction {
   /**
    * The name.
    */
+  @NotNull(message = "Group name can not be null")
   private String name;
 
   @Override

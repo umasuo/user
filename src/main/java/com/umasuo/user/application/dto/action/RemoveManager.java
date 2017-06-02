@@ -7,6 +7,8 @@ import com.umasuo.user.infrastructure.update.UpdateAction;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Update action for remove manager.
  *
@@ -19,6 +21,7 @@ public class RemoveManager implements UpdateAction {
   /**
    * The manager id.
    */
+  @NotNull(message = "Manager id can not be null")
   private String managerId;
 
   /**

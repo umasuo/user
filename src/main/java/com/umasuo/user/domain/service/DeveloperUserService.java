@@ -64,17 +64,15 @@ public class DeveloperUserService {
    */
   public DeveloperUser getUserInfo(String userId, String developerId) {
     logger.debug("GetUserInfo: userId: {}, developerId: {}", userId, developerId);
-    Assert.notNull(userId);
-    Assert.notNull(developerId);
+    Assert.notNull(userId, "User id can not be null");
+    Assert.notNull(developerId, "Developer id can not be null");
 
     DeveloperUser user = new DeveloperUser();
     user.setPUid(userId);
     user.setDeveloperId(developerId);
     Example<DeveloperUser> example = Example.of(user);
     DeveloperUser userInDb = repository.findOne(example);
-    if (userInDb == null) {
-      throw new NotExistException("PlatformUser not exist.");
-    }
+
     return userInDb;
   }
 }

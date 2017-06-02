@@ -7,6 +7,8 @@ import com.umasuo.user.infrastructure.update.UpdateAction;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Update action for remove user.
  *
@@ -19,6 +21,7 @@ public class RemoveUser implements UpdateAction {
   /**
    * The user id.
    */
+  @NotNull(message = "User id can not be null")
   private String userId;
 
   /**
