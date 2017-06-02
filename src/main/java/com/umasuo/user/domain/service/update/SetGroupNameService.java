@@ -1,9 +1,9 @@
 package com.umasuo.user.domain.service.update;
 
-import static com.umasuo.user.infrastructure.util.ActionUtils.SET_GROUP_NAME;
+import static com.umasuo.user.infrastructure.util.GroupActionUtils.SET_GROUP_NAME;
 
 import com.umasuo.model.Updater;
-import com.umasuo.user.application.dto.action.SetGroupName;
+import com.umasuo.user.application.dto.action.group.SetGroupName;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.infrastructure.update.UpdateAction;
 

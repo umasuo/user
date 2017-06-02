@@ -1,11 +1,11 @@
 package com.umasuo.user.domain.service.update;
 
-import static com.umasuo.user.infrastructure.util.ActionUtils.ADD_MANAGER;
+import static com.umasuo.user.infrastructure.util.GroupActionUtils.ADD_MANAGER;
 
 import com.umasuo.exception.AlreadyExistException;
 import com.umasuo.exception.ParametersException;
 import com.umasuo.model.Updater;
-import com.umasuo.user.application.dto.action.AddManager;
+import com.umasuo.user.application.dto.action.group.AddManager;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.infrastructure.update.UpdateAction;
 

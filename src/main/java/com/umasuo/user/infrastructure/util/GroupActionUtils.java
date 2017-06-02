@@ -3,7 +3,7 @@ package com.umasuo.user.infrastructure.util;
 /**
  * Utils for category action.
  */
-public final class ActionUtils {
+public final class GroupActionUtils {
 
   /**
    * The constant SET_NAME.
@@ -33,6 +33,6 @@ public final class ActionUtils {
   /**
    * Instantiates a new Update action utils.
    */
-  private ActionUtils() {
+  private GroupActionUtils() {
   }
 }

@@ -1,6 +1,6 @@
-package com.umasuo.user.application.dto.action;
+package com.umasuo.user.application.dto.action.group;
 
-import static com.umasuo.user.infrastructure.util.ActionUtils.ADD_MANAGER;
+import static com.umasuo.user.infrastructure.util.GroupActionUtils.ADD_MANAGER;
 
 import com.umasuo.user.infrastructure.update.UpdateAction;
 

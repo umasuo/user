@@ -1,10 +1,10 @@
 package com.umasuo.user.domain.service.update;
 
-import static com.umasuo.user.infrastructure.util.ActionUtils.REMOVE_USER;
+import static com.umasuo.user.infrastructure.util.GroupActionUtils.REMOVE_USER;
 
 import com.umasuo.exception.NotExistException;
 import com.umasuo.model.Updater;
-import com.umasuo.user.application.dto.action.RemoveUser;
+import com.umasuo.user.application.dto.action.group.RemoveUser;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.infrastructure.update.UpdateAction;
 

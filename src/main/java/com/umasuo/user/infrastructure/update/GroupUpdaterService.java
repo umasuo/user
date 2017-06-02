@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * if we need get data from other palace, we should use update service.
  */
 @Service
-public class UpdaterService implements Updater<Group, UpdateAction> {
+public class GroupUpdaterService implements Updater<Group, UpdateAction> {
 
   /**
    * ApplicationContext for get update services.

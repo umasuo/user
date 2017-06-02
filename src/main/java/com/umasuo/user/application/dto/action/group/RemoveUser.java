@@ -1,6 +1,6 @@
-package com.umasuo.user.application.dto.action;
+package com.umasuo.user.application.dto.action.group;
 
-import static com.umasuo.user.infrastructure.util.ActionUtils.REMOVE_USER;
+import static com.umasuo.user.infrastructure.util.GroupActionUtils.REMOVE_USER;
 
 import com.umasuo.user.infrastructure.update.UpdateAction;
 

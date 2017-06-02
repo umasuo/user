@@ -1,10 +1,10 @@
 package com.umasuo.user.domain.service.update;
 
-import static com.umasuo.user.infrastructure.util.ActionUtils.ADD_USER;
+import static com.umasuo.user.infrastructure.util.GroupActionUtils.ADD_USER;
 
 import com.umasuo.exception.AlreadyExistException;
 import com.umasuo.model.Updater;
-import com.umasuo.user.application.dto.action.AddUser;
+import com.umasuo.user.application.dto.action.group.AddUser;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.infrastructure.update.UpdateAction;
 

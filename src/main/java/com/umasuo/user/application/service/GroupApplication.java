@@ -9,7 +9,7 @@ import com.umasuo.user.application.dto.mapper.GroupMapper;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.domain.service.GroupService;
 import com.umasuo.user.infrastructure.update.UpdateAction;
-import com.umasuo.user.infrastructure.update.UpdaterService;
+import com.umasuo.user.infrastructure.update.GroupUpdaterService;
 import com.umasuo.user.infrastructure.validator.VersionValidator;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +43,7 @@ public class GroupApplication {
   /**
    * Update service.
    */
-  private transient UpdaterService updateService;
+  private transient GroupUpdaterService updateService;
 
   /**
    * Create group.

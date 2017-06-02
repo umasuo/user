@@ -1,10 +1,10 @@
 package com.umasuo.user.domain.service.update;
 
-import static com.umasuo.user.infrastructure.util.ActionUtils.REMOVE_MANAGER;
+import static com.umasuo.user.infrastructure.util.GroupActionUtils.REMOVE_MANAGER;
 
 import com.umasuo.exception.NotExistException;
 import com.umasuo.model.Updater;
-import com.umasuo.user.application.dto.action.RemoveManager;
+import com.umasuo.user.application.dto.action.group.RemoveManager;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.infrastructure.update.UpdateAction;
 

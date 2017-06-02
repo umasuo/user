@@ -25,6 +25,7 @@ import java.util.List;
  */
 @Service
 public class ScopeApplication {
+
   /**
    * LOG.
    */
@@ -108,7 +109,7 @@ public class ScopeApplication {
   /**
    * Update a scope
    *
-   * @param id      String
+   * @param id String
    * @param version integer
    * @param actions action list
    * @return Scope view

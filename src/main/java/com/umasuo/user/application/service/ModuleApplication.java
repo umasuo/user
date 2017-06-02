@@ -22,6 +22,7 @@ import java.util.List;
  */
 @Service
 public class ModuleApplication {
+
   /**
    * LOG.
    */
@@ -93,7 +94,7 @@ public class ModuleApplication {
   /**
    * Update module with with update actions.
    *
-   * @param id      id
+   * @param id id
    * @param version current version
    * @param actions update actions
    * @return ModuleView

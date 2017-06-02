@@ -4,7 +4,7 @@ import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.mapper.GroupMapper;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.infrastructure.repository.GroupRepository;
-import com.umasuo.user.infrastructure.update.UpdaterService;
+import com.umasuo.user.infrastructure.update.GroupUpdaterService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class GroupService {
   /**
    * Update service.
    */
-  private transient UpdaterService updateService;
+  private transient GroupUpdaterService updateService;
 
   /**
    * Create group.
