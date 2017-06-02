@@ -1,16 +1,15 @@
 package com.umasuo.user.domain.service;
 
-import com.google.common.collect.Lists;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.mapper.GroupMapper;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.infrastructure.repository.GroupRepository;
+import com.umasuo.user.infrastructure.update.UpdaterService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
@@ -33,6 +32,11 @@ public class GroupService {
    */
   @Autowired
   private GroupRepository groupRepository;
+
+  /**
+   * Update service.
+   */
+  private transient UpdaterService updateService;
 
   /**
    * Create group.
@@ -70,6 +74,16 @@ public class GroupService {
     LOG.debug("Exit. groupId: {}.", savedGroup.getId());
 
     return savedGroup;
+  }
+
+  /**
+   * Save group entity.
+   *
+   * @param group the group entity
+   * @return saved group entity
+   */
+  public Group saveGroupEntity(Group group) {
+    return groupRepository.save(group);
   }
 
   /**
@@ -162,7 +176,7 @@ public class GroupService {
     LOG.debug("Enter. groupDraft: {}.", groupDraft);
 
     Group group = GroupMapper.toEntity(groupDraft);
-    Group result = groupRepository.save(group);
+    Group result = saveGroupEntity(group);
 
     LOG.debug("Exit. groupId: {}.", result.getId());
 

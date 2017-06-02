@@ -8,6 +8,8 @@ import com.umasuo.user.application.dto.GroupView;
 import com.umasuo.user.application.dto.mapper.GroupMapper;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.domain.service.GroupService;
+import com.umasuo.user.infrastructure.update.UpdateAction;
+import com.umasuo.user.infrastructure.update.UpdaterService;
 import com.umasuo.user.infrastructure.validator.VersionValidator;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,10 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * The type Group application.
+ *
  * Created by Davis on 17/5/27.
  */
 @Service
@@ -37,6 +39,11 @@ public class GroupApplication {
    */
   @Autowired
   private GroupService groupService;
+
+  /**
+   * Update service.
+   */
+  private transient UpdaterService updateService;
 
   /**
    * Create group.
@@ -103,6 +110,43 @@ public class GroupApplication {
     groupService.delete(groupId);
 
     LOG.info("Exit");
+  }
+
+  /**
+   * Update group.
+   *
+   * @param id the id
+   * @param version the update request
+   * @param actions the update action
+   * @return the group
+   */
+  public GroupView updateGroup(String id, Integer version, List<UpdateAction> actions) {
+    LOG.debug("Enter. groupId: {}, version: {}, actions: {}.", id, version, actions);
+
+    Group group = groupService.findOne(id);
+    VersionValidator.validate(group, version);
+
+    Group updatedGroup = updateCategoryEntity(actions, group);
+
+    GroupView result = GroupMapper.toModel(updatedGroup);
+
+    LOG.trace("Updated category: {}.", result);
+    LOG.debug("Exit. CategoryId: {}.", id);
+    return result;
+  }
+
+  /**
+   * Update group entity.
+   *
+   * @param actions update actions
+   * @param entity Group entity
+   * @return updated group entity.
+   */
+  @Transactional
+  public Group updateCategoryEntity(List<UpdateAction> actions, Group entity) {
+    actions.parallelStream().forEach(action -> updateService.handle(entity, action));
+
+    return groupService.saveGroupEntity(entity);
   }
 
   /**
