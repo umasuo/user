@@ -23,6 +23,11 @@ public class SetGroupName implements UpdateAction {
   @NotNull(message = "Group name can not be null")
   private String name;
 
+  /**
+   * Get action name.
+   *
+   * @return setGroupName
+   */
   @Override
   public String getActionName() {
     return SET_GROUP_NAME;

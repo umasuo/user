@@ -17,6 +17,11 @@ import javax.validation.constraints.NotNull;
 public class SignIn implements Serializable {
 
   /**
+   * The serialVersionUID.
+   */
+  private static final long serialVersionUID = -1226855896214404115L;
+
+  /**
    * user's email. unique on this platform.
    */
   @Email

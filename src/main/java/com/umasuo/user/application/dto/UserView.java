@@ -5,18 +5,25 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
+ * User view.
+ *
  * Created by umasuo on 17/3/9.
  */
 @Data
 public class UserView implements Serializable{
 
   /**
-   * userId of the developer user.
+   * The serialVersionUID
+   */
+  private static final long serialVersionUID = 6276176099504266922L;
+
+  /**
+   * UserId of the developer user.
    */
   private String userId;
 
   /**
-   * developer id.
+   * Developer id.
    */
   private String developerId;
 
@@ -26,32 +33,37 @@ public class UserView implements Serializable{
   private String deviceDefinitionId;
 
   /**
-   * user's email. unique on this platform.
+   * User's email. unique on this platform.
    */
   private String email;
 
   /**
-   * user's mobile phone. unique on this platform.
+   * User's mobile phone. unique on this platform.
    */
   private String phone;
 
   /**
-   * user's externalId.
+   * User's externalId.
    */
   private String externalId;
 
   /**
-   * user's name.
+   * User's name.
    */
   private String name;
 
   /**
-   * user's icon.
+   * User's icon.
    */
   private String icon;
 
+  /**
+   * User's age.
+   */
   private int age;
 
+  /**
+   * User's signature.
+   */
   private String signature;
-
 }
