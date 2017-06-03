@@ -4,10 +4,11 @@ package com.umasuo.user.infrastructure;
  * Created by Davis on 17/6/2.
  */
 public class AuthorizationRouter {
+
   /**
    * Authentication root.
    */
-  public static final String AUTHENTICATION_ROOT = "/";
+  public static final String AUTHENTICATION_ROOT = "/auth";
 
   /**
    * Id params.
@@ -15,9 +16,9 @@ public class AuthorizationRouter {
   public static final String ID = "{id}";
 
   /**
-   * The constant AUTHENTICATION_HEALTH_CHECK.
+   * The constant AUTHORIZATION_WITH_ID.
    */
-  public static final String AUTHENTICATION_HEALTH_CHECK = AUTHENTICATION_ROOT + "health";
+  public static final String AUTHORIZATION_WITH_ID = AUTHENTICATION_ROOT + ID;
 
   /**
    * Module root.
@@ -50,24 +51,4 @@ public class AuthorizationRouter {
    * Role with id.
    */
   public static final String ROLE_WITH_ID = ROLE_ROOT + ID;
-
-  /**
-   * Admin root.
-   */
-  public static final String ADMIN_ROOT = AUTHENTICATION_ROOT + "admins/";
-
-  /**
-   * Admin with id.
-   */
-  public static final String ADMIN_WITH_ID = ADMIN_ROOT + ID;
-
-  /**
-   * Admin login.
-   */
-  public static final String ADMIN_LOGIN = AUTHENTICATION_ROOT + "login/";
-
-  /**
-   * Admin session status.
-   */
-  public static final String ADMIN_SESSION_STATUS = AUTHENTICATION_ROOT + "status/";
 }

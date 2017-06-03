@@ -63,6 +63,12 @@ public class Authorization {
   private String ownerId;
 
   /**
+   * Developer id.
+   */
+  @Column(name = "developer_id")
+  private String developerId;
+
+  /**
    * List of roles id.
    */
   @ElementCollection

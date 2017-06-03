@@ -41,4 +41,13 @@ public final class AuthorizationActionUtils {
    */
   public static final String SET_ADMIN_ROLES = "setAdminRoles";
 
+  /**
+   * The constant add_authorization_roles.
+   */
+  public static final String ADD_AUTHORIZATION_ROLES = "addAuthorizationRoles";
+
+  /**
+   * The constant REMOVE_AUTHORIZATION_ROLES.
+   */
+  public static final String REMOVE_AUTHORIZATION_ROLES = "removeAuthorizationRoles";
 }

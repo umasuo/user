@@ -92,7 +92,7 @@ public class GroupApplication {
       throw new NotExistException("Group not exist");
     }
 
-    VersionValidator.validate(group, version);
+    VersionValidator.validate(group.getVersion(), version);
 
     if (group.getOrganization().getUsers() != null &&
         !group.getOrganization().getUsers().isEmpty()) {
@@ -124,7 +124,7 @@ public class GroupApplication {
     LOG.debug("Enter. groupId: {}, version: {}, actions: {}.", id, version, actions);
 
     Group group = groupService.findOne(id);
-    VersionValidator.validate(group, version);
+    VersionValidator.validate(group.getVersion(), version);
 
     Group updatedGroup = updateCategoryEntity(actions, group);
 

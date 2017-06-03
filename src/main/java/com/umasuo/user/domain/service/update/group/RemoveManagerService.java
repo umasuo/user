@@ -1,4 +1,4 @@
-package com.umasuo.user.domain.service.update;
+package com.umasuo.user.domain.service.update.group;
 
 import static com.umasuo.user.infrastructure.util.GroupActionUtils.REMOVE_MANAGER;
 

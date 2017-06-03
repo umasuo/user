@@ -20,13 +20,13 @@ public final class VersionValidator {
   /**
    * Validate.
    *
-   * @param entity the entity
+   * @param entityVersion the entity version
    * @param version the version
    */
-  public static void validate(Group entity, Integer version) {
-    if (! version.equals(entity.getVersion())) {
-      LOG.debug("Version not match, request version: {}, real version: {}.",
-          version, entity.getVersion());
+  public static void validate(Integer entityVersion, Integer version) {
+    if (! version.equals(entityVersion)) {
+      LOG.debug("Version not match, request version: {}, entity version: {}.",
+          version, entityVersion);
       throw new ConflictException("Version not match");
     }
   }
