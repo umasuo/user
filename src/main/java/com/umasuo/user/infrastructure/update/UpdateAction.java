@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.umasuo.user.application.dto.action.authorization.AddAuthorizationRoles;
 import com.umasuo.user.application.dto.action.authorization.RemoveAuthorizationRoles;
-import com.umasuo.user.application.dto.action.authorization.SetAdminRoles;
 import com.umasuo.user.application.dto.action.authorization.SetRoleName;
 import com.umasuo.user.application.dto.action.authorization.SetRoleScopes;
 import com.umasuo.user.application.dto.action.authorization.SetScopeModules;
@@ -42,7 +41,6 @@ import com.umasuo.user.infrastructure.util.AuthorizationActionUtils;
     @JsonSubTypes.Type(value = SetScopeModules.class, name = AuthorizationActionUtils.SET_SCOPE_MODULES),
     @JsonSubTypes.Type(value = SetRoleScopes.class, name = AuthorizationActionUtils.SET_ROLE_SCOPES),
     @JsonSubTypes.Type(value = SetRoleName.class, name = AuthorizationActionUtils.SET_ROLE_NAME),
-    @JsonSubTypes.Type(value = SetAdminRoles.class, name = AuthorizationActionUtils.SET_ADMIN_ROLES),
     @JsonSubTypes.Type(value = AddAuthorizationRoles.class, name = AuthorizationActionUtils.ADD_AUTHORIZATION_ROLES),
     @JsonSubTypes.Type(value = RemoveAuthorizationRoles.class, name = AuthorizationActionUtils.REMOVE_AUTHORIZATION_ROLES)
 })

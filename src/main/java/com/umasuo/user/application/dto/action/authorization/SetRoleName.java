@@ -17,7 +17,7 @@ public class SetRoleName implements UpdateAction {
    * Role name.
    */
   @NotNull
-  private String scopeName;
+  private String roleName;
 
   /**
    * Get action name.
