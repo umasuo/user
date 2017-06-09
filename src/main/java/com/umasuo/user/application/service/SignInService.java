@@ -86,7 +86,7 @@ public class SignInService {
       result = signUpPlatformUser(signIn);
     } else {
       DeveloperUser dUser =
-          developerUserService.getUserInfo(pUser.getId(), signIn.getDeveloperId());
+          developerUserService.getUserByPlatform(pUser.getId(), signIn.getDeveloperId());
 
       if (dUser == null) {
         result = signUpDeveloperUser(signIn, pUser);
