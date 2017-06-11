@@ -1,5 +1,6 @@
 package com.umasuo.user.infrastructure.util;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -13,20 +14,18 @@ import javax.persistence.Converter;
 @Converter(autoApply = true)
 public class ZonedDateTimeConverter implements AttributeConverter<ZonedDateTime, String> {
 
-
   @Override
   public String convertToDatabaseColumn(ZonedDateTime attribute) {
     ZonedDateTime localUTC = ZonedDateTime.ofInstant(attribute.toInstant(), ZoneOffset.UTC);
-    return localUTC.toString();
+    return String.valueOf(localUTC.toEpochSecond());
   }
 
   @Override
   public ZonedDateTime convertToEntityAttribute(String dbData) {
     ZoneId utcZoneId = ZonedDateTime.now(ZoneOffset.UTC).getZone();
 
-
     ZonedDateTime dateTime =
-        ZonedDateTime.ofInstant(ZonedDateTime.parse(dbData).toInstant(), utcZoneId);
+        ZonedDateTime.ofInstant(Instant.ofEpochSecond(Long.valueOf(dbData)), utcZoneId);
 
     return dateTime;
   }
