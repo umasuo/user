@@ -45,26 +45,8 @@ public class PermissionApplication {
   public void handleRequest(PermissionRequest request) {
 
     // 1. developer user -> 获取platform user -> 获取developer user，校验user是否存在
-    DeveloperUser developerUser =
-        developerUserService.getUserById(request.getUserId());
-    if (developerUser == null) {
-      LOG.debug("Can not find user: {}.", request.getUserId());
-      throw new NotExistException("User not exist");
-    }
-    if (! developerUser.getDeveloperId().equals(request.getApplicantId())) {
-      LOG.debug("Applicant: {} do not have the user: {}.", request.getApplicantId(),
-          request.getUserId());
-      throw new NotExistException("Applicant do not have the user");
-    }
-
-    DeveloperUser user = developerUserService
-        .getUserByPlatform(developerUser.getPUid(), request.getAcceptorId());
-
-    if (user == null) {
-      LOG.debug("Acceptor: {} do not have the user: {} from applicant: {}.",
-          request.getAcceptorId(), request.getUserId(), request.getApplicantId());
-      throw new NotExistException("Acceptor do not have the user");
-    }
+    DeveloperUser user =
+        getDeveloperUser(request.getUserId(), request.getApplicantId(), request.getAcceptorId());
 
     // TODO: 17/6/9
     // 2. 获取user对应的资源id
@@ -73,5 +55,35 @@ public class PermissionApplication {
     // 4. 记录请求：请求的开发者和user的id，受理者id，资源列表，处理结果，查看结果
     ResourceRequest resourceRequest = ResourceRequestMapper.build(request, user);
     requestService.save(resourceRequest);
+  }
+
+  /**
+   * Get developer user by the same platform user.
+   *
+   * @param userId user id
+   * @param applicantId applicant id
+   * @param acceptorId acceptor id
+   * @return DeveloperUser
+   */
+  private DeveloperUser getDeveloperUser(String userId, String applicantId, String acceptorId) {
+    DeveloperUser developerUser = developerUserService.getUserById(userId);
+    if (developerUser == null) {
+      LOG.debug("Can not find user: {}.", userId);
+      throw new NotExistException("User not exist");
+    }
+    if (!developerUser.getDeveloperId().equals(applicantId)) {
+      LOG.debug("Applicant: {} do not have the user: {}.", applicantId, userId);
+      throw new NotExistException("Applicant do not have the user");
+    }
+
+    DeveloperUser user =
+        developerUserService.getUserByPlatform(developerUser.getPUid(), acceptorId);
+
+    if (user == null) {
+      LOG.debug("Acceptor: {} do not have the user: {} from applicant: {}.",
+          acceptorId, userId, applicantId);
+      throw new NotExistException("Acceptor do not have the user");
+    }
+    return user;
   }
 }
