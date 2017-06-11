@@ -29,7 +29,7 @@ import javax.persistence.Version;
  */
 @Data
 @Entity
-@Table(name = "resource_request")
+@Table(name = "resource_permission")
 @EntityListeners(AuditingEntityListener.class)
 @TypeDef(name = "List", typeClass = JSONBUserType.class, parameters = {
     @Parameter(name = JSONBUserType.CLASS, value = "java.util.List")}
@@ -49,13 +49,15 @@ public class ResourcePermission {
    * The Created at.
    */
   @CreatedDate
-  private ZonedDateTime createdAt;
+  @Column(name = "created_at")
+  protected ZonedDateTime createdAt;
 
   /**
    * The Last modified at.
    */
   @LastModifiedDate
-  private ZonedDateTime lastModifiedAt;
+  @Column(name = "last_modified_at")
+  protected ZonedDateTime lastModifiedAt;
 
   /**
    * version used for update date check.
@@ -83,5 +85,6 @@ public class ResourcePermission {
    * The References.
    */
   @Type(type = "List")
+  @Column(name = "data_reference")
   private List<Reference> references;
 }

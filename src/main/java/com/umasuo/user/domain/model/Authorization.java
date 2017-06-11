@@ -24,7 +24,7 @@ import javax.persistence.Version;
  */
 @Data
 @Entity
-@Table(name = "authorization")
+@Table(name = "authorizations")
 @EntityListeners(AuditingEntityListener.class)
 public class Authorization {
 

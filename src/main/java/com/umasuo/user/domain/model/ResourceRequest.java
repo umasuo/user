@@ -102,5 +102,6 @@ public class ResourceRequest {
    * The References.
    */
   @Type(type = "List")
+  @Column(name = "data_reference")
   private List<Reference> references;
 }
