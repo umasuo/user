@@ -80,7 +80,8 @@ public class ResourceRequestController {
 
   /**
    * Reply request.
-   *  @param userId the user id
+   *
+   * @param userId the user id
    * @param requestId the request id
    * @param reply the reply
    */
@@ -97,7 +98,8 @@ public class ResourceRequestController {
 
   /**
    * Feed back for applicant.
-   *  @param userId the user id
+   *
+   * @param userId the user id
    * @param requestId the request id
    */
   public List<ResourceRequestView> feedBackForApplicant(@RequestHeader String userId,
@@ -105,6 +107,24 @@ public class ResourceRequestController {
     LOG.info("Enter. userId: {}, requestId: {}.", userId, requestId);
 
     List<ResourceRequestView> result = requestApplication.feedBackForApplicant(userId, requestId);
+
+    LOG.info("Exit. feedBack size: {}.", result.size());
+
+    return result;
+  }
+
+  /**
+   * Acceptor feedback request.
+   *
+   * @param userId the user id
+   * @param requestId the request id
+   * @return the list
+   */
+  public List<ResourceRequestView> feedBackForAcceptor(@RequestHeader String userId,
+      List<String> requestId) {
+    LOG.info("Enter. userId: {}, requestId: {}.", userId, requestId);
+
+    List<ResourceRequestView> result = requestApplication.feedBackForAcceptor(userId, requestId);
 
     LOG.info("Exit. feedBack size: {}.", result.size());
 

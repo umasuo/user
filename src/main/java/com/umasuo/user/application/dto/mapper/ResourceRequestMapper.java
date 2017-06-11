@@ -34,7 +34,7 @@ public final class ResourceRequestMapper {
     result.setAcceptorId(request.getAcceptorId());
     result.setApplicantId(request.getApplicantId());
     result.setApplicantViewed(false);
-    result.setReplyRequest(ReplyRequest.UNVIEW);
+    result.setReplyRequest(ReplyRequest.UNVIEWED);
     result.setApplicantUserId(request.getUserId());
     result.setAcceptorId(user.getId());
 
