@@ -1,10 +1,10 @@
 package com.umasuo.user.domain.service;
 
 import com.umasuo.exception.AlreadyExistException;
-import com.umasuo.exception.NotExistException;
 import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.infrastructure.repository.UserInfoRepository;
 import com.umasuo.user.infrastructure.util.PasswordUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,8 @@ public class DeveloperUserService {
   /**
    * create user info.
    *
-   * @param user
+   * @param user the user
+   * @return the developer user
    */
   public DeveloperUser createUser(DeveloperUser user) {
     logger.debug("CreateDeveloperUser: userInfo: {}", user);
@@ -58,21 +59,37 @@ public class DeveloperUserService {
   /**
    * get user info with user id, developer id.
    *
-   * @param userId
-   * @param developerId
-   * @return
+   * @param platformUserId the platform user id
+   * @param developerId the developer id
+   * @return user by platform
    */
-  public DeveloperUser getUserInfo(String userId, String developerId) {
-    logger.debug("GetUserInfo: userId: {}, developerId: {}", userId, developerId);
-    Assert.notNull(userId, "User id can not be null");
+  public DeveloperUser getUserByPlatform(String platformUserId, String developerId) {
+    logger.debug("GetUserInfo: userId: {}, developerId: {}", platformUserId, developerId);
+    Assert.notNull(platformUserId, "User id can not be null");
     Assert.notNull(developerId, "Developer id can not be null");
 
     DeveloperUser user = new DeveloperUser();
-    user.setPUid(userId);
+    user.setPUid(platformUserId);
     user.setDeveloperId(developerId);
     Example<DeveloperUser> example = Example.of(user);
     DeveloperUser userInDb = repository.findOne(example);
 
     return userInDb;
+  }
+
+  /**
+   * Gets user by id.
+   *
+   * @param userId the user id
+   * @return the user by id
+   */
+  public DeveloperUser getUserById(String userId) {
+    logger.debug("Enter. userId: {}.", userId);
+    Assert.notNull(userId, "User id can not be null");
+
+    DeveloperUser user = repository.findOne(userId);
+
+    logger.debug("Exit.");
+    return user;
   }
 }

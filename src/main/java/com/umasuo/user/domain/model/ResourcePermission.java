@@ -1,8 +1,14 @@
 package com.umasuo.user.domain.model;
 
+import com.umasuo.database.dialect.JSONBUserType;
+import com.umasuo.user.application.dto.Reference;
+
 import lombok.Data;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,7 +17,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -20,17 +25,19 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 /**
- * Created by Davis on 17/6/2.
+ * Created by Davis on 17/6/9.
  */
 @Data
 @Entity
-@Table(name = "authorizations")
+@Table(name = "resource_permission")
 @EntityListeners(AuditingEntityListener.class)
-public class Authorization {
-
+@TypeDef(name = "List", typeClass = JSONBUserType.class, parameters = {
+    @Parameter(name = JSONBUserType.CLASS, value = "java.util.List")}
+)
+public class ResourcePermission {
 
   /**
-   * Uuid.
+   * The id.
    */
   @Id
   @GeneratedValue(generator = "uuid")
@@ -42,35 +49,42 @@ public class Authorization {
    * The Created at.
    */
   @CreatedDate
-  private ZonedDateTime createdAt;
+  @Column(name = "created_at")
+  protected ZonedDateTime createdAt;
 
   /**
    * The Last modified at.
    */
   @LastModifiedDate
-  private ZonedDateTime lastModifiedAt;
+  @Column(name = "last_modified_at")
+  protected ZonedDateTime lastModifiedAt;
 
   /**
-   * Version.
+   * version used for update date check.
    */
   @Version
   private Integer version;
 
   /**
-   * Group id or user id.
+   * The Applicant id.
    */
-  @Column(unique = true)
-  private String ownerId;
+  private String applicantId;
 
   /**
-   * Developer id.
+   * The Acceptor id.
    */
-  @Column(name = "developer_id")
-  private String developerId;
+  private String acceptorId;
+
 
   /**
-   * List of roles id.
+   * The Device id.
    */
-  @ElementCollection
-  private List<String> roles;
+  private String deviceId;
+
+  /**
+   * The References.
+   */
+  @Type(type = "List")
+  @Column(name = "data_reference")
+  private List<Reference> references;
 }

@@ -1,0 +1,89 @@
+package com.umasuo.user.application.service;
+
+import com.umasuo.exception.NotExistException;
+import com.umasuo.user.application.dto.PermissionRequest;
+import com.umasuo.user.application.dto.mapper.ResourceRequestMapper;
+import com.umasuo.user.domain.model.DeveloperUser;
+import com.umasuo.user.domain.model.ResourceRequest;
+import com.umasuo.user.domain.service.DeveloperUserService;
+import com.umasuo.user.domain.service.ResourceRequestService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * Created by Davis on 17/6/9.
+ */
+@Service
+public class PermissionApplication {
+
+  /**
+   * Logger.
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(PermissionApplication.class);
+
+  /**
+   * The Developer user service.
+   */
+  @Autowired
+  private DeveloperUserService developerUserService;
+
+  /**
+   * The Request service.
+   */
+  @Autowired
+  private ResourceRequestService requestService;
+
+
+  /**
+   * Handle request.
+   *
+   * @param request the request
+   */
+  public void handleRequest(PermissionRequest request) {
+
+    // 1. developer user -> 获取platform user -> 获取developer user，校验user是否存在
+    DeveloperUser user =
+        getDeveloperUser(request.getUserId(), request.getApplicantId(), request.getAcceptorId());
+
+    // TODO: 17/6/9
+    // 2. 获取user对应的资源id
+    // 3. user是否有对应权限, 没有则跳过
+
+    // 4. 记录请求：请求的开发者和user的id，受理者id，资源列表，处理结果，查看结果
+    ResourceRequest resourceRequest = ResourceRequestMapper.build(request, user);
+    requestService.save(resourceRequest);
+  }
+
+  /**
+   * Get developer user by the same platform user.
+   *
+   * @param userId user id
+   * @param applicantId applicant id
+   * @param acceptorId acceptor id
+   * @return DeveloperUser
+   */
+  private DeveloperUser getDeveloperUser(String userId, String applicantId, String acceptorId) {
+    DeveloperUser developerUser = developerUserService.getUserById(userId);
+    if (developerUser == null) {
+      LOG.debug("Can not find user: {}.", userId);
+      throw new NotExistException("User not exist");
+    }
+    if (!developerUser.getDeveloperId().equals(applicantId)) {
+      LOG.debug("Applicant: {} do not have the user: {}.", applicantId, userId);
+      throw new NotExistException("Applicant do not have the user");
+    }
+
+    DeveloperUser user =
+        developerUserService.getUserByPlatform(developerUser.getPUid(), acceptorId);
+
+    if (user == null) {
+      LOG.debug("Acceptor: {} do not have the user: {} from applicant: {}.",
+          acceptorId, userId, applicantId);
+      throw new NotExistException("Acceptor do not have the user");
+    }
+    return user;
+  }
+}
