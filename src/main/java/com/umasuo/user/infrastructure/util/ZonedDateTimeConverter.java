@@ -14,7 +14,6 @@ import javax.persistence.Converter;
 @Converter(autoApply = true)
 public class ZonedDateTimeConverter implements AttributeConverter<ZonedDateTime, String> {
 
-
   @Override
   public String convertToDatabaseColumn(ZonedDateTime attribute) {
     ZonedDateTime localUTC = ZonedDateTime.ofInstant(attribute.toInstant(), ZoneOffset.UTC);
