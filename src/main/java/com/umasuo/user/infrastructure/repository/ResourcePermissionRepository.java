@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
 /**
  * Created by Davis on 17/6/9.
  */
-public interface ResourcePermissionRepository extends JpaRepository<ResourcePermission, String>,
-    QueryByExampleExecutor<ResourcePermission> {
+public interface ResourcePermissionRepository extends JpaRepository<ResourcePermission, String> {
 
 }

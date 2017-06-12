@@ -10,8 +10,7 @@ import org.springframework.stereotype.Repository;
  * Created by umasuo on 17/2/10.
  */
 @Repository
-public interface UserRepository extends JpaRepository<PlatformUser, String>,
-    CrudRepository<PlatformUser, String>, QueryByExampleExecutor<PlatformUser> {
+public interface UserRepository extends JpaRepository<PlatformUser, String>{
 
   PlatformUser findOneByEmail(String email);
 

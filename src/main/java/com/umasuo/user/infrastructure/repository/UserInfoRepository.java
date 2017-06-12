@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
  * Created by umasuo on 17/2/10.
  */
 @Repository
-public interface UserInfoRepository extends JpaRepository<DeveloperUser, String>,
-    CrudRepository<DeveloperUser, String>, QueryByExampleExecutor<DeveloperUser> {
+public interface UserInfoRepository extends JpaRepository<DeveloperUser, String>{
 
 }
