@@ -1,6 +1,7 @@
 package com.umasuo.user.application.dto.mapper;
 
 import com.google.common.collect.Lists;
+import com.umasuo.user.application.dto.DeviceView;
 import com.umasuo.user.application.dto.PermissionRequest;
 import com.umasuo.user.application.dto.ResourceRequestView;
 import com.umasuo.user.domain.model.DeveloperUser;
@@ -28,7 +29,8 @@ public final class ResourceRequestMapper {
    * @param user the user
    * @return the resource request
    */
-  public static ResourceRequest build(PermissionRequest request, DeveloperUser user) {
+  public static ResourceRequest build(PermissionRequest request,
+      DeveloperUser user, DeviceView deviceView) {
     ResourceRequest result = new ResourceRequest();
 
     result.setAcceptorId(request.getAcceptorId());
@@ -37,6 +39,8 @@ public final class ResourceRequestMapper {
     result.setReplyRequest(ReplyRequest.UNVIEWED);
     result.setApplicantUserId(request.getUserId());
     result.setAcceptorId(user.getId());
+    result.setDeviceId(deviceView.getId());
+    result.setReferences(request.getReferences());
 
     return result;
   }

@@ -1,6 +1,7 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.exception.NotExistException;
+import com.umasuo.user.application.dto.DeviceView;
 import com.umasuo.user.application.dto.PermissionRequest;
 import com.umasuo.user.application.dto.mapper.ResourceRequestMapper;
 import com.umasuo.user.domain.model.DeveloperUser;
@@ -36,6 +37,12 @@ public class PermissionApplication {
   @Autowired
   private ResourceRequestService requestService;
 
+  /**
+   * The Rest client.
+   */
+  @Autowired
+  private RestClient restClient;
+
 
   /**
    * Handle request.
@@ -48,12 +55,16 @@ public class PermissionApplication {
     DeveloperUser user =
         getDeveloperUser(request.getUserId(), request.getApplicantId(), request.getAcceptorId());
 
+    // 2. 获取user对应的资源id -> (deviceDefinitionId, userId, developerId) get device
+    DeviceView deviceView = restClient
+        .getDeviceByUser(request.getDeviceDefinitionId(), request.getUserId(),
+            request.getAcceptorId());
+
     // TODO: 17/6/9
-    // 2. 获取user对应的资源id
     // 3. user是否有对应权限, 没有则跳过
 
     // 4. 记录请求：请求的开发者和user的id，受理者id，资源列表，处理结果，查看结果
-    ResourceRequest resourceRequest = ResourceRequestMapper.build(request, user);
+    ResourceRequest resourceRequest = ResourceRequestMapper.build(request, user, deviceView);
     requestService.save(resourceRequest);
   }
 

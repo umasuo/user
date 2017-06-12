@@ -28,3 +28,7 @@ jwt:
 sms:
   yunpian:
     key: just test value
+
+device:
+  service:
+    url: http://localhost:8082/devices/
