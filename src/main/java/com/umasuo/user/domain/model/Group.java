@@ -1,15 +1,12 @@
 package com.umasuo.user.domain.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -49,14 +46,14 @@ public class Group {
    */
   @CreatedDate
   @Column(name = "created_at")
-  private ZonedDateTime createdAt;
+  private Long createdAt;
 
   /**
    * The Last modified at.
    */
   @LastModifiedDate
   @Column(name = "last_modified_at")
-  private ZonedDateTime lastModifiedAt;
+  private Long lastModifiedAt;
 
   /**
    * The version.

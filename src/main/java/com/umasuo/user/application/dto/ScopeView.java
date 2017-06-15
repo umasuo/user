@@ -1,11 +1,9 @@
 package com.umasuo.user.application.dto;
 
 import com.umasuo.user.infrastructure.enums.Permission;
-
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -28,12 +26,12 @@ public class ScopeView implements Serializable{
   /**
    * The Created at.
    */
-  private ZonedDateTime createdAt;
+  private Long createdAt;
 
   /**
    * The Last modified at.
    */
-  private ZonedDateTime lastModifiedAt;
+  private Long lastModifiedAt;
 
   /**
    * Version.
