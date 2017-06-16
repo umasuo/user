@@ -56,14 +56,14 @@ public class ReportController {
    * @return the report by time
    */
   @GetMapping(value = Router.REPORT_ROOT, params = {"startTime"})
-  public List<ReportView> getDeveloperReport(@RequestHeader String developerId,
+  public ReportView getDeveloperReport(@RequestHeader String developerId,
       @RequestParam("startTime") long startTime) {
     LOG.info("Enter. developerId: {}, startTime: {}.", developerId, startTime);
 
-    List<ReportView> reports = reportApplication.getDeveloperReportByTime(startTime, developerId);
+    ReportView report = reportApplication.getDeveloperReportByTime(startTime, developerId);
 
-    LOG.info("Exit. report size: {}.", reports.size());
+    LOG.info("Exit. report: {}.", report);
 
-    return reports;
+    return report;
   }
 }

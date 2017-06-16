@@ -1,7 +1,6 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.user.application.dto.ReportView;
-import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.infrastructure.util.ReportUtils;
 import com.umasuo.user.infrastructure.validator.TimeValidator;
@@ -64,20 +63,20 @@ public class ReportApplication {
    * @param developerId the developer id
    * @return the developer report by time
    */
-  public List<ReportView> getDeveloperReportByTime(long startTime, String developerId) {
+  public ReportView getDeveloperReportByTime(long startTime, String developerId) {
     LOG.debug("Enter. startTime: {}, developerId: {}.", startTime, developerId);
 
     TimeValidator.validate(startTime);
 
-    List<HashMap> totalReport = service.getDeveloperAllReport(developerId);
+    HashMap totalReport = service.getDeveloperAllReport(developerId);
 
-    List<HashMap> registerReport = service.getDeveloperRegisteredReport(developerId, startTime);
+    HashMap registerReport = service.getDeveloperRegisteredReport(developerId, startTime);
 
-    List<ReportView> result = ReportUtils.mergeReport(totalReport, registerReport);
+    ReportView result = ReportUtils.mergeForDeveloper(totalReport, registerReport);
 
     // TODO: 17/6/16 get online number
 
-    LOG.debug("Exit. report size: {}.", result.size());
+    LOG.debug("Exit. report: {}.", result);
 
     return result;
   }

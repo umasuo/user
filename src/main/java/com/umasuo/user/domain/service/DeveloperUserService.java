@@ -135,12 +135,12 @@ public class DeveloperUserService {
    * @param developerId the developer id
    * @return the developer all report
    */
-  public List<HashMap> getDeveloperAllReport(String developerId) {
+  public HashMap getDeveloperAllReport(String developerId) {
     logger.debug("Enter. developerId: {}.", developerId);
 
-    List<HashMap> result = repository.getDeveloperReport(developerId);
+    HashMap result = repository.getDeveloperReport(developerId);
 
-    logger.debug("Exit. result size: {}.", result.size());
+    logger.debug("Exit. result: {}.", result);
 
     return result;
   }
@@ -153,12 +153,12 @@ public class DeveloperUserService {
    * @param startTime the start time
    * @return the developer registered report
    */
-  public List<HashMap> getDeveloperRegisteredReport(String developerId, long startTime) {
+  public HashMap getDeveloperRegisteredReport(String developerId, long startTime) {
     logger.debug("Enter. developerId: {}, startTime: {}.", developerId, startTime);
 
-    List<HashMap> result = repository.getDeveloperRegisterReport(developerId, startTime);
+    HashMap result = repository.getDeveloperRegisterReport(developerId, startTime);
 
-    logger.debug("Exit. result size: {}.", result.size());
+    logger.debug("Exit. result: {}.", result);
 
     return result;
   }

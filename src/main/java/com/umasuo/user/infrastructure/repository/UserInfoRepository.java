@@ -19,11 +19,11 @@ public interface UserInfoRepository extends JpaRepository<DeveloperUser, String>
   List<HashMap> getReport();
 
   @Query("select new map(d.developerId as developerId, count(d) as totalCount) from DeveloperUser d group by d.developerId having d.developerId = ?1")
-  List<HashMap> getDeveloperReport(String developerId);
+  HashMap getDeveloperReport(String developerId);
 
   @Query("select new map(d.developerId as developerId, count(d) as registerCount) from DeveloperUser d where d.createdAt >= ?1 and d.createdAt < ?2 group by d.developerId")
   List<HashMap> getRegisterReport(long startTime, long endTime);
 
   @Query("select new map(d.developerId as developerId, count(d) as registerCount) from DeveloperUser d where d.createdAt >= ?2 group by d.developerId having d.developerId = ?1")
-  List<HashMap> getDeveloperRegisterReport(String developerId, long startTime);
+  HashMap getDeveloperRegisterReport(String developerId, long startTime);
 }

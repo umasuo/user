@@ -19,6 +19,23 @@ public final class ReportUtils {
   }
 
   /**
+   * Merge for developer report view.
+   *
+   * @param totalReports the total reports
+   * @param registerReports the register reports
+   * @return the report view
+   */
+  public static ReportView mergeForDeveloper(HashMap totalReports, HashMap registerReports) {
+    ReportView result = new ReportView();
+
+    result.setDeveloperId(totalReports.get("developerId").toString());
+    result.setTotalNumber(Integer.valueOf(totalReports.get("totalCount").toString()));
+    result.setRegisterNumber(Integer.valueOf(registerReports.get("registerCount").toString()));
+
+    return result;
+  }
+
+  /**
    * Merge report.
    *
    * @param totalReports the total reports
