@@ -12,6 +12,9 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by umasuo on 17/3/8.
  */
@@ -92,4 +95,72 @@ public class DeveloperUserService {
     logger.debug("Exit.");
     return user;
   }
+
+  /**
+   * Gets all report.
+   *
+   * @return the all report
+   */
+  public List<HashMap> getAllReport() {
+    logger.debug("Enter.");
+
+    List<HashMap> result = repository.getReport();
+
+    logger.debug("Exit. result size: {}.", result.size());
+
+    return result;
+  }
+
+
+  /**
+   * Gets registered report.
+   *
+   * @param startTime the start time
+   * @param endTime the end time
+   * @return the registered report
+   */
+  public List<HashMap> getRegisteredReport(long startTime, long endTime) {
+    logger.debug("Enter.");
+
+    List<HashMap> result = repository.getRegisterReport(startTime, endTime);
+
+    logger.debug("Exit. result size: {}.", result.size());
+
+    return result;
+  }
+
+  /**
+   * Gets developer all report.
+   *
+   * @param developerId the developer id
+   * @return the developer all report
+   */
+  public List<HashMap> getDeveloperAllReport(String developerId) {
+    logger.debug("Enter. developerId: {}.", developerId);
+
+    List<HashMap> result = repository.getDeveloperReport(developerId);
+
+    logger.debug("Exit. result size: {}.", result.size());
+
+    return result;
+  }
+
+
+  /**
+   * Gets developer registered report.
+   *
+   * @param developerId the developer id
+   * @param startTime the start time
+   * @return the developer registered report
+   */
+  public List<HashMap> getDeveloperRegisteredReport(String developerId, long startTime) {
+    logger.debug("Enter. developerId: {}, startTime: {}.", developerId, startTime);
+
+    List<HashMap> result = repository.getDeveloperRegisterReport(developerId, startTime);
+
+    logger.debug("Exit. result size: {}.", result.size());
+
+    return result;
+  }
+
 }

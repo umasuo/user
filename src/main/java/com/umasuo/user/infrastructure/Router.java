@@ -60,4 +60,9 @@ public class Router {
    * The constant developer_id.
    */
   public static final String DEVELOPER_ID = "developerId";
+
+  /**
+   * The constant REPORT_ROOT.
+   */
+  public static final String REPORT_ROOT = USER_ROOT + "/reports";
 }
