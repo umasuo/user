@@ -1,16 +1,13 @@
 package com.umasuo.user.domain.model;
 
 import com.umasuo.user.infrastructure.enums.Permission;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -48,14 +45,14 @@ public class Scope {
    */
   @CreatedDate
   @Column
-  private ZonedDateTime createdAt;
+  private Long createdAt;
 
   /**
    * The Last modified at.
    */
   @LastModifiedDate
   @Column
-  private ZonedDateTime lastModifiedAt;
+  private Long lastModifiedAt;
 
   /**
    * Version.

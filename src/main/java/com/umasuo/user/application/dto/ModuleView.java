@@ -3,7 +3,6 @@ package com.umasuo.user.application.dto;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 
 /**
  * Module view.
@@ -24,12 +23,12 @@ public class ModuleView implements Serializable {
   /**
    * The Created at.
    */
-  private ZonedDateTime createdAt;
+  private Long createdAt;
 
   /**
    * The Last modified at.
    */
-  private ZonedDateTime lastModifiedAt;
+  private Long lastModifiedAt;
 
   /**
    * Version.

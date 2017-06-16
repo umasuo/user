@@ -1,13 +1,11 @@
 package com.umasuo.user.domain.model;
 
 import lombok.Data;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -42,13 +40,13 @@ public class Authorization {
    * The Created at.
    */
   @CreatedDate
-  private ZonedDateTime createdAt;
+  private Long createdAt;
 
   /**
    * The Last modified at.
    */
   @LastModifiedDate
-  private ZonedDateTime lastModifiedAt;
+  private Long lastModifiedAt;
 
   /**
    * Version.

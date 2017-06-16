@@ -5,8 +5,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.ZonedDateTime;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,14 +37,14 @@ public class DeveloperUser {
    */
   @CreatedDate
   @Column(name = "created_at")
-  protected ZonedDateTime createdAt;
+  private Long createdAt;
 
   /**
    * The Last modified at.
    */
   @LastModifiedDate
   @Column(name = "last_modified_at")
-  protected ZonedDateTime lastModifiedAt;
+  private Long lastModifiedAt;
 
   /**
    * version used for update date check.
