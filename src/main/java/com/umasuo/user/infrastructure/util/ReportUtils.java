@@ -18,21 +18,34 @@ public final class ReportUtils {
   private ReportUtils() {
   }
 
+
+  /**
+   * Build report view.
+   *
+   * @param totalReport the total report
+   * @return the report view
+   */
+  public static ReportView build(HashMap totalReport) {
+    ReportView result = new ReportView();
+
+    result.setDeveloperId(totalReport.get("developerId").toString());
+    result.setTotalNumber(Integer.valueOf(totalReport.get("totalCount").toString()));
+
+    return result;
+  }
+
   /**
    * Merge for developer report view.
    *
-   * @param totalReports the total reports
+   * @param report the ReportView
    * @param registerReports the register reports
    * @return the report view
    */
-  public static ReportView mergeForDeveloper(HashMap totalReports, HashMap registerReports) {
-    ReportView result = new ReportView();
+  public static ReportView mergeRegisterReport(ReportView report, HashMap registerReports) {
 
-    result.setDeveloperId(totalReports.get("developerId").toString());
-    result.setTotalNumber(Integer.valueOf(totalReports.get("totalCount").toString()));
-    result.setRegisterNumber(Integer.valueOf(registerReports.get("registerCount").toString()));
+    report.setRegisterNumber(Integer.valueOf(registerReports.get("registerCount").toString()));
 
-    return result;
+    return report;
   }
 
   /**

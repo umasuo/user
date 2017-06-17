@@ -215,6 +215,7 @@ public class SignInService {
     String userKey = USER_CACHE_KEY_PRE + userId;
     //cache the result
     redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, signInResult);
+//    redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, signInResult);
 
     logger.debug("Exit.");
   }

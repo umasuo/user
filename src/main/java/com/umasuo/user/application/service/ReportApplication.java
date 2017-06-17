@@ -72,7 +72,15 @@ public class ReportApplication {
 
     HashMap registerReport = service.getDeveloperRegisteredReport(developerId, startTime);
 
-    ReportView result = ReportUtils.mergeForDeveloper(totalReport, registerReport);
+    ReportView result = null;
+    if (totalReport == null || totalReport.isEmpty()) {
+      LOG.debug("Can not find any user in developer: {} from time: {}.", developerId, startTime);
+    } else {
+      result = ReportUtils.build(totalReport);
+      if (registerReport != null && !registerReport.isEmpty()) {
+        result = ReportUtils.mergeRegisterReport(result, registerReport);
+      }
+    }
 
     // TODO: 17/6/16 get online number
 

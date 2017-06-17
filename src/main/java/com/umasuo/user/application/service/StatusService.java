@@ -1,6 +1,7 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.authentication.JwtUtil;
+import com.umasuo.authentication.Token;
 import com.umasuo.user.application.dto.SignInResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,14 @@ public class StatusService {
    */
   private boolean verifyToken(String tokenString) {
     if (tokenString == null) {
+      return false;
+    }
+
+    Token token = jwtUtil.parseToken(tokenString);
+
+    long lifeTime = token.getGenerateTime() + token.getExpiresIn();
+    long curTime = System.currentTimeMillis();
+    if (curTime > lifeTime) {
       return false;
     }
 
