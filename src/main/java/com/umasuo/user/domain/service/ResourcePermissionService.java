@@ -2,7 +2,6 @@ package com.umasuo.user.domain.service;
 
 import com.umasuo.user.domain.model.ResourcePermission;
 import com.umasuo.user.infrastructure.repository.ResourcePermissionRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

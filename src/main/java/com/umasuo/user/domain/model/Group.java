@@ -87,9 +87,21 @@ public class Group {
   private String developerId;
 
   /**
-   * The organization.
+   * group的ownerId.
    */
-  @OneToOne(cascade= CascadeType.ALL)
-  @JoinColumn(name = "organization_id")
-  private Organization organization;
+  private String ownerId;
+
+  /**
+   * The managers id.
+   * One group can have multi managers, manager should be the user of this group.
+   */
+  @ElementCollection
+  private List<String> managers;
+
+  /**
+   * The users id.
+   * One group can have multi users.
+   */
+  @ElementCollection
+  private List<String> users;
 }

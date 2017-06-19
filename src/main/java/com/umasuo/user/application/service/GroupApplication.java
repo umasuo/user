@@ -1,17 +1,15 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.exception.ConflictException;
-import com.umasuo.exception.NotExistException;
 import com.umasuo.exception.ParametersException;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.GroupView;
 import com.umasuo.user.application.dto.mapper.GroupMapper;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.domain.service.GroupService;
-import com.umasuo.user.infrastructure.update.UpdateAction;
 import com.umasuo.user.infrastructure.update.GroupUpdaterService;
+import com.umasuo.user.infrastructure.update.UpdateAction;
 import com.umasuo.user.infrastructure.validator.VersionValidator;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,7 @@ import java.util.List;
 
 /**
  * The type Group application.
- *
+ * <p>
  * Created by Davis on 17/5/27.
  */
 @Service
@@ -52,10 +50,10 @@ public class GroupApplication {
    * @return the group
    */
   @Transactional
-  public GroupView create(GroupDraft groupDraft) {
-    LOG.info("Enter. groupDraft: {}.", groupDraft);
+  public GroupView create(GroupDraft groupDraft, String developerId) {
+    LOG.debug("Enter. groupDraft: {}.", groupDraft);
 
-    List<Group> groups = groupService.findAllGroup(groupDraft.getDeveloperId());
+    List<Group> groups = groupService.findAllGroup(developerId);
 
     Group createdGroup = null;
 
@@ -64,14 +62,14 @@ public class GroupApplication {
         LOG.debug("Basic group is not exist.");
         throw new ParametersException("Basic group is not exist");
       }
-      createdGroup = groupService.createBasic(groupDraft);
+      createdGroup = groupService.createBasic(groupDraft,developerId);
     } else {
-      createdGroup = groupService.create(groupDraft);
+      createdGroup = groupService.create(groupDraft,developerId);
     }
 
     GroupView result = GroupMapper.toModel(createdGroup);
 
-    LOG.debug("Exit.");
+    LOG.debug("Exit. groupView: {}.", result);
 
     return result;
   }
@@ -83,21 +81,16 @@ public class GroupApplication {
    * @param version the version
    */
   public void delete(String groupId, Integer version) {
-    LOG.info("Enter. groupId: {}, version: {}.", groupId, version);
+    LOG.debug("Enter. groupId: {}, version: {}.", groupId, version);
 
     Group group = groupService.findOne(groupId);
 
-    if (group == null) {
-      LOG.debug("Can not null group by id: {}.", groupId);
-      throw new NotExistException("Group not exist");
-    }
-
     VersionValidator.validate(group.getVersion(), version);
 
-    if (group.getOrganization().getUsers() != null &&
-        !group.getOrganization().getUsers().isEmpty()) {
+    if (group.getUsers() != null &&
+        !group.getUsers().isEmpty()) {
       LOG.debug("Can not delete group when there is {} users.",
-          group.getOrganization().getUsers().size());
+          group.getUsers().size());
       throw new ConflictException("Users is not null");
     }
 
@@ -109,13 +102,13 @@ public class GroupApplication {
 
     groupService.delete(groupId);
 
-    LOG.info("Exit");
+    LOG.debug("Exit");
   }
 
   /**
    * Update group.
    *
-   * @param id the id
+   * @param id      the id
    * @param version the update request
    * @param actions the update action
    * @return the group
@@ -139,7 +132,7 @@ public class GroupApplication {
    * Update group entity.
    *
    * @param actions update actions
-   * @param entity Group entity
+   * @param entity  Group entity
    * @return updated group entity.
    */
   @Transactional
@@ -156,18 +149,13 @@ public class GroupApplication {
    * @return the group view
    */
   public GroupView findOne(String groupId) {
-    LOG.info("Enter. groupId: {}.", groupId);
+    LOG.debug("Enter. groupId: {}.", groupId);
 
     Group group = groupService.findOne(groupId);
 
-    if (group == null) {
-      LOG.debug("Can not find group: {}.", groupId);
-      throw new NotExistException("Group not exist");
-    }
-
     GroupView result = GroupMapper.toModel(group);
 
-    LOG.info("Exit.");
+    LOG.debug("Exit. groupView: {}.", result);
 
     return result;
   }
@@ -179,13 +167,13 @@ public class GroupApplication {
    * @return the list
    */
   public List<GroupView> findAll(String developerId) {
-    LOG.info("Enter. developerId: {}.", developerId);
+    LOG.debug("Enter. developerId: {}.", developerId);
 
     List<Group> groups = groupService.findAllGroup(developerId);
 
     List<GroupView> result = GroupMapper.toModel(groups);
 
-    LOG.info("Exit.");
+    LOG.debug("Exit.");
 
     return result;
   }

@@ -27,11 +27,4 @@ public class GroupDraft {
    * The Parent id.
    */
   private String parentId;
-
-  /**
-   * The developer Id.
-   */
-  @NotNull(message = "developer id can not be null")
-  @Size(min = 1, message = "developer id can not be null")
-  private String developerId;
 }

@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,8 +43,8 @@ public class StatusController {
    */
   @GetMapping(value = Router.USER_SIGN_IN_STATUS)
   public LoginStatus signInStatus(@PathVariable @Valid @NotNull String id,
-                                  @PathVariable @Valid @NotNull String developerId,
-                                  @RequestParam @Valid @NotNull String token) {
+                                  @RequestHeader @Valid @NotNull String developerId,
+                                  @RequestHeader @Valid @NotNull String token) {
     logger.info("Enter. id: {}.", id);
 
     LoginStatus status = statusService.checkSignInStatus(id, developerId, token);

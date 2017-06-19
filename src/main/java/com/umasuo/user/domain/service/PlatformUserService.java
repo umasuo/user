@@ -3,7 +3,6 @@ package com.umasuo.user.domain.service;
 import com.umasuo.exception.NotExistException;
 import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.infrastructure.repository.UserRepository;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

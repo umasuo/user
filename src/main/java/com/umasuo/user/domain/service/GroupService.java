@@ -1,5 +1,6 @@
 package com.umasuo.user.domain.service;
 
+import com.umasuo.exception.NotExistException;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.mapper.GroupMapper;
 import com.umasuo.user.domain.model.Group;
@@ -44,13 +45,13 @@ public class GroupService {
    * @param groupDraft the group draft
    * @return the group
    */
-  public Group create(GroupDraft groupDraft) {
+  public Group create(GroupDraft groupDraft, String developerId) {
     LOG.debug("Enter. groupDraft: {}.", groupDraft);
 
     Group parent = groupRepository.findOne(groupDraft.getParentId());
     Assert.notNull(parent, "Parent Can not be null");
 
-    Group savedGroup = saveGroup(groupDraft);
+    Group savedGroup = saveGroup(groupDraft, developerId);
 
     parent.getChildrenId().add(savedGroup.getId());
     groupRepository.save(parent);
@@ -66,10 +67,10 @@ public class GroupService {
    * @param groupDraft the GroupDraft.
    * @return the group
    */
-  public Group createBasic(GroupDraft groupDraft) {
+  public Group createBasic(GroupDraft groupDraft, String developerId) {
     LOG.debug("Enter. groupDraft: {}.", groupDraft);
 
-    Group savedGroup = saveGroup(groupDraft);
+    Group savedGroup = saveGroup(groupDraft, developerId);
 
     LOG.debug("Exit. groupId: {}.", savedGroup.getId());
 
@@ -110,6 +111,10 @@ public class GroupService {
     LOG.debug("Enter. groupId: {}.", groupId);
 
     Group result = groupRepository.findOne(groupId);
+    if (result == null) {
+      LOG.debug("Can not null group by id: {}.", groupId);
+      throw new NotExistException("Group not exist");
+    }
 
     LOG.debug("Find group: {}.", result);
     LOG.debug("Exit.");
@@ -172,10 +177,10 @@ public class GroupService {
    * @param groupDraft the group draft
    * @return the group
    */
-  private Group saveGroup(GroupDraft groupDraft) {
+  private Group saveGroup(GroupDraft groupDraft, String developerId) {
     LOG.debug("Enter. groupDraft: {}.", groupDraft);
 
-    Group group = GroupMapper.toEntity(groupDraft);
+    Group group = GroupMapper.toEntity(groupDraft, developerId);
     Group result = saveGroupEntity(group);
 
     LOG.debug("Exit. groupId: {}.", result.getId());

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,10 +53,11 @@ public class GroupController {
    * @return the group
    */
   @PostMapping(GROUP)
-  public GroupView create(@RequestBody @Valid GroupDraft groupDraft) {
-    LOG.info("Enter. groupDraft: {}.", groupDraft);
+  public GroupView create(@RequestBody @Valid GroupDraft groupDraft,
+                          @RequestHeader String developerId) {
+    LOG.info("Enter. groupDraft: {}, developerId: {}.", groupDraft, developerId);
 
-    GroupView result = groupApplication.create(groupDraft);
+    GroupView result = groupApplication.create(groupDraft, developerId);
 
     LOG.debug("Exit.");
     return result;
@@ -69,8 +71,9 @@ public class GroupController {
    */
   @DeleteMapping(GROUP_WITH_ID)
   public void delete(@PathVariable(GROUP_ID) String groupId,
-      @RequestParam("version") Integer version) {
-    LOG.info("Enter. groupId: {}, version: {}.", groupId, version);
+                     @RequestParam("version") Integer version,
+                     @RequestHeader String developerId) {
+    LOG.info("Enter. groupId: {}, version: {}, developerId: {}.", groupId, version, developerId);
 
     groupApplication.delete(groupId, version);
 
@@ -81,13 +84,14 @@ public class GroupController {
   /**
    * Update group.
    *
-   * @param groupId the group id
+   * @param groupId       the group id
    * @param updateRequest the update request
    * @return the GroupView
    */
   @PutMapping(GROUP_WITH_ID)
   public GroupView update(@PathVariable(GROUP_ID) String groupId,
-      @RequestBody @Valid UpdateRequest updateRequest) {
+
+                          @RequestBody @Valid UpdateRequest updateRequest) {
     LOG.info("Enter. groupId: {}, updateRequest: {}.", groupId, updateRequest);
 
     GroupView result = groupApplication

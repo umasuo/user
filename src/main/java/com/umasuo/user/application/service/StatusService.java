@@ -84,6 +84,7 @@ public class StatusService {
     long lifeTime = token.getGenerateTime() + token.getExpiresIn();
     long curTime = System.currentTimeMillis();
     if (curTime > lifeTime) {
+      // TODO: 17/6/19 这里是否需要把session删除了
       return false;
     }
     //自动延长token 有效期
