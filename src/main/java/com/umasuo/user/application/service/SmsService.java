@@ -1,13 +1,9 @@
 package com.umasuo.user.application.service;
 
-import static com.yunpian.sdk.util.HttpUtil.post;
-
 import com.umasuo.user.infrastructure.util.SmsUrlUtils;
 import com.yunpian.sdk.YunpianException;
-
 import lombok.Getter;
 import lombok.Setter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.yunpian.sdk.util.HttpUtil.post;
 
 /**
  * Service for Sms.
@@ -40,7 +38,7 @@ public class SmsService {
    * Send Validation code.
    *
    * @param validationCode the validation code
-   * @param phoneNumber the phone number
+   * @param phoneNumber    the phone number
    */
   public String sendValidationCode(String validationCode, String phoneNumber)
       throws YunpianException {

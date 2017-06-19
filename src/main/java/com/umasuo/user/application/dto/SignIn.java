@@ -2,15 +2,15 @@ package com.umasuo.user.application.dto;
 
 import lombok.Data;
 import lombok.ToString;
-
 import org.hibernate.validator.constraints.Email;
 
 import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
- * Created by umasuo on 17/3/9.
+ * Created by umasuo on 17/6/19.
  */
 @Data
 @ToString
@@ -57,13 +57,7 @@ public class SignIn implements Serializable {
    * .{8,}             # anything, at least eight places though
    * $                 # end-of-string
    */
-//  @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{8,}$")
-//  @NotNull
-  private String password;
-
-  /**
-   * The validation code.
-   */
+  @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{8,}$")
   @NotNull
-  private String validationCode;
+  private String password;
 }

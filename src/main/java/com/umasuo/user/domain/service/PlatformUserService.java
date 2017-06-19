@@ -86,11 +86,11 @@ public class PlatformUserService {
    */
   public PlatformUser getWithPhone(String phone) {
     Assert.notNull(phone, "Phone can not be null");
-    logger.debug("GetUser: phone: {}", phone);
+    logger.debug("Enter. phone: {}", phone);
 
     PlatformUser user = this.repository.findOneByPhone(phone);
 
-    logger.debug("Exit.");
+    logger.debug("Exit. user: {}.", user);
     return user;
   }
 

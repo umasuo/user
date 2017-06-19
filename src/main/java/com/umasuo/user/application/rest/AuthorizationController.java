@@ -11,6 +11,7 @@ import com.umasuo.user.infrastructure.update.UpdateRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ import javax.validation.Valid;
  * Created by Davis on 17/6/3.
  */
 @RestController
+@CrossOrigin
 public class AuthorizationController {
 
   /**

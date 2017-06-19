@@ -2,7 +2,8 @@ package com.umasuo.user.application.service;
 
 import com.umasuo.authentication.JwtUtil;
 import com.umasuo.authentication.Token;
-import com.umasuo.user.application.dto.SignInResult;
+import com.umasuo.user.application.dto.LoginStatus;
+import com.umasuo.user.application.dto.UserSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,42 +38,59 @@ public class StatusService {
    * check login status. for auth check.
    * this can only be accessed in internal net work.
    *
-   * @param id
-   * @return boolean
+   * @param userId      用户ID
+   * @param developerId 开发者ID
+   * @param token       token
+   * @return LoginStatus
    */
-  public boolean checkSignInStatus(String id) {
-    logger.debug("CheckSignInStatus: id: {}", id);
-    String userKey = SignInService.USER_CACHE_KEY_PRE + id;
+  public LoginStatus checkSignInStatus(String userId, String developerId, String token) {
+    logger.debug("CheckSignInStatus: id: {}", userId);
 
-    SignInResult signInResult = (SignInResult) redisTemplate.opsForHash().get(userKey,
-        SignInService.SIGN_IN_CACHE_KEY);
-    if (signInResult == null) {
-      return false;
+    LoginStatus loginStatus = new LoginStatus(developerId, userId, false);
+
+    String userKey = SignInService.USER_CACHE_KEY_PREFIX + userId;
+    UserSession userSession = (UserSession) redisTemplate.opsForHash().get(userKey, SignInService
+        .SIGN_IN_CACHE_KEY);
+    if (userSession != null && userSession.getUserView().getDeveloperId().equals(developerId)) {
+      loginStatus.setLogin(true);
     }
 
-    return verifyToken(signInResult.getToken());
+    //检查token是否还在有效期内
+    if (!verifyToken(userSession, token)) {
+      loginStatus.setLogin(false);
+    }
+
+    return null;
   }
 
   /**
-   * verify token.
+   * 检查token和session的合法性.
+   * token是否能够解出, session是否在有效期内
    *
-   * @param tokenString
-   * @return
+   * @param session  session
+   * @param tokenStr tokenStr
+   * @return boolean
    */
-  private boolean verifyToken(String tokenString) {
-    if (tokenString == null) {
+  private boolean verifyToken(UserSession session, String tokenStr) {
+    if (tokenStr == null) {
       return false;
     }
 
-    Token token = jwtUtil.parseToken(tokenString);
+    // 检查传入token是否合法
+    jwtUtil.parseToken(tokenStr);
 
+    //检查当前session 是否合法
+    Token token = session.getToken();
     long lifeTime = token.getGenerateTime() + token.getExpiresIn();
     long curTime = System.currentTimeMillis();
     if (curTime > lifeTime) {
       return false;
     }
+    //自动延长token 有效期
+    token.setGenerateTime(curTime);
+    String userKey = SignInService.USER_CACHE_KEY_PREFIX + session.getUserView().getUserId();
+    redisTemplate.boundHashOps(userKey).put(SignInService.SIGN_IN_CACHE_KEY, session);
 
-//    Token token = jwtUtil.parseToken(tokenString);
     //TODO check the scope.
 
     return true;

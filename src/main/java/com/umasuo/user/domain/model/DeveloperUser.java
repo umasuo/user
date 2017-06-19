@@ -23,8 +23,9 @@ import javax.persistence.Version;
 @Table(name = "developer_user")
 @Data
 public class DeveloperUser {
+
   /**
-   * unique id
+   * unique id, 这个ID等于是用户的open ID.
    */
   @Id
   @GeneratedValue(generator = "uuid")
@@ -54,6 +55,7 @@ public class DeveloperUser {
 
   /**
    * pUid that saved in {@code PlatformUser}
+   * 这个等于是用户的union ID.
    */
   @Column(unique = true, nullable = false)
   private String pUid;

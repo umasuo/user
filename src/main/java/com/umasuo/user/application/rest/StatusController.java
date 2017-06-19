@@ -1,5 +1,6 @@
 package com.umasuo.user.application.rest;
 
+import com.umasuo.user.application.dto.LoginStatus;
 import com.umasuo.user.application.service.StatusService;
 import com.umasuo.user.infrastructure.Router;
 import org.slf4j.Logger;
@@ -7,7 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by umasuo on 17/3/9.
@@ -28,18 +33,21 @@ public class StatusController {
   private transient StatusService statusService;
 
   /**
-   * user sign up.
-   *
-   * @param id
-   * @return
+   * 用户登录状态检查
+   * @param id 用户ID
+   * @param developerId 用户所属开发者ID
+   * @param token token
+   * @return LoginStatus
    */
   @GetMapping(value = Router.USER_SIGN_IN_STATUS)
-  public boolean signInStatus(@PathVariable String id) {
-    logger.info("UserSignInStatus: id: {}", id);
+  public LoginStatus signInStatus(@PathVariable @Valid @NotNull String id,
+                                  @PathVariable @Valid @NotNull String developerId,
+                                  @RequestParam @Valid @NotNull String token) {
+    logger.info("Enter. id: {}.", id);
 
-    boolean status = statusService.checkSignInStatus(id);
+    LoginStatus status = statusService.checkSignInStatus(id, developerId, token);
 
-    logger.info("UserSignInStatus: status: {}", status);
+    logger.info("Exit. status: {}.", status);
     return status;
   }
 }

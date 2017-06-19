@@ -63,13 +63,11 @@ public class DeveloperUserService {
    * get user info with user id, developer id.
    *
    * @param platformUserId the platform user id
-   * @param developerId the developer id
+   * @param developerId    the developer id
    * @return user by platform
    */
   public DeveloperUser getUserByPlatform(String platformUserId, String developerId) {
-    logger.debug("GetUserInfo: userId: {}, developerId: {}", platformUserId, developerId);
-    Assert.notNull(platformUserId, "User id can not be null");
-    Assert.notNull(developerId, "Developer id can not be null");
+    logger.debug("Enter. userId: {}, developerId: {}", platformUserId, developerId);
 
     DeveloperUser user = new DeveloperUser();
     user.setPUid(platformUserId);
@@ -77,6 +75,7 @@ public class DeveloperUserService {
     Example<DeveloperUser> example = Example.of(user);
     DeveloperUser userInDb = repository.findOne(example);
 
+    logger.debug("Exit. user: {}.", userInDb);
     return userInDb;
   }
 
@@ -116,7 +115,7 @@ public class DeveloperUserService {
    * Gets registered report.
    *
    * @param startTime the start time
-   * @param endTime the end time
+   * @param endTime   the end time
    * @return the registered report
    */
   public List<HashMap> getRegisteredReport(long startTime, long endTime) {
@@ -150,7 +149,7 @@ public class DeveloperUserService {
    * Gets developer registered report.
    *
    * @param developerId the developer id
-   * @param startTime the start time
+   * @param startTime   the start time
    * @return the developer registered report
    */
   public HashMap getDeveloperRegisteredReport(String developerId, long startTime) {

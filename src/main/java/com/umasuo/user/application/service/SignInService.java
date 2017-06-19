@@ -1,9 +1,12 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.authentication.JwtUtil;
+import com.umasuo.authentication.Token;
 import com.umasuo.authentication.TokenType;
-import com.umasuo.user.application.dto.SignIn;
+import com.umasuo.exception.NotExistException;
+import com.umasuo.user.application.dto.QuickSignIn;
 import com.umasuo.user.application.dto.SignInResult;
+import com.umasuo.user.application.dto.UserSession;
 import com.umasuo.user.application.dto.UserView;
 import com.umasuo.user.application.dto.mapper.SignInMapper;
 import com.umasuo.user.application.dto.mapper.UserViewMapper;
@@ -11,16 +14,15 @@ import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
+import com.umasuo.user.infrastructure.config.AppConfig;
+import com.umasuo.user.infrastructure.util.TokenUtil;
 import com.umasuo.user.infrastructure.validator.ValidationCodeValidator;
-
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
-import java.util.ArrayList;
 
 /**
  * The type Sign in service.
@@ -38,9 +40,11 @@ public class SignInService {
    */
   public final static String SIGN_IN_CACHE_KEY = "signin";
   /**
-   * The constant USER_CACHE_KEY_PRE.
+   * The constant USER_CACHE_KEY_PREFIX.
    */
-  public final static String USER_CACHE_KEY_PRE = "user:";
+  public final static String USER_CACHE_KEY_PREFIX = "user:";
+
+  public final static String DEVELOPER_CACHE_KEY = "developer:user:loginlist";
 
   /**
    * redis ops.
@@ -53,6 +57,11 @@ public class SignInService {
    */
   @Autowired
   private transient JwtUtil jwtUtil;
+
+  /**
+   * configs.
+   */
+  private transient AppConfig appConfig;
 
   /**
    * platform user service.
@@ -68,13 +77,13 @@ public class SignInService {
 
   /**
    * sign in.
+   * TODO 事务性!
    *
    * @param signIn the sign in
    * @return the sign in result
    */
-  public SignInResult quickSignIn(SignIn signIn) {
-    logger.debug("SignUp: {}", signIn);
-    Assert.notNull(signIn, "SingIn object can not be null");
+  public SignInResult quickSignIn(QuickSignIn signIn) {
+    logger.debug("Enter. signIn: {}", signIn);
 
     SignInResult result = null;
 
@@ -105,7 +114,7 @@ public class SignInService {
    * @param signUp the signUp info
    * @return SignInResult
    */
-  private SignInResult signUpPlatformUser(SignIn signUp) {
+  private SignInResult signUpPlatformUser(QuickSignIn signUp) {
     logger.debug("Enter. signUp: {}.", signUp);
 
     PlatformUser savedPlatformUser = createPlatformUser(signUp);
@@ -120,10 +129,10 @@ public class SignInService {
    * SignUp.
    *
    * @param signUp sign up info
-   * @param pUser PlatformUser entity
+   * @param pUser  PlatformUser entity
    * @return SignInResult
    */
-  private SignInResult signUpDeveloperUser(SignIn signUp, PlatformUser pUser) {
+  private SignInResult signUpDeveloperUser(QuickSignIn signUp, PlatformUser pUser) {
     logger.debug("Enter. signUp: {}, platformUser: {}.", signUp, pUser);
 
     DeveloperUser savedDeveloperUser = createDeveloperUser(signUp, pUser);
@@ -134,7 +143,7 @@ public class SignInService {
   }
 
   /**
-   * SignIn.
+   * 登录接口.
    *
    * @param pUser the PlatformUser entity.
    * @param dUser the DeveloperUser entity.
@@ -142,12 +151,16 @@ public class SignInService {
    */
   private SignInResult signIn(PlatformUser pUser, DeveloperUser dUser) {
     logger.debug("Enter. pUser: {}, dUser: {}.", pUser, dUser);
-    UserView userView = UserViewMapper.toUserView(pUser, dUser);
-    String token = jwtUtil.generateToken(TokenType.CUSTOMER, dUser.getId(), Integer.MAX_VALUE,
-        new ArrayList<>());
-    SignInResult signInResult = new SignInResult(userView, token);
 
-    cacheSignInStatus(signInResult, dUser.getId());
+    UserView userView = UserViewMapper.toUserView(pUser, dUser);
+
+    Token token = TokenUtil.generateToken(TokenType.CUSTOMER, dUser.getId(), appConfig
+        .getTokenExpiredIn(), null);
+
+    String tokenString = jwtUtil.generateToken(token);
+    SignInResult signInResult = new SignInResult(userView, tokenString);
+
+    cacheSignInStatus(userView, token);
 
     logger.debug("Exit. signInResult: {}.", signInResult);
     return signInResult;
@@ -160,7 +173,7 @@ public class SignInService {
    * @param signUp the signUpDeveloperUser info.
    * @return PlatformUser
    */
-  private PlatformUser createPlatformUser(SignIn signUp) {
+  private PlatformUser createPlatformUser(QuickSignIn signUp) {
     logger.debug("Enter. signUpDeveloperUser: {}.", signUp);
 
     PlatformUser platformUser = SignInMapper.toPlatformUser(signUp);
@@ -173,19 +186,20 @@ public class SignInService {
   /**
    * create a new DeveloperUser entity.
    *
-   * @param signUp the signUpDeveloperUser info.
+   * @param signUp       the signUpDeveloperUser info.
    * @param platformUser the PlatformUser entity.
    * @return DeveloperUser
    */
-  private DeveloperUser createDeveloperUser(SignIn signUp, PlatformUser platformUser) {
-    logger.debug("Enter. signUpDeveloperUser: {}, platformUser: {}.", signUp, platformUser);
+  private DeveloperUser createDeveloperUser(QuickSignIn signUp, PlatformUser platformUser) {
+    logger.debug("Enter. quickSignIn: {}, platformUser: {}.", signUp, platformUser);
 
-    DeveloperUser developerUser = SignInMapper.toDeveloperUser(signUp);
-    developerUser.setPUid(platformUser.getId());
-    DeveloperUser savedDeveloperUser = developerUserService.createUser(developerUser);
+    DeveloperUser dUser = SignInMapper.toDeveloperUser(signUp);
+    dUser.setPUid(platformUser.getId());
+    dUser.setDeveloperId(signUp.getDeveloperId());
+    DeveloperUser savedUser = developerUserService.createUser(dUser);
 
-    logger.debug("Exit.");
-    return savedDeveloperUser;
+    logger.debug("Exit. savedDpUser: {}.", savedUser);
+    return savedUser;
   }
 
   /**
@@ -193,15 +207,20 @@ public class SignInService {
    *
    * @param signIn the signIn info
    */
-  private void checkValidationCode(SignIn signIn) {
+  private void checkValidationCode(QuickSignIn signIn) {
     logger.debug("Enter. signIn: {}.", signIn);
 
     String phoneNumber = signIn.getPhone();
     String validationCode = signIn.getValidationCode();
 
-    String basicValidationCode = (String) redisTemplate.opsForValue().get(phoneNumber);
+    // TODO: 17/6/19 这里应该是一个code list而不是一个code
+    String cachedCode = (String) redisTemplate.opsForValue().get(phoneNumber);
+    if (StringUtils.isBlank(cachedCode)) {
+      logger.debug("Can not find validation code by phone: {}.", phoneNumber);
+      throw new NotExistException("Validation code not exist.");
+    }
 
-    ValidationCodeValidator.validate(basicValidationCode, validationCode, phoneNumber);
+    ValidationCodeValidator.validate(cachedCode, validationCode);
 
     logger.debug("Exit.");
   }
@@ -209,13 +228,17 @@ public class SignInService {
   /**
    * cache the user's sign in status and info.
    */
-  private void cacheSignInStatus(SignInResult signInResult, String userId) {
-    logger.debug("Enter. signInResult: {}, userId: {}.", signInResult, userId);
+  private void cacheSignInStatus(UserView userView, Token token) {
+    logger.debug("Enter. userView: {}, token: {}.", userView, token);
 
-    String userKey = USER_CACHE_KEY_PRE + userId;
+    String userKey = USER_CACHE_KEY_PREFIX + userView.getUserId();
+    UserSession session = new UserSession(userView, token);
     //cache the result
-    redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, signInResult);
-//    redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, signInResult);
+    redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, session);
+
+    // 存储开发者的登录用户列表，方便查看所有在线用户.
+    String developerKey = DEVELOPER_CACHE_KEY;
+    redisTemplate.boundHashOps(developerKey).put(userView.getUserId(), token.getGenerateTime());
 
     logger.debug("Exit.");
   }
