@@ -1,7 +1,7 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.exception.ConflictException;
-import com.umasuo.exception.ParametersException;
+import com.umasuo.exception.NotExistException;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.GroupView;
 import com.umasuo.user.application.dto.mapper.GroupMapper;
@@ -10,7 +10,6 @@ import com.umasuo.user.domain.service.GroupService;
 import com.umasuo.user.infrastructure.update.GroupUpdaterService;
 import com.umasuo.user.infrastructure.update.UpdateAction;
 import com.umasuo.user.infrastructure.validator.VersionValidator;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class GroupApplication {
   /**
    * Logger.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(GroupApplication.class);
+  private static final Logger logger = LoggerFactory.getLogger(GroupApplication.class);
 
   /**
    * The Group service.
@@ -50,27 +49,26 @@ public class GroupApplication {
    * @return the group
    */
   @Transactional
-  public GroupView create(GroupDraft groupDraft, String developerId) {
-    LOG.debug("Enter. groupDraft: {}.", groupDraft);
+  public GroupView create(GroupDraft groupDraft, String userId, String developerId) {
+    logger.debug("Enter. groupDraft: {}.", groupDraft);
 
-    List<Group> groups = groupService.findAllGroup(developerId);
+    Group createdGroup = GroupMapper.toEntity(groupDraft, userId, developerId);
+    Group savedGroup = groupService.save(createdGroup);
 
-    Group createdGroup = null;
-
-    if (groups == null || groups.isEmpty()) {
-      if (StringUtils.isNotBlank(groupDraft.getParentId())) {
-        LOG.debug("Basic group is not exist.");
-        throw new ParametersException("Basic group is not exist");
+    //改父的子类
+    String parentId = groupDraft.getParentId();
+    if (parentId != null) {
+      Group parentGroup = groupService.findParentGroup(parentId);
+      if (parentGroup == null) {
+        throw new NotExistException("Parent group not exist.");
       }
-      createdGroup = groupService.createBasic(groupDraft,developerId);
-    } else {
-      createdGroup = groupService.create(groupDraft,developerId);
+      parentGroup.getChildrenId().add(savedGroup.getId());
+      groupService.save(parentGroup);
     }
 
-    GroupView result = GroupMapper.toModel(createdGroup);
+    GroupView result = GroupMapper.toModel(savedGroup);
 
-    LOG.debug("Exit. groupView: {}.", result);
-
+    logger.debug("Exit. groupView: {}.", result);
     return result;
   }
 
@@ -81,7 +79,7 @@ public class GroupApplication {
    * @param version the version
    */
   public void delete(String groupId, Integer version) {
-    LOG.debug("Enter. groupId: {}, version: {}.", groupId, version);
+    logger.debug("Enter. groupId: {}, version: {}.", groupId, version);
 
     Group group = groupService.findOne(groupId);
 
@@ -89,20 +87,20 @@ public class GroupApplication {
 
     if (group.getUsers() != null &&
         !group.getUsers().isEmpty()) {
-      LOG.debug("Can not delete group when there is {} users.",
+      logger.debug("Can not delete group when there is {} users.",
           group.getUsers().size());
       throw new ConflictException("Users is not null");
     }
 
     if (group.getChildrenId() != null && !group.getChildrenId().isEmpty()) {
-      LOG.debug("Can not delete group when there is {} sub groups.",
+      logger.debug("Can not delete group when there is {} sub groups.",
           group.getChildrenId().size());
       throw new ConflictException("Sub groups is not null");
     }
 
     groupService.delete(groupId);
 
-    LOG.debug("Exit");
+    logger.debug("Exit");
   }
 
   /**
@@ -114,17 +112,17 @@ public class GroupApplication {
    * @return the group
    */
   public GroupView updateGroup(String id, Integer version, List<UpdateAction> actions) {
-    LOG.debug("Enter. groupId: {}, version: {}, actions: {}.", id, version, actions);
+    logger.debug("Enter. groupId: {}, version: {}, actions: {}.", id, version, actions);
 
     Group group = groupService.findOne(id);
     VersionValidator.validate(group.getVersion(), version);
 
-    Group updatedGroup = updateCategoryEntity(actions, group);
+    Group updatedGroup = updateEntity(actions, group);
 
     GroupView result = GroupMapper.toModel(updatedGroup);
 
-    LOG.trace("Updated category: {}.", result);
-    LOG.debug("Exit. CategoryId: {}.", id);
+    logger.trace("Updated category: {}.", result);
+    logger.debug("Exit. CategoryId: {}.", id);
     return result;
   }
 
@@ -136,10 +134,10 @@ public class GroupApplication {
    * @return updated group entity.
    */
   @Transactional
-  public Group updateCategoryEntity(List<UpdateAction> actions, Group entity) {
+  public Group updateEntity(List<UpdateAction> actions, Group entity) {
     actions.parallelStream().forEach(action -> updateService.handle(entity, action));
 
-    return groupService.saveGroupEntity(entity);
+    return groupService.save(entity);
   }
 
   /**
@@ -149,13 +147,13 @@ public class GroupApplication {
    * @return the group view
    */
   public GroupView findOne(String groupId) {
-    LOG.debug("Enter. groupId: {}.", groupId);
+    logger.debug("Enter. groupId: {}.", groupId);
 
     Group group = groupService.findOne(groupId);
 
     GroupView result = GroupMapper.toModel(group);
 
-    LOG.debug("Exit. groupView: {}.", result);
+    logger.debug("Exit. groupView: {}.", result);
 
     return result;
   }
@@ -167,13 +165,13 @@ public class GroupApplication {
    * @return the list
    */
   public List<GroupView> findAll(String developerId) {
-    LOG.debug("Enter. developerId: {}.", developerId);
+    logger.debug("Enter. developerId: {}.", developerId);
 
     List<Group> groups = groupService.findAllGroup(developerId);
 
     List<GroupView> result = GroupMapper.toModel(groups);
 
-    LOG.debug("Exit.");
+    logger.debug("Exit.");
 
     return result;
   }

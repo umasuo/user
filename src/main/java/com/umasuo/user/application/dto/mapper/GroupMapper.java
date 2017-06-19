@@ -26,11 +26,12 @@ public final class GroupMapper {
    * @param draft the draft
    * @return the group
    */
-  public static Group toEntity(GroupDraft draft, String developerId) {
+  public static Group toEntity(GroupDraft draft, String userId, String developerId) {
     Group entity = new Group();
 
     entity.setParent(draft.getParentId());
     entity.setName(draft.getName());
+    entity.setOwnerId(userId);
     entity.setDeveloperId(developerId);
 
     return entity;
@@ -49,6 +50,7 @@ public final class GroupMapper {
     model.setId(entity.getId());
     model.setDeveloperId(entity.getDeveloperId());
     model.setName(entity.getName());
+    model.setOnwerId(entity.getOwnerId());
     model.setManagers(entity.getManagers());
     model.setUsers(entity.getUsers());
     model.setChildrenId(entity.getChildrenId());

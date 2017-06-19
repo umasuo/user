@@ -1,16 +1,9 @@
 package com.umasuo.user.application.rest;
 
-import static com.umasuo.user.infrastructure.Router.DEVELOPER_ID;
-import static com.umasuo.user.infrastructure.Router.GROUP;
-import static com.umasuo.user.infrastructure.Router.GROUP_ID;
-import static com.umasuo.user.infrastructure.Router.GROUP_WITH_ID;
-
-import com.umasuo.user.application.dto.DeleteRequest;
 import com.umasuo.user.application.dto.GroupDraft;
 import com.umasuo.user.application.dto.GroupView;
 import com.umasuo.user.application.service.GroupApplication;
 import com.umasuo.user.infrastructure.update.UpdateRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import javax.validation.Valid;
+
+import static com.umasuo.user.infrastructure.Router.DEVELOPER_ID;
+import static com.umasuo.user.infrastructure.Router.GROUP;
+import static com.umasuo.user.infrastructure.Router.GROUP_ID;
+import static com.umasuo.user.infrastructure.Router.GROUP_WITH_ID;
 
 /**
  * Rest controller for group.
