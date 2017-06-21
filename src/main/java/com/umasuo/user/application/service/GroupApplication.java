@@ -55,7 +55,7 @@ public class GroupApplication {
     Group createdGroup = GroupMapper.toEntity(groupDraft, userId, developerId);
     Group savedGroup = groupService.save(createdGroup);
 
-    //改父的子类
+    //改parent的子类
     String parentId = groupDraft.getParentId();
     if (parentId != null) {
       Group parentGroup = groupService.findParentGroup(parentId);
