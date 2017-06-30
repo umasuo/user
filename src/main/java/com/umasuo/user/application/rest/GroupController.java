@@ -52,10 +52,11 @@ public class GroupController {
    */
   @PostMapping(GROUP)
   public GroupView create(@RequestBody @Valid GroupDraft groupDraft,
+                          @RequestHeader String userId,
                           @RequestHeader String developerId) {
     LOG.info("Enter. groupDraft: {}, developerId: {}.", groupDraft, developerId);
 
-    GroupView result = groupApplication.create(groupDraft, developerId);
+    GroupView result = groupApplication.create(groupDraft, userId, developerId);
 
     LOG.debug("Exit.");
     return result;
