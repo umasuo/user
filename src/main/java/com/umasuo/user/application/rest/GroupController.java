@@ -54,11 +54,12 @@ public class GroupController {
   public GroupView create(@RequestBody @Valid GroupDraft groupDraft,
                           @RequestHeader String userId,
                           @RequestHeader String developerId) {
-    LOG.info("Enter. groupDraft: {}, developerId: {}.", groupDraft, developerId);
+    LOG.info("Enter. groupDraft: {}, userId: {}, developerId: {}.", groupDraft, userId,
+        developerId);
 
     GroupView result = groupApplication.create(groupDraft, userId, developerId);
 
-    LOG.debug("Exit.");
+    LOG.info("Exit.");
     return result;
   }
 
@@ -74,6 +75,7 @@ public class GroupController {
                      @RequestHeader String developerId) {
     LOG.info("Enter. groupId: {}, version: {}, developerId: {}.", groupId, version, developerId);
 
+    //todo developer id 没用，而且这个接口是给user用的，userID没有
     groupApplication.delete(groupId, version);
 
     LOG.info("Exit");
@@ -82,14 +84,13 @@ public class GroupController {
 
   /**
    * Update group.
-   *
+   * todo user? developer? device?
    * @param groupId       the group id
    * @param updateRequest the update request
    * @return the GroupView
    */
   @PutMapping(GROUP_WITH_ID)
   public GroupView update(@PathVariable(GROUP_ID) String groupId,
-
                           @RequestBody @Valid UpdateRequest updateRequest) {
     LOG.info("Enter. groupId: {}, updateRequest: {}.", groupId, updateRequest);
 
@@ -120,7 +121,7 @@ public class GroupController {
 
   /**
    * Find all group.
-   *
+   * todo user? developer? device?
    * @return the list
    */
   @GetMapping(GROUP)

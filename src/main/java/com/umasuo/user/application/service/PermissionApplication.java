@@ -55,7 +55,7 @@ public class PermissionApplication {
     DeveloperUser user =
         getDeveloperUser(request.getUserId(), request.getApplicantId(), request.getAcceptorId());
 
-    // 2. 获取user对应的资源id -> (deviceDefinitionId, userId, developerId) get device
+    // 2. 获取user对应的资源id -> (productId, userId, developerId) get device
     DeviceView deviceView = restClient
         .getDeviceByUser(request.getDeviceDefinitionId(), request.getUserId(),
             request.getAcceptorId());

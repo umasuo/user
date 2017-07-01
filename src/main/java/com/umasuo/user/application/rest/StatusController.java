@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -46,7 +44,7 @@ public class StatusController {
                                   @RequestHeader @Valid @NotNull String developerId,
                                   @RequestHeader @Valid @NotNull String token) {
     logger.info("Enter. id: {}.", id);
-
+    //todo developer id 不需要了
     LoginStatus status = statusService.checkSignInStatus(id, developerId, token);
 
     logger.info("Exit. status: {}.", status);

@@ -5,7 +5,6 @@ import com.umasuo.user.application.dto.ResourceRequestView;
 import com.umasuo.user.application.service.PermissionApplication;
 import com.umasuo.user.application.service.ResourceRequestApplication;
 import com.umasuo.user.infrastructure.enums.ReplyRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,8 @@ import java.util.List;
 
 /**
  * Created by Davis on 17/6/8.
+ * 暂时不用
+ * 用户申请在不同开发者下的设备资源的时候使用
  */
 public class ResourceRequestController {
 
@@ -81,12 +82,12 @@ public class ResourceRequestController {
   /**
    * Reply request.
    *
-   * @param userId the user id
+   * @param userId    the user id
    * @param requestId the request id
-   * @param reply the reply
+   * @param reply     the reply
    */
   public ResourceRequestView replyRequest(@RequestHeader String userId,
-      String requestId, ReplyRequest reply) {
+                                          String requestId, ReplyRequest reply) {
     LOG.info("Enter. userId: {}, requestId: {}, reply: {}.", userId, requestId, reply);
 
     ResourceRequestView result = requestApplication.replyRequest(userId, requestId, reply);
@@ -99,11 +100,11 @@ public class ResourceRequestController {
   /**
    * Feed back for applicant.
    *
-   * @param userId the user id
+   * @param userId    the user id
    * @param requestId the request id
    */
   public List<ResourceRequestView> feedBackForApplicant(@RequestHeader String userId,
-      List<String> requestId) {
+                                                        List<String> requestId) {
     LOG.info("Enter. userId: {}, requestId: {}.", userId, requestId);
 
     List<ResourceRequestView> result = requestApplication.feedBackForApplicant(userId, requestId);
@@ -116,12 +117,12 @@ public class ResourceRequestController {
   /**
    * Acceptor feedback request.
    *
-   * @param userId the user id
+   * @param userId    the user id
    * @param requestId the request id
    * @return the list
    */
   public List<ResourceRequestView> feedBackForAcceptor(@RequestHeader String userId,
-      List<String> requestId) {
+                                                       List<String> requestId) {
     LOG.info("Enter. userId: {}, requestId: {}.", userId, requestId);
 
     List<ResourceRequestView> result = requestApplication.feedBackForAcceptor(userId, requestId);

@@ -19,7 +19,7 @@ public class Router {
   /**
    * login.
    */
-  public static final String USER_SIGN_IN_STATUS = USER_SIGN_IN + "/status/{id}";
+  public static final String USER_SIGN_IN_STATUS = USER_ROOT + "/{id}/status";
 
   /**
    * logout.
@@ -34,7 +34,7 @@ public class Router {
   /**
    * The constant VALIDATION_CODE.
    */
-  public static final String VALIDATION_CODE = USER_ROOT + "/validationCode";
+  public static final String VALIDATION_CODE = USER_ROOT + "/validationCodes";
 
   /**
    * The constant PHONE_NUMBER.
@@ -44,12 +44,12 @@ public class Router {
   /**
    * The constant GROUP.
    */
-  public static final String GROUP = USER_ROOT + "/group";
+  public static final String GROUP = USER_ROOT + "/groups";
 
   /**
    * The constant GROUP_ID.
    */
-  public static final String GROUP_ID = "groupId";
+  public static final String GROUP_ID = "id";
 
   /**
    * The constant GROUP_WITH_ID.
