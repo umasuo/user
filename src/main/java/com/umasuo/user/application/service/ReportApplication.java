@@ -29,8 +29,11 @@ public class ReportApplication {
    */
   @Autowired
   private transient DeveloperUserService service;
-
-  RedisTemplate redisTemplate;
+  /**
+   * redis ops.
+   */
+  @Autowired
+  private transient RedisTemplate redisTemplate;
 
   /**
    * Gets period report.
@@ -45,21 +48,30 @@ public class ReportApplication {
 
     TimeValidator.validate(startTime, endTime);
 
-    // 获取总量的数据
+    // 获取总量的数据，总量数据是只截止到当前这个小时为止总攻有多少用户注册.
     List<HashMap> totalReport = service.getTotalCountReport(endTime);
 
     //获取这个小时新增注册用户的数据
     List<HashMap> increaseReport = service.getIncreaseReport(startTime, endTime);
 
-    // TODO: 17/6/16 get online number
-
     //合并两个数据
     List<ReportView> result = ReportUtils.mergeReport(totalReport, increaseReport);
 
+    //获取当前这个小时的登录了的用户数，每天以最后一小时的为准
+    getOnlineCount(result);
 
     logger.debug("Exit. report size: {}.", result.size());
 
     return result;
+  }
+
+  public void getOnlineCount(List<ReportView> report) {
+    report.stream().forEach(
+        reportView -> {
+          String key = SignInService.USER_CACHE_KEY_PREFIX + reportView.getDeveloperId() + "*";
+          reportView.setActiveNumber(redisTemplate.keys(key).size());
+        }
+    );
   }
 
   /**

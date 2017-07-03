@@ -24,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * The type Sign in service.
  */
@@ -85,7 +87,7 @@ public class SignInService {
   public SignInResult quickSignIn(QuickSignIn signIn) {
     logger.debug("Enter. signIn: {}", signIn);
 
-    SignInResult result = null;
+    SignInResult result;
 
     checkValidationCode(signIn);
 
@@ -231,11 +233,11 @@ public class SignInService {
   private void cacheSignInStatus(UserView userView, Token token) {
     logger.debug("Enter. userView: {}, token: {}.", userView, token);
 
-    String userKey = USER_CACHE_KEY_PREFIX + userView.getUserId();
+    String userKey = USER_CACHE_KEY_PREFIX + userView.getDeveloperId() + ":" + userView.getUserId();
     UserSession session = new UserSession(userView, token);
     //cache the result
     redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, session);
-
+    redisTemplate.expire(userKey, 7, TimeUnit.DAYS);//7天后过期
     // 存储开发者的登录用户列表，方便查看所有在线用户.
     String developerKey = DEVELOPER_CACHE_KEY;
     redisTemplate.boundHashOps(developerKey).put(userView.getUserId(), token.getGenerateTime());

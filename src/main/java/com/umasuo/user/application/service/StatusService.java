@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Created by umasuo on 17/3/9.
  * Sign in status service.
@@ -48,7 +50,7 @@ public class StatusService {
 
     LoginStatus loginStatus = new LoginStatus(developerId, userId, false);
 
-    String userKey = SignInService.USER_CACHE_KEY_PREFIX + userId;
+    String userKey = SignInService.USER_CACHE_KEY_PREFIX + developerId + ":" + userId;
     UserSession userSession = (UserSession) redisTemplate.opsForHash().get(userKey, SignInService
         .SIGN_IN_CACHE_KEY);
     if (userSession != null && userSession.getUserView().getDeveloperId().equals(developerId)) {
@@ -91,7 +93,7 @@ public class StatusService {
     token.setGenerateTime(curTime);
     String userKey = SignInService.USER_CACHE_KEY_PREFIX + session.getUserView().getUserId();
     redisTemplate.boundHashOps(userKey).put(SignInService.SIGN_IN_CACHE_KEY, session);
-
+    redisTemplate.expire(userKey, 7, TimeUnit.DAYS);//7天后过期
     //TODO check the scope.
 
     return true;
