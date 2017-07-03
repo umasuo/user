@@ -4,7 +4,6 @@ import com.umasuo.exception.AlreadyExistException;
 import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.infrastructure.repository.UserInfoRepository;
 import com.umasuo.user.infrastructure.util.PasswordUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,10 +99,10 @@ public class DeveloperUserService {
    *
    * @return the all report
    */
-  public List<HashMap> getAllReport() {
+  public List<HashMap> getTotalCountReport(long endTime) {
     logger.debug("Enter.");
 
-    List<HashMap> result = repository.getReport();
+    List<HashMap> result = repository.getTotalCountReport(endTime);
 
     logger.debug("Exit. result size: {}.", result.size());
 
@@ -118,10 +117,10 @@ public class DeveloperUserService {
    * @param endTime   the end time
    * @return the registered report
    */
-  public List<HashMap> getRegisteredReport(long startTime, long endTime) {
+  public List<HashMap> getIncreaseReport(long startTime, long endTime) {
     logger.debug("Enter.");
 
-    List<HashMap> result = repository.getRegisterReport(startTime, endTime);
+    List<HashMap> result = repository.getIncreaseReport(startTime, endTime);
 
     logger.debug("Exit. result size: {}.", result.size());
 
@@ -134,10 +133,10 @@ public class DeveloperUserService {
    * @param developerId the developer id
    * @return the developer all report
    */
-  public HashMap getDeveloperAllReport(String developerId) {
+  public HashMap getTotalCountReport(String developerId) {
     logger.debug("Enter. developerId: {}.", developerId);
 
-    HashMap result = repository.getDeveloperReport(developerId);
+    HashMap result = repository.getTotalCountReport(developerId);
 
     logger.debug("Exit. result: {}.", result);
 
@@ -152,10 +151,10 @@ public class DeveloperUserService {
    * @param startTime   the start time
    * @return the developer registered report
    */
-  public HashMap getDeveloperRegisteredReport(String developerId, long startTime) {
+  public HashMap getIncreaseReport(String developerId, long startTime, long endTime) {
     logger.debug("Enter. developerId: {}, startTime: {}.", developerId, startTime);
 
-    HashMap result = repository.getDeveloperRegisterReport(developerId, startTime);
+    HashMap result = repository.getIncreaseReport(developerId, startTime, endTime);
 
     logger.debug("Exit. result: {}.", result);
 

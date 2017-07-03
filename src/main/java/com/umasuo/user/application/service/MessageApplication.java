@@ -59,7 +59,6 @@ public class MessageApplication implements CommandLineRunner {
     this.deviceMessageHandler = deviceMessageHandler;
     redisTemplate.boundHashOps(USERNAME_PREFIX + appConfig.getUsername()).put("password",
         appConfig.getPassword());
-    redisTemplate.boundHashOps(USERNAME_PREFIX + appConfig.getUsername()).put("is_superuser", 1);
 
     mqtt = new MQTT();
     mqtt.setUserName(appConfig.getUsername());
