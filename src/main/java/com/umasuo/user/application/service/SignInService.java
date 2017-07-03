@@ -46,8 +46,6 @@ public class SignInService {
    */
   public final static String USER_CACHE_KEY_PREFIX = "user:";
 
-  public final static String DEVELOPER_CACHE_KEY = "developer:user:loginlist";
-
   /**
    * redis ops.
    */
@@ -238,9 +236,6 @@ public class SignInService {
     //cache the result
     redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, session);
     redisTemplate.expire(userKey, 7, TimeUnit.DAYS);//7天后过期
-    // 存储开发者的登录用户列表，方便查看所有在线用户.
-    String developerKey = DEVELOPER_CACHE_KEY;
-    redisTemplate.boundHashOps(developerKey).put(userView.getUserId(), token.getGenerateTime());
 
     logger.debug("Exit.");
   }
