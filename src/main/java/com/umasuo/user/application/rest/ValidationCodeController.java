@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The type Validation code controller.
+ * The type sms code controller.
  */
 @RestController
 public class ValidationCodeController {
@@ -42,7 +42,7 @@ public class ValidationCodeController {
     try {
       smsService.sendValidationCode(phoneNumber);
     } catch (YunpianException ex) {
-      LOG.info("Fail to send validation code.", ex);
+      LOG.warn("Fail to send validation code.", ex);
     }
 
     LOG.info("Exit");

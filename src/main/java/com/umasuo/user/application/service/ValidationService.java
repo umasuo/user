@@ -3,11 +3,10 @@ package com.umasuo.user.application.service;
 import com.umasuo.exception.AlreadyExistException;
 import com.umasuo.user.infrastructure.util.ValidateCodeGenerator;
 import com.yunpian.sdk.YunpianException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -26,18 +25,13 @@ public class ValidationService {
   /**
    * Validation code expire time;
    */
-  private static final long EXPIRE_TIME = 60 * 1000L;
-
-  /**
-   * Redis time util.
-   */
-  private static final TimeUnit TIME_UTIL = TimeUnit.MILLISECONDS;
+  private static final long EXPIRE_TIME = 60L;
 
   /**
    * redis ops.
    */
   @Autowired
-  private transient RedisTemplate redisTemplate;
+  private transient StringRedisTemplate redisTemplate;
 
   /**
    * The SmsService.
@@ -57,9 +51,9 @@ public class ValidationService {
 
     validateExistPhone(phoneNumber);
 
-     smsService.sendValidationCode(validationCode, phoneNumber);
+    smsService.sendValidationCode(validationCode, phoneNumber);
 
-    redisTemplate.opsForValue().set(phoneNumber, validationCode, EXPIRE_TIME, TIME_UTIL);
+    redisTemplate.opsForValue().set(phoneNumber, validationCode, EXPIRE_TIME, TimeUnit.SECONDS);
 
     LOG.debug("Exit.");
   }

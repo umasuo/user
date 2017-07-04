@@ -5,10 +5,11 @@ package com.umasuo.user.infrastructure;
  */
 public class Router {
 
+  public static final String VERSION = "/v1";
   /**
-   * authentication root.
+   * user root.
    */
-  public static final String USER_ROOT = "/users";
+  public static final String USER_ROOT = VERSION + "/users";
 
 
   /**

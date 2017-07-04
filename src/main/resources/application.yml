@@ -26,12 +26,12 @@ spring:
 
 jwt:
   secret: QWERTYUIOPASDFGHJKLZXCVBNM
-  expires: 72000
+  expires: 72000000
 
 sms:
   yunpian:
-    key: just test value
+    key: id
 
 device:
   service:
-    url: http://localhost:8082/devices/
+    url: http://localhost:8806/devices/

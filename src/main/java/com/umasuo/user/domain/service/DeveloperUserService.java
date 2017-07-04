@@ -38,11 +38,10 @@ public class DeveloperUserService {
    * @return the developer user
    */
   public DeveloperUser createUser(DeveloperUser user) {
-    logger.debug("CreateDeveloperUser: userInfo: {}", user);
+    logger.debug("Enter. userInfo: {}", user);
     Assert.notNull(user);
     Assert.notNull(user.getPUid());
     Assert.notNull(user.getDeveloperId());
-    Assert.notNull(user.getPassword());
 
     Example<DeveloperUser> example = Example.of(user);
     DeveloperUser userInDb = repository.findOne(example);
@@ -50,11 +49,13 @@ public class DeveloperUserService {
       throw new AlreadyExistException("The user already exit.");
     }
 
-    String hashedPassword = PasswordUtil.hashPassword(user.getPassword());
-    user.setPassword(hashedPassword);
+    if (user.getPassword() != null) {
+      String hashedPassword = PasswordUtil.hashPassword(user.getPassword());
+      user.setPassword(hashedPassword);
+    }
     userInDb = repository.save(user);
     //TODO maybe we should set an numerical id?
-    logger.debug("CreateDeveloperUser: userInDb: {}", userInDb);
+    logger.debug("Exit. userInDb: {}", userInDb);
     return userInDb;
   }
 

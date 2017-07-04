@@ -62,7 +62,7 @@ public class StatusService {
       loginStatus.setLogin(false);
     }
 
-    return null;
+    return loginStatus;
   }
 
   /**

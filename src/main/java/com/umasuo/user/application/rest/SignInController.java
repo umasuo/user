@@ -39,11 +39,11 @@ public class SignInController {
    */
   @PostMapping(value = Router.USER_SIGN_IN)
   public SignInResult quickSignIn(@RequestBody @Valid QuickSignIn signIn) {
-    logger.info("UserSignIn: quickSignIn: {}", signIn);
+    logger.info("Enter. quickSignIn: {}", signIn);
 
     SignInResult signInResult = signInService.quickSignIn(signIn);
 
-    logger.info("UserSignIn: signInResult: {}", signInResult);
+    logger.info("Exit. signInResult: {}", signInResult);
     return signInResult;
   }
 }

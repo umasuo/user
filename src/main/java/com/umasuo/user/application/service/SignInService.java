@@ -4,6 +4,7 @@ import com.umasuo.authentication.JwtUtil;
 import com.umasuo.authentication.Token;
 import com.umasuo.authentication.TokenType;
 import com.umasuo.exception.NotExistException;
+import com.umasuo.exception.ParametersException;
 import com.umasuo.user.application.dto.QuickSignIn;
 import com.umasuo.user.application.dto.SignInResult;
 import com.umasuo.user.application.dto.UserSession;
@@ -16,7 +17,6 @@ import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
 import com.umasuo.user.infrastructure.config.AppConfig;
 import com.umasuo.user.infrastructure.util.TokenUtil;
-import com.umasuo.user.infrastructure.validator.ValidationCodeValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +61,7 @@ public class SignInService {
   /**
    * configs.
    */
+  @Autowired
   private transient AppConfig appConfig;
 
   /**
@@ -214,13 +215,19 @@ public class SignInService {
     String validationCode = signIn.getValidationCode();
 
     // TODO: 17/6/19 这里应该是一个code list而不是一个code
-    String cachedCode = (String) redisTemplate.opsForValue().get(phoneNumber);
+    redisTemplate.opsForValue().set(phoneNumber,"123");
+    Object o = redisTemplate.opsForValue().get(phoneNumber);
+    String cachedCode = redisTemplate.opsForValue().get(phoneNumber).toString();
     if (StringUtils.isBlank(cachedCode)) {
       logger.debug("Can not find validation code by phone: {}.", phoneNumber);
       throw new NotExistException("Validation code not exist.");
     }
 
-    ValidationCodeValidator.validate(cachedCode, validationCode);
+    if (!cachedCode.equals(validationCode)) {
+      logger.debug("Validation code not match. request code: {}, basic code: {}.",
+          validationCode, cachedCode);
+      throw new ParametersException("Validation code not match");
+    }
 
     logger.debug("Exit.");
   }
