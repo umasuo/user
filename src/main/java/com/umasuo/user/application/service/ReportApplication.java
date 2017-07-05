@@ -2,8 +2,10 @@ package com.umasuo.user.application.service;
 
 import com.umasuo.user.application.dto.ReportView;
 import com.umasuo.user.domain.service.DeveloperUserService;
+import com.umasuo.user.infrastructure.util.RedisUtils;
 import com.umasuo.user.infrastructure.util.ReportUtils;
 import com.umasuo.user.infrastructure.validator.TimeValidator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class ReportApplication {
    * Gets period report.
    *
    * @param startTime the start time
-   * @param endTime   the end time
+   * @param endTime the end time
    * @return the period report
    */
   public List<ReportView> getPeriodReport(long startTime, long endTime) {
@@ -68,7 +70,8 @@ public class ReportApplication {
   public void getOnlineCount(List<ReportView> report) {
     report.stream().forEach(
         reportView -> {
-          String key = SignInService.USER_CACHE_KEY_PREFIX + reportView.getDeveloperId() + "*";
+          String key = String.format(RedisUtils.USER_KEY_FORMAT, reportView.getDeveloperId(), "*");
+          ;
           reportView.setActiveNumber(redisTemplate.keys(key).size());
         }
     );
@@ -77,7 +80,7 @@ public class ReportApplication {
   /**
    * Gets developer report by time.
    *
-   * @param startTime   the start time
+   * @param startTime the start time
    * @param developerId the developer id
    * @return the developer report by time
    */

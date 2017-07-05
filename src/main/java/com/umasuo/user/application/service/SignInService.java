@@ -16,7 +16,9 @@ import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
 import com.umasuo.user.infrastructure.config.AppConfig;
+import com.umasuo.user.infrastructure.util.RedisUtils;
 import com.umasuo.user.infrastructure.util.TokenUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,15 +38,6 @@ public class SignInService {
    * logger.
    */
   private final static Logger logger = LoggerFactory.getLogger(SignInService.class);
-
-  /**
-   * the key in map which in cache.
-   */
-  public final static String SIGN_IN_CACHE_KEY = "signin";
-  /**
-   * The constant USER_CACHE_KEY_PREFIX.
-   */
-  public final static String USER_CACHE_KEY_PREFIX = "user:";
 
   /**
    * redis ops.
@@ -130,7 +123,7 @@ public class SignInService {
    * SignUp.
    *
    * @param signUp sign up info
-   * @param pUser  PlatformUser entity
+   * @param pUser PlatformUser entity
    * @return SignInResult
    */
   private SignInResult signUpDeveloperUser(QuickSignIn signUp, PlatformUser pUser) {
@@ -187,7 +180,7 @@ public class SignInService {
   /**
    * create a new DeveloperUser entity.
    *
-   * @param signUp       the signUpDeveloperUser info.
+   * @param signUp the signUpDeveloperUser info.
    * @param platformUser the PlatformUser entity.
    * @return DeveloperUser
    */
@@ -214,8 +207,8 @@ public class SignInService {
     String phoneNumber = signIn.getPhone();
     String validationCode = signIn.getValidationCode();
 
-    // TODO: 17/6/19 这里应该是一个code list而不是一个codes
-    String cachedCode = redisTemplate.opsForValue().get(phoneNumber).toString();
+    String key = String.format(RedisUtils.PHONE_VERIFY_KEY_FORMAT, phoneNumber);
+    String cachedCode = redisTemplate.opsForValue().get(key).toString();
     if (StringUtils.isBlank(cachedCode)) {
       logger.debug("Can not find validation code by phone: {}.", phoneNumber);
       throw new NotExistException("Validation code not exist.");
@@ -227,6 +220,8 @@ public class SignInService {
       throw new ParametersException("Validation code not match");
     }
 
+    redisTemplate.delete(key);
+
     logger.debug("Exit.");
   }
 
@@ -236,10 +231,13 @@ public class SignInService {
   private void cacheSignInStatus(UserView userView, Token token) {
     logger.debug("Enter. userView: {}, token: {}.", userView, token);
 
-    String userKey = USER_CACHE_KEY_PREFIX + userView.getDeveloperId() + ":" + userView.getUserId();
+    String userKey = String.format(RedisUtils.USER_KEY_FORMAT,
+        userView.getDeveloperId(), userView.getUserId());
+
     UserSession session = new UserSession(userView, token);
+
     //cache the result
-    redisTemplate.boundHashOps(userKey).put(SIGN_IN_CACHE_KEY, session);
+    redisTemplate.boundHashOps(userKey).put(RedisUtils.USER_TOKEN_KEY, session);
     redisTemplate.expire(userKey, 7, TimeUnit.DAYS);//7天后过期
 
     logger.debug("Exit.");

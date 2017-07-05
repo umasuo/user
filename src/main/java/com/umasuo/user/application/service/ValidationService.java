@@ -1,6 +1,7 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.exception.AlreadyExistException;
+import com.umasuo.user.infrastructure.util.RedisUtils;
 import com.umasuo.user.infrastructure.util.ValidateCodeGenerator;
 import com.yunpian.sdk.YunpianException;
 
@@ -28,8 +29,6 @@ public class ValidationService {
    */
   private static final long EXPIRE_TIME = 10 * 60L;
 
-  private static final String PHONE_VERIFY_KEY_FORMAT = "user:%s";
-
   /**
    * redis ops.
    */
@@ -52,11 +51,13 @@ public class ValidationService {
 
     String validationCode = ValidateCodeGenerator.generate();
 
-    String key = String.format(PHONE_VERIFY_KEY_FORMAT, phoneNumber);
+    String key = String.format(RedisUtils.PHONE_VERIFY_KEY_FORMAT, phoneNumber);
 
     validateExistPhone(key);
 
-    smsService.sendValidationCode(validationCode, phoneNumber);
+    logger.debug("Code: {}.", validationCode);
+
+//    smsService.sendValidationCode(validationCode, phoneNumber);
 
     redisTemplate.opsForValue().set(key, validationCode, EXPIRE_TIME, TimeUnit.SECONDS);
 
