@@ -3,6 +3,7 @@ package com.umasuo.user.application.service;
 import com.umasuo.exception.AlreadyExistException;
 import com.umasuo.user.infrastructure.util.ValidateCodeGenerator;
 import com.yunpian.sdk.YunpianException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,9 @@ public class ValidationService {
   /**
    * Validation code expire time;
    */
-  private static final long EXPIRE_TIME = 60L;
+  private static final long EXPIRE_TIME = 10 * 60L;
+
+  private static final String PHONE_VERIFY_KEY_FORMAT = "user:%s";
 
   /**
    * redis ops.
@@ -49,11 +52,13 @@ public class ValidationService {
 
     String validationCode = ValidateCodeGenerator.generate();
 
-    validateExistPhone(phoneNumber);
+    String key = String.format(PHONE_VERIFY_KEY_FORMAT, phoneNumber);
+
+    validateExistPhone(key);
 
     smsService.sendValidationCode(validationCode, phoneNumber);
 
-    redisTemplate.opsForValue().set(phoneNumber, validationCode, EXPIRE_TIME, TimeUnit.SECONDS);
+    redisTemplate.opsForValue().set(key, validationCode, EXPIRE_TIME, TimeUnit.SECONDS);
 
     logger.debug("Exit.");
   }
@@ -61,10 +66,10 @@ public class ValidationService {
   /**
    * Validate if this code exist.
    *
-   * @param phoneNumber the phone number
+   * @param key the phone key in redis
    */
-  private void validateExistPhone(String phoneNumber) {
-    String existValidationCode = (String) redisTemplate.opsForValue().get(phoneNumber);
+  private void validateExistPhone(String key) {
+    String existValidationCode = (String) redisTemplate.opsForValue().get(key);
     if (existValidationCode != null) {
       logger.debug("This phone has an exist validation code: {}.", existValidationCode);
       throw new AlreadyExistException("ValidationCode already exist");
