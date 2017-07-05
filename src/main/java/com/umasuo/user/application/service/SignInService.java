@@ -207,7 +207,7 @@ public class SignInService {
     String phoneNumber = signIn.getPhone();
     String validationCode = signIn.getValidationCode();
 
-    String key = String.format(RedisUtils.PHONE_VERIFY_KEY_FORMAT, phoneNumber);
+    String key = String.format(RedisUtils.PHONE_CODE_KEY_FORMAT, phoneNumber, validationCode);
     String cachedCode = redisTemplate.opsForValue().get(key).toString();
     if (StringUtils.isBlank(cachedCode)) {
       logger.debug("Can not find validation code by phone: {}.", phoneNumber);

@@ -49,15 +49,18 @@ public class ValidationService {
   public void sendValidationCode(String phoneNumber) throws YunpianException {
     logger.debug("Enter. phoneNumber: {}.", phoneNumber);
 
-    String validationCode = ValidateCodeGenerator.generate();
+    String code = ValidateCodeGenerator.generate();
 
-    String key = String.format(RedisUtils.PHONE_VERIFY_KEY_FORMAT, phoneNumber);
+    String key = String.format(RedisUtils.PHONE_KEY_FORMAT, phoneNumber);
 
     validateExistPhone(key);
 
-    smsService.sendValidationCode(validationCode, phoneNumber);
+    String codeKey = String.format(RedisUtils.PHONE_CODE_KEY_FORMAT, phoneNumber, code);
 
-    redisTemplate.opsForValue().set(key, validationCode, EXPIRE_TIME, TimeUnit.SECONDS);
+    smsService.sendValidationCode(code, phoneNumber);
+
+    redisTemplate.opsForValue().set(codeKey, code, EXPIRE_TIME, TimeUnit.SECONDS);
+    redisTemplate.opsForValue().set(key, "", 60, TimeUnit.SECONDS);
 
     logger.debug("Exit.");
   }
