@@ -1,5 +1,6 @@
 package com.umasuo.user.application.service;
 
+import com.sun.javafx.binding.StringFormatter;
 import com.umasuo.user.infrastructure.util.SmsUrlUtils;
 import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.YunpianException;
@@ -62,6 +63,6 @@ public class SmsService {
    * @return string
    */
   private String createSmsText(String validationCode) {
-    return validationCode;
+    return StringFormatter.format("【伊娃App】您的验证码是%s。如非本人操作，请忽略本短信", validationCode).getValue();
   }
 }

@@ -214,9 +214,7 @@ public class SignInService {
     String phoneNumber = signIn.getPhone();
     String validationCode = signIn.getValidationCode();
 
-    // TODO: 17/6/19 这里应该是一个code list而不是一个code
-    redisTemplate.opsForValue().set(phoneNumber,"123");
-    Object o = redisTemplate.opsForValue().get(phoneNumber);
+    // TODO: 17/6/19 这里应该是一个code list而不是一个codes
     String cachedCode = redisTemplate.opsForValue().get(phoneNumber).toString();
     if (StringUtils.isBlank(cachedCode)) {
       logger.debug("Can not find validation code by phone: {}.", phoneNumber);
