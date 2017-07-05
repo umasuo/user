@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class SmsService {
    * @param validationCode the validation code
    * @param phoneNumber    the phone number
    */
+  @Async
   public String sendValidationCode(String validationCode, String phoneNumber)
       throws YunpianException {
     Map<String, String> params = new HashMap<String, String>();

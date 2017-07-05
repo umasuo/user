@@ -70,7 +70,7 @@ public final class ReportUtils {
     result.stream().forEach(
         ReportView -> {
           if (ReportView.getDeveloperId().equals(map.get("developerId").toString())) {
-            ReportView.setIncreaseNumber(Integer.valueOf(map.get("registerCount").toString()));
+            ReportView.setIncreaseNumber(Integer.valueOf(map.get("increaseCount").toString()));
           }
         });
   }

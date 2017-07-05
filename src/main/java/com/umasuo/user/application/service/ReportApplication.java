@@ -70,9 +70,12 @@ public class ReportApplication {
   public void getOnlineCount(List<ReportView> report) {
     report.stream().forEach(
         reportView -> {
-          String key = String.format(RedisUtils.USER_KEY_FORMAT, reportView.getDeveloperId(), "*");
-          ;
-          reportView.setActiveNumber(redisTemplate.keys(key).size());
+          String key =
+              "*" + String.format(RedisUtils.USER_KEY_FORMAT, reportView.getDeveloperId(), "*");
+
+//          reportView.setActiveNumber(redisTemplate.keys(key).size());
+          reportView.setActiveNumber(redisTemplate.getConnectionFactory().getConnection()
+              .keys(key.getBytes()).size());
         }
     );
   }
