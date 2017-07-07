@@ -1,9 +1,13 @@
 package com.umasuo.user.domain.service;
 
+import com.google.common.collect.Lists;
 import com.umasuo.exception.AlreadyExistException;
+import com.umasuo.user.application.dto.UserView;
 import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.infrastructure.repository.UserInfoRepository;
 import com.umasuo.user.infrastructure.util.PasswordUtil;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +67,7 @@ public class DeveloperUserService {
    * get user info with user id, developer id.
    *
    * @param platformUserId the platform user id
-   * @param developerId    the developer id
+   * @param developerId the developer id
    * @return user by platform
    */
   public DeveloperUser getUserByPlatform(String platformUserId, String developerId) {
@@ -115,7 +119,7 @@ public class DeveloperUserService {
    * Gets registered report.
    *
    * @param startTime the start time
-   * @param endTime   the end time
+   * @param endTime the end time
    * @return the registered report
    */
   public List<HashMap> getIncreaseReport(long startTime, long endTime) {
@@ -149,7 +153,7 @@ public class DeveloperUserService {
    * Gets developer registered report.
    *
    * @param developerId the developer id
-   * @param startTime   the start time
+   * @param startTime the start time
    * @return the developer registered report
    */
   public HashMap getIncreaseReport(String developerId, long startTime, long endTime) {
@@ -162,4 +166,21 @@ public class DeveloperUserService {
     return result;
   }
 
+  public List<DeveloperUser> getUsers(String developerId, String userId) {
+    logger.info("Enter. developerId: {}, developerUserId: {}.", developerId, userId);
+
+    DeveloperUser sample = new DeveloperUser();
+    sample.setDeveloperId(developerId);
+    if (StringUtils.isNotBlank(userId)) {
+      sample.setId(userId);
+    }
+
+    Example<DeveloperUser> example = Example.of(sample);
+
+    List<DeveloperUser> users = repository.findAll(example);
+
+    logger.info("Exit. user size: {}.", users.size());
+
+    return users;
+  }
 }

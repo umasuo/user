@@ -10,6 +10,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 /**
  * Created by umasuo on 17/3/8.
  */
@@ -110,4 +112,12 @@ public class PlatformUserService {
     return user;
   }
 
+  public List<PlatformUser> getWithIds(List<String> platformUserIds) {
+    logger.debug("Enter. ids: {}.", platformUserIds);
+
+    List<PlatformUser> users = repository.findAll(platformUserIds);
+
+    logger.debug("Exit. user size: {}.", users.size());
+    return users;
+  }
 }
