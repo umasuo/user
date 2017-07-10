@@ -1,5 +1,10 @@
 package com.umasuo.user;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -32,7 +37,10 @@ public class Application {
    */
   @GetMapping("/")
   public String index() {
-    return serviceName + ", system time: " + System.currentTimeMillis();
+    JsonObject json = new JsonObject();
+    json.addProperty("service", serviceName);
+    json.addProperty("systemTime", System.currentTimeMillis());
+    return json.toString();
   }
 
   public static void main(String[] args) {

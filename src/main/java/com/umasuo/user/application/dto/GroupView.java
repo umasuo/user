@@ -26,7 +26,7 @@ public class GroupView {
    */
   private String developerId;
 
-  private String onwerId;
+  private String ownerId;
 
   /**
    * The id for managers.

@@ -7,6 +7,7 @@ import lombok.Data;
 
 /**
  * Created by Davis on 17/7/7.
+ * 用户统计数据，用来给开发者查看用户注册情况的.
  */
 @Data
 public class UserOperationData {

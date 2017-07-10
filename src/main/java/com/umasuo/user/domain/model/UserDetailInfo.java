@@ -36,4 +36,6 @@ public class UserDetailInfo {
   private int age;
 
   private String signature;
+
+  private String country;
 }

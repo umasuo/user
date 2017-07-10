@@ -50,7 +50,7 @@ public final class GroupMapper {
     model.setId(entity.getId());
     model.setDeveloperId(entity.getDeveloperId());
     model.setName(entity.getName());
-    model.setOnwerId(entity.getOwnerId());
+    model.setOwnerId(entity.getOwnerId());
     model.setManagers(entity.getManagers());
     model.setUsers(entity.getUsers());
     model.setChildrenId(entity.getChildrenId());

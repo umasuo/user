@@ -6,11 +6,11 @@ import java.io.Serializable;
 
 /**
  * User view.
- *
+ * <p>
  * Created by umasuo on 17/3/9.
  */
 @Data
-public class UserView implements Serializable{
+public class UserView implements Serializable {
 
   /**
    * The serialVersionUID
@@ -66,4 +66,9 @@ public class UserView implements Serializable{
    * User's signature.
    */
   private String signature;
+
+  /**
+   * user's country.
+   */
+  private String country;
 }

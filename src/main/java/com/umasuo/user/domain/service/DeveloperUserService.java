@@ -2,6 +2,7 @@ package com.umasuo.user.domain.service;
 
 import com.google.common.collect.Lists;
 import com.umasuo.exception.AlreadyExistException;
+import com.umasuo.exception.NotExistException;
 import com.umasuo.user.application.dto.UserView;
 import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.infrastructure.repository.UserInfoRepository;
@@ -67,7 +68,7 @@ public class DeveloperUserService {
    * get user info with user id, developer id.
    *
    * @param platformUserId the platform user id
-   * @param developerId the developer id
+   * @param developerId    the developer id
    * @return user by platform
    */
   public DeveloperUser getUserByPlatform(String platformUserId, String developerId) {
@@ -94,6 +95,10 @@ public class DeveloperUserService {
     Assert.notNull(userId, "User id can not be null");
 
     DeveloperUser user = repository.findOne(userId);
+    if (user == null) {
+      logger.debug("Can not find user: {}.", userId);
+      throw new NotExistException("User not exist");
+    }
 
     logger.debug("Exit.");
     return user;
@@ -119,7 +124,7 @@ public class DeveloperUserService {
    * Gets registered report.
    *
    * @param startTime the start time
-   * @param endTime the end time
+   * @param endTime   the end time
    * @return the registered report
    */
   public List<HashMap> getIncreaseReport(long startTime, long endTime) {
@@ -153,7 +158,7 @@ public class DeveloperUserService {
    * Gets developer registered report.
    *
    * @param developerId the developer id
-   * @param startTime the start time
+   * @param startTime   the start time
    * @return the developer registered report
    */
   public HashMap getIncreaseReport(String developerId, long startTime, long endTime) {
@@ -182,5 +187,14 @@ public class DeveloperUserService {
     logger.info("Exit. user size: {}.", users.size());
 
     return users;
+  }
+
+  public DeveloperUser save(DeveloperUser user) {
+    logger.debug("Enter.");
+
+    DeveloperUser dUser = repository.save(user);
+
+    logger.debug("Exit.");
+    return dUser;
   }
 }

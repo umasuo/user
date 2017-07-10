@@ -40,4 +40,14 @@ public final class UserViewMapper {
     }
     return view;
   }
+
+  public static void copyValue(PlatformUser pUser, DeveloperUser dUser, UserView userView) {
+    pUser.setEmail(userView.getEmail());
+
+    dUser.getUserDetail().setAge(userView.getAge());
+    dUser.getUserDetail().setCountry(userView.getCountry());
+    dUser.getUserDetail().setIcon(userView.getIcon());
+    dUser.getUserDetail().setName(userView.getName());
+    dUser.getUserDetail().setSignature(userView.getSignature());
+  }
 }

@@ -120,4 +120,31 @@ public class PlatformUserService {
     logger.debug("Exit. user size: {}.", users.size());
     return users;
   }
+
+  public PlatformUser getWithId(String userPlatformId) {
+    logger.debug("Enter. userPlatformId: {}.", userPlatformId);
+
+    PlatformUser user = repository.findOne(userPlatformId);
+    if (user == null) {
+      throw new NotExistException("Platform User not exist for id: " + userPlatformId);
+    }
+
+    logger.debug("Exit. user: {}.", user);
+    return user;
+  }
+
+  /**
+   * save.
+   *
+   * @param user
+   * @return
+   */
+  public PlatformUser save(PlatformUser user) {
+    logger.debug("Enter.");
+
+    PlatformUser pUser = repository.save(user);
+
+    logger.debug("Exit.");
+    return pUser;
+  }
 }

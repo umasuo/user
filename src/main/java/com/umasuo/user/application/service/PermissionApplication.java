@@ -23,7 +23,7 @@ public class PermissionApplication {
   /**
    * Logger.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(PermissionApplication.class);
+  private static final Logger logger = LoggerFactory.getLogger(PermissionApplication.class);
 
   /**
    * The Developer user service.
@@ -78,12 +78,9 @@ public class PermissionApplication {
    */
   private DeveloperUser getDeveloperUser(String userId, String applicantId, String acceptorId) {
     DeveloperUser developerUser = developerUserService.getUserById(userId);
-    if (developerUser == null) {
-      LOG.debug("Can not find user: {}.", userId);
-      throw new NotExistException("User not exist");
-    }
+
     if (!developerUser.getDeveloperId().equals(applicantId)) {
-      LOG.debug("Applicant: {} do not have the user: {}.", applicantId, userId);
+      logger.debug("Applicant: {} do not have the user: {}.", applicantId, userId);
       throw new NotExistException("Applicant do not have the user");
     }
 
@@ -91,7 +88,7 @@ public class PermissionApplication {
         developerUserService.getUserByPlatform(developerUser.getPUid(), acceptorId);
 
     if (user == null) {
-      LOG.debug("Acceptor: {} do not have the user: {} from applicant: {}.",
+      logger.debug("Acceptor: {} do not have the user: {} from applicant: {}.",
           acceptorId, userId, applicantId);
       throw new NotExistException("Acceptor do not have the user");
     }

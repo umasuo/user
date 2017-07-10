@@ -11,6 +11,10 @@ public class Router {
    */
   public static final String USER_ROOT = VERSION + "/users";
 
+  /**
+   * user root.
+   */
+  public static final String USER_WITH_ID = VERSION + "/users/{id}";
 
   /**
    * login.
