@@ -3,6 +3,7 @@ package com.umasuo.user.application.dto.mapper;
 import com.umasuo.user.application.dto.UserView;
 import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.domain.model.PlatformUser;
+import com.umasuo.user.domain.model.UserDetailInfo;
 
 /**
  * Created by umasuo on 17/3/9.
@@ -36,6 +37,8 @@ public final class UserViewMapper {
         view.setAge(dUser.getUserDetail().getAge());
         view.setIcon(dUser.getUserDetail().getIcon());
         view.setName(dUser.getUserDetail().getName());
+        view.setCountry(dUser.getUserDetail().getCountry());
+        view.setSignature(dUser.getUserDetail().getSignature());
       }
     }
     return view;
@@ -43,6 +46,11 @@ public final class UserViewMapper {
 
   public static void copyValue(PlatformUser pUser, DeveloperUser dUser, UserView userView) {
     pUser.setEmail(userView.getEmail());
+
+    if (dUser.getUserDetail() == null) {
+      UserDetailInfo userDetailInfo = new UserDetailInfo();
+      dUser.setUserDetail(userDetailInfo);
+    }
 
     dUser.getUserDetail().setAge(userView.getAge());
     dUser.getUserDetail().setCountry(userView.getCountry());

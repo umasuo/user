@@ -55,9 +55,10 @@ public class UserController {
   @PutMapping(Router.USER_WITH_ID)
   public UserView updateUserInfo(@PathVariable String id, @RequestBody UserView userView) {
     logger.info("Enter. userId: {}, userView: {}.", id, userView);
-    
+
     UserView updated = userApplication.update(id, userView);
 
+    logger.info("Exit. userView: {}.", updated);
     return updated;
   }
 }
