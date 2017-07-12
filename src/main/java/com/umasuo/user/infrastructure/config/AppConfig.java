@@ -33,7 +33,7 @@ public class AppConfig {
    * message broker's port
    */
   @Value("${message-broker.port:1883}")
-  public long msgBrokerPort;
+  public int msgBrokerPort;
 
   /**
    * super user's username for message broker.

@@ -63,8 +63,11 @@ public class MessageApplication implements CommandLineRunner {
     mqtt = new MQTT();
     mqtt.setUserName(appConfig.getUsername());
     mqtt.setPassword(appConfig.getPassword());
-    connection = mqtt.blockingConnection();
+
     try {
+      mqtt.setHost(appConfig.getMsgBrokerHost(),appConfig.getMsgBrokerPort());
+
+      connection = mqtt.blockingConnection();
       connection.connect();
       logger.info("Connect to message broker: " + appConfig.getMsgBrokerHost());
     } catch (Exception e) {
