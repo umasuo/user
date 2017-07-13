@@ -49,7 +49,7 @@ public class ReportController {
   }
 
   /**
-   * Gets report by tim.
+   * Gets one developer's report by time.
    *
    * @param developerId the developer id
    * @param startTime   the start time
