@@ -35,3 +35,10 @@ sms:
 device:
   service:
     url: http://localhost:8806/devices/
+
+message:
+  broker:
+    host: 127.0.0.1
+    port: 1883
+    username: umasuo
+    password: password

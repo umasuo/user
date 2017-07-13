@@ -1,13 +1,13 @@
 package com.umasuo.user.application.service;
 
-import com.sun.javafx.binding.StringFormatter;
+import static com.yunpian.sdk.util.HttpUtil.post;
+
 import com.umasuo.user.infrastructure.util.SmsUrlUtils;
-import com.yunpian.sdk.YunpianClient;
 import com.yunpian.sdk.YunpianException;
-import com.yunpian.sdk.service.SmsOperator;
-import com.yunpian.sdk.service.YunpianRestClient;
+
 import lombok.Getter;
 import lombok.Setter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.yunpian.sdk.util.HttpUtil.post;
-import static org.aspectj.bridge.Version.text;
 
 /**
  * Service for Sms.
@@ -65,6 +62,6 @@ public class SmsService {
    * @return string
    */
   private String createSmsText(String validationCode) {
-    return StringFormatter.format("【伊娃App】您的验证码是%s。如非本人操作，请忽略本短信", validationCode).getValue();
+    return String.format("【伊娃App】您的验证码是%s。如非本人操作，请忽略本短信", validationCode);
   }
 }
