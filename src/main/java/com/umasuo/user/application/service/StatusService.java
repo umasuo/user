@@ -82,6 +82,10 @@ public class StatusService {
       return false;
     }
 
+    if (session == null) {
+      return false;
+    }
+
     // 检查传入token是否合法
     jwtUtil.parseToken(tokenStr);
 
