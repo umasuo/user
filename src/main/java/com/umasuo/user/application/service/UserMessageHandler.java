@@ -22,6 +22,8 @@ public class UserMessageHandler {
    */
   public boolean handler(String deviceId, String content) {
 
+    // TODO: 17/7/14 定义用户端能够处理的消息
+
     //1 通过deviceId 获取其public key
     //2 通过public key解密content
     //3 根据格式解析content

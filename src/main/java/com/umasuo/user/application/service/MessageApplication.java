@@ -4,7 +4,6 @@ import com.umasuo.user.infrastructure.config.AppConfig;
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Message;
-import org.fusesource.mqtt.client.QoS;
 import org.fusesource.mqtt.client.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +35,17 @@ public class MessageApplication implements CommandLineRunner {
   private static final String DEVICE_TOPIC_SUB_PREFIX = "device/sub/";
   private static final String DEVICE_TOPIC_PUB_PREFIX = "device/pub/";
 
+  private static final String USER_TOPIC_SUB_PREFIX = "user/sub/";
+  private static final String USER_TOPIC_PUB_PREFIX = "user/pub/";
+
   private List<Topic> topics = new ArrayList<>();
+
   /**
    * redis ops.
    */
   private transient StringRedisTemplate redisTemplate;
 
-  private transient UserMessageHandler deviceMessageHandler;
+  private transient UserMessageHandler userMessageHandler;
 
 
   /**
@@ -56,7 +59,7 @@ public class MessageApplication implements CommandLineRunner {
                             AppConfig appConfig) {
     this.appConfig = appConfig;
     this.redisTemplate = redisTemplate;
-    this.deviceMessageHandler = deviceMessageHandler;
+    this.userMessageHandler = deviceMessageHandler;
     redisTemplate.boundHashOps(USERNAME_PREFIX + appConfig.getUsername()).put("password",
         appConfig.getPassword());
 
@@ -65,32 +68,13 @@ public class MessageApplication implements CommandLineRunner {
     mqtt.setPassword(appConfig.getPassword());
 
     try {
-      mqtt.setHost(appConfig.getMsgBrokerHost(),appConfig.getMsgBrokerPort());
+      mqtt.setHost(appConfig.getMsgBrokerHost(), appConfig.getMsgBrokerPort());
 
       connection = mqtt.blockingConnection();
       connection.connect();
       logger.info("Connect to message broker: " + appConfig.getMsgBrokerHost());
     } catch (Exception e) {
       logger.error("Connect message broker failed.", e);
-    }
-  }
-
-  /**
-   * 发布消息.
-   *
-   * @param topic   topic，如果是设备的topic，则为topicID
-   * @param payload 内容
-   * @param qos     消息发送等级（0，1，2）
-   * @param retain  是否保持在broker上
-   */
-  public void publish(final String topic, final byte[] payload, final QoS qos, final boolean
-      retain) {
-    logger.debug("Enter. topic: {}, payload: {}, qos: {}, retain: {}.", topic, new String
-        (payload), qos, retain);
-    try {
-      connection.publish(topic, payload, qos, retain);
-    } catch (Exception e) {
-      logger.error("publish message failed.", e);
     }
   }
 
@@ -107,10 +91,10 @@ public class MessageApplication implements CommandLineRunner {
       Message message = connection.receive();
       if (message != null) {
         String topic = message.getTopic();//从这里可以获得UserId，
-        String deviceId = topic.substring(DEVICE_TOPIC_PUB_PREFIX.length() - 1);
+        String userId = topic.substring(USER_TOPIC_PUB_PREFIX.length() - 1);
         String payload = new String(message.getPayload());//从这里可以获取device上发的命令和数据
 
-        boolean handlerResult = deviceMessageHandler.handler(deviceId, payload);
+        boolean handlerResult = userMessageHandler.handler(userId, payload);
         if (handlerResult) {
           message.ack();
         }
