@@ -1,12 +1,13 @@
 package com.umasuo.user.application.dto;
 
-import lombok.Data;
+import lombok.ToString;
 
 import java.io.Serializable;
 
 /**
  * Created by umasuo on 17/6/19.
  */
+@ToString
 public class LoginStatus implements Serializable {
 
   private static final long serialVersionUID = 593519935544850012L;
