@@ -199,7 +199,7 @@ public class SignInService {
     String validationCode = signIn.getValidationCode();
 
     String key = String.format(RedisUtils.PHONE_CODE_KEY_FORMAT, phoneNumber, validationCode);
-    String cachedCode = redisTemplate.opsForValue().get(key).toString();
+    String cachedCode = (String) redisTemplate.opsForValue().get(key);
     if (StringUtils.isBlank(cachedCode)) {
       logger.debug("Can not find validation code by phone: {}.", phoneNumber);
       throw new NotExistException("Validation code not exist.");
