@@ -14,11 +14,16 @@ public class UserSession implements Serializable {
 
   private UserView userView;
 
-  private Token token;
+  private String token;
 
-  public UserSession(UserView userView, Token token) {
+  private long lastActiveTime;
+
+  private long expireIn = 30 * 24 * 60 * 60 * 1000;//30 天过期
+
+  public UserSession(UserView userView, String token) {
     this.userView = userView;
     this.token = token;
+    lastActiveTime = System.currentTimeMillis();
   }
 
   public UserView getUserView() {
@@ -29,11 +34,27 @@ public class UserSession implements Serializable {
     this.userView = userView;
   }
 
-  public Token getToken() {
+  public String getToken() {
     return token;
   }
 
-  public void setToken(Token token) {
+  public void setToken(String token) {
     this.token = token;
+  }
+
+  public long getLastActiveTime() {
+    return lastActiveTime;
+  }
+
+  public void setLastActiveTime(long lastActiveTime) {
+    this.lastActiveTime = lastActiveTime;
+  }
+
+  public long getExpireIn() {
+    return expireIn;
+  }
+
+  public void setExpireIn(long expireIn) {
+    this.expireIn = expireIn;
   }
 }

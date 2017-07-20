@@ -4,16 +4,13 @@ import com.umasuo.user.infrastructure.config.AppConfig;
 import org.fusesource.mqtt.client.BlockingConnection;
 import org.fusesource.mqtt.client.MQTT;
 import org.fusesource.mqtt.client.Message;
-import org.fusesource.mqtt.client.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by umasuo on 17/6/27.
@@ -25,12 +22,6 @@ public class MessageApplication implements CommandLineRunner {
    */
   private static final Logger logger = LoggerFactory.getLogger(MessageApplication.class);
 
-  private transient AppConfig appConfig;
-
-  private transient MQTT mqtt;
-
-  private transient BlockingConnection connection;
-
   private static final String USERNAME_PREFIX = "mqtt_user:";
   private static final String DEVICE_TOPIC_SUB_PREFIX = "device/sub/";
   private static final String DEVICE_TOPIC_PUB_PREFIX = "device/pub/";
@@ -38,20 +29,18 @@ public class MessageApplication implements CommandLineRunner {
   private static final String USER_TOPIC_SUB_PREFIX = "user/sub/";
   private static final String USER_TOPIC_PUB_PREFIX = "user/pub/";
 
-  private List<Topic> topics = new ArrayList<>();
+  private transient AppConfig appConfig;
 
-  /**
-   * redis ops.
-   */
+  private transient MQTT mqtt;
+
+  private transient BlockingConnection connection;
+
   private transient StringRedisTemplate redisTemplate;
 
   private transient UserMessageHandler userMessageHandler;
 
-
   /**
    * 初始化和message broker的连接.
-   *
-   * @param appConfig 系统配置
    */
   @Autowired
   public MessageApplication(StringRedisTemplate redisTemplate,
@@ -79,6 +68,17 @@ public class MessageApplication implements CommandLineRunner {
   }
 
   /**
+   * 添加broker user.
+   */
+  public void addMqttUser(String userId, String token) {
+    logger.debug("Add broker user: {}.", userId);
+    BoundHashOperations setOperations = redisTemplate.boundHashOps(USERNAME_PREFIX + userId);
+    //TODO MQTT 的的密码需要采用加密模式
+    //TODO 这里其实需要考虑redis失效的场景
+    setOperations.put("password", token);//为用户的APP添加用户名密码
+  }
+
+  /**
    * Service 启动时自动接受
    *
    * @param args
@@ -91,10 +91,7 @@ public class MessageApplication implements CommandLineRunner {
       Message message = connection.receive();
       if (message != null) {
         String topic = message.getTopic();//从这里可以获得UserId，
-        String userId = topic.substring(USER_TOPIC_PUB_PREFIX.length() - 1);
-        String payload = new String(message.getPayload());//从这里可以获取device上发的命令和数据
-
-        boolean handlerResult = userMessageHandler.handler(userId, payload);
+        boolean handlerResult = userMessageHandler.handler(topic, new String(message.getPayload()));
         if (handlerResult) {
           message.ack();
         }

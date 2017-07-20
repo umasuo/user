@@ -23,6 +23,7 @@ public class UserMessageHandler {
   public boolean handler(String deviceId, String content) {
 
     // TODO: 17/7/14 定义用户端能够处理的消息
+    // app 与云端的所有通采用API的方式，APP与设备的通信需要采用MQTT，服务端不处理MQTT中的消息，除非下发通知之类的下发类操作.
 
     //1 通过deviceId 获取其public key
     //2 通过public key解密content
@@ -30,6 +31,6 @@ public class UserMessageHandler {
     //4 执行对应的服务
     //5 正确处理之后，返回true，否则返回false，以供再次处理消息
 
-    return true;
+    return false;
   }
 }

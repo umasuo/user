@@ -11,5 +11,5 @@ public final class RedisUtils {
 
   public static final String USER_KEY_FORMAT = "user:%s:%s";
 
-  public static final String USER_TOKEN_KEY = "token";
+  public static final String USER_SESSION_KEY = "session";
 }

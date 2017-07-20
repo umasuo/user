@@ -1,8 +1,5 @@
 package com.umasuo.user.application.service;
 
-import com.umasuo.authentication.JwtUtil;
-import com.umasuo.authentication.Token;
-import com.umasuo.authentication.TokenType;
 import com.umasuo.exception.NotExistException;
 import com.umasuo.exception.ParametersException;
 import com.umasuo.user.application.dto.QuickSignIn;
@@ -17,8 +14,6 @@ import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
 import com.umasuo.user.infrastructure.config.AppConfig;
 import com.umasuo.user.infrastructure.util.RedisUtils;
-import com.umasuo.user.infrastructure.util.TokenUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,12 +42,6 @@ public class SignInService {
   private transient RedisTemplate redisTemplate;
 
   /**
-   * JWT(json web token) update
-   */
-  @Autowired
-  private transient JwtUtil jwtUtil;
-
-  /**
    * configs.
    */
   @Autowired
@@ -68,6 +58,9 @@ public class SignInService {
    */
   @Autowired
   private transient DeveloperUserService developerUserService;
+
+  @Autowired
+  private MessageApplication messageApplication;
 
   /**
    * sign in.
@@ -123,7 +116,7 @@ public class SignInService {
    * SignUp.
    *
    * @param signUp sign up info
-   * @param pUser PlatformUser entity
+   * @param pUser  PlatformUser entity
    * @return SignInResult
    */
   private SignInResult signUpDeveloperUser(QuickSignIn signUp, PlatformUser pUser) {
@@ -148,11 +141,9 @@ public class SignInService {
 
     UserView userView = UserViewMapper.toUserView(pUser, dUser);
 
-    Token token = TokenUtil.generateToken(TokenType.CUSTOMER, dUser.getId(), appConfig
-        .getTokenExpiredIn(), null);
+    String token = UUID.randomUUID().toString();
 
-    String tokenString = jwtUtil.generateToken(token);
-    SignInResult signInResult = new SignInResult(userView, tokenString);
+    SignInResult signInResult = new SignInResult(userView, token);
 
     cacheSignInStatus(userView, token);
 
@@ -180,7 +171,7 @@ public class SignInService {
   /**
    * create a new DeveloperUser entity.
    *
-   * @param signUp the signUpDeveloperUser info.
+   * @param signUp       the signUpDeveloperUser info.
    * @param platformUser the PlatformUser entity.
    * @return DeveloperUser
    */
@@ -228,7 +219,7 @@ public class SignInService {
   /**
    * cache the user's sign in status and info.
    */
-  private void cacheSignInStatus(UserView userView, Token token) {
+  private void cacheSignInStatus(UserView userView, String token) {
     logger.debug("Enter. userView: {}, token: {}.", userView, token);
 
     String userKey = String.format(RedisUtils.USER_KEY_FORMAT,
@@ -237,9 +228,10 @@ public class SignInService {
     UserSession session = new UserSession(userView, token);
 
     //cache the result
-    redisTemplate.boundHashOps(userKey).put(RedisUtils.USER_TOKEN_KEY, session);
-    redisTemplate.expire(userKey, 7, TimeUnit.DAYS);//7天后过期
-
+    redisTemplate.boundHashOps(userKey).put(RedisUtils.USER_SESSION_KEY, session);
+    redisTemplate.expire(userKey, 30, TimeUnit.DAYS);//7天后过期
+    messageApplication.addMqttUser(userView.getUserId(), token);
     logger.debug("Exit.");
   }
+
 }
