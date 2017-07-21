@@ -18,7 +18,7 @@ public class UserSession implements Serializable {
 
   private long lastActiveTime;
 
-  private long expireIn = 30 * 24 * 60 * 60 * 1000;//30 天过期
+  private static long expireIn = 30 * 24 * 60 * 60 * 1000L;//30 天过期
 
   public UserSession(UserView userView, String token) {
     this.userView = userView;

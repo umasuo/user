@@ -34,16 +34,17 @@ public class StatusController {
 
   /**
    * 用户登录状态检查
-   * @param id 用户ID
+   *
+   * @param id          用户ID
    * @param developerId 用户所属开发者ID
-   * @param token token
+   * @param token       token
    * @return LoginStatus
    */
   @GetMapping(value = Router.USER_SIGN_IN_STATUS)
   public LoginStatus signInStatus(@PathVariable @Valid @NotNull String id,
                                   @RequestHeader @Valid @NotNull String developerId,
                                   @RequestHeader @Valid @NotNull String token) {
-    logger.info("Enter. id: {}.", id);
+    logger.info("Enter. id: {}, developerId: {}, token: {}.", id, developerId, token);
     //todo developer id 不需要了
     LoginStatus status = statusService.checkSignInStatus(id, developerId, token);
 

@@ -79,7 +79,7 @@ public class RegisterService {
 
     DeveloperUser dUser = developerUserService.getUserByPlatform(pUser.getId(), register
         .getDeveloperId());
-
+    // 如果这个用户已经存在，也不用管，就当作是短信验证码登录了.
     if (dUser == null) {
       dUser = createDeveloperUser(pUser.getId(), register.getDeveloperId(), register.getPassword());
     }
