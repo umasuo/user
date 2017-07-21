@@ -44,7 +44,7 @@ public class Router {
   /**
    * logout.
    */
-  public static final String USER_SIGN_OUT = USER_ROOT + "/signout";
+  public static final String USER_SIGN_OUT = USER_ROOT + "/{id}/signout";
 
   /**
    * sign up.

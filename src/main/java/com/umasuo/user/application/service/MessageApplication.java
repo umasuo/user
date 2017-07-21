@@ -78,6 +78,12 @@ public class MessageApplication implements CommandLineRunner {
     setOperations.put("password", token);//为用户的APP添加用户名密码
   }
 
+  public void deleteMqttUser(String userId) {
+    logger.debug("Delete broker userId: {}.", userId);
+    redisTemplate.delete(USERNAME_PREFIX + userId);
+
+  }
+
   /**
    * Service 启动时自动接受
    *
