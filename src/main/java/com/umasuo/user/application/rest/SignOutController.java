@@ -5,6 +5,7 @@ import com.umasuo.user.infrastructure.Router;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -33,7 +34,7 @@ public class SignOutController {
    * @param userId
    * @param developerId
    */
-  @PostMapping(value = Router.USER_SIGN_OUT)
+  @DeleteMapping(value = Router.USER_SIGN_OUT)
   public void quickSignIn(@PathVariable String userId, @RequestHeader String developerId) {
     logger.info("Enter. userId: {}, developerId: {}.", userId, developerId);
 
