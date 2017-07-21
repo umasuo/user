@@ -1,6 +1,7 @@
 package com.umasuo.user.application.rest;
 
 import com.umasuo.user.application.dto.QuickSignIn;
+import com.umasuo.user.application.dto.SignIn;
 import com.umasuo.user.application.dto.SignInResult;
 import com.umasuo.user.application.service.SignInService;
 import com.umasuo.user.infrastructure.Router;
@@ -42,6 +43,23 @@ public class SignInController {
     logger.info("Enter. quickSignIn: {}", signIn);
 
     SignInResult signInResult = signInService.quickSignIn(signIn);
+
+    logger.info("Exit. signInResult: {}", signInResult);
+    return signInResult;
+  }
+
+
+  /**
+   * user sign in with phone and password.
+   *
+   * @param signIn the sign in
+   * @return sign in result
+   */
+  @PostMapping(value = Router.USER_SIGN_IN_PWD)
+  public SignInResult signin(@RequestBody @Valid SignIn signIn) {
+    logger.info("Enter. quickSignIn: {}", signIn);
+
+    SignInResult signInResult = signInService.signIn(signIn);
 
     logger.info("Exit. signInResult: {}", signInResult);
     return signInResult;

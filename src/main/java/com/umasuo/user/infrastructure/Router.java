@@ -22,6 +22,21 @@ public class Router {
   public static final String USER_SIGN_IN = USER_ROOT + "/signin";
 
   /**
+   * login with phone and password.
+   */
+  public static final String USER_SIGN_IN_PWD = USER_ROOT + "/login";
+
+  /**
+   * register.
+   */
+  public static final String USER_REGISTER = USER_ROOT + "/register";
+
+  /**
+   * register.
+   */
+  public static final String USER_RESET_PASSWORD = USER_ROOT + "/resetPassword";
+
+  /**
    * login.
    */
   public static final String USER_SIGN_IN_STATUS = USER_ROOT + "/{id}/status";

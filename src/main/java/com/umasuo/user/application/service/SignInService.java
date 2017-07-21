@@ -1,8 +1,8 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.exception.NotExistException;
-import com.umasuo.exception.ParametersException;
 import com.umasuo.user.application.dto.QuickSignIn;
+import com.umasuo.user.application.dto.SignIn;
 import com.umasuo.user.application.dto.SignInResult;
 import com.umasuo.user.application.dto.UserSession;
 import com.umasuo.user.application.dto.UserView;
@@ -14,7 +14,6 @@ import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
 import com.umasuo.user.infrastructure.config.AppConfig;
 import com.umasuo.user.infrastructure.util.RedisUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +61,9 @@ public class SignInService {
   @Autowired
   private MessageApplication messageApplication;
 
+  @Autowired
+  private ValidationService validationService;
+
   /**
    * sign in.
    * TODO 事务性!
@@ -74,58 +76,49 @@ public class SignInService {
 
     SignInResult result;
 
-    checkValidationCode(signIn);
+    validationService.validateCode(signIn.getPhone(), signIn.getValidationCode());
 
     PlatformUser pUser = platformUserService.getWithPhone(signIn.getPhone());
 
     if (pUser == null) {
-      result = signUpPlatformUser(signIn);
-    } else {
-      DeveloperUser dUser =
-          developerUserService.getUserByPlatform(pUser.getId(), signIn.getDeveloperId());
-
-      if (dUser == null) {
-        result = signUpDeveloperUser(signIn, pUser);
-      } else {
-        result = signIn(pUser, dUser);
-      }
+      pUser = createPlatformUser(signIn);
     }
+
+    DeveloperUser dUser = developerUserService.getUserByPlatform(pUser.getId(), signIn
+        .getDeveloperId());
+    if (dUser == null) {
+      dUser = createDeveloperUser(signIn, pUser);
+    }
+
+    result = signIn(pUser, dUser);
 
     logger.debug("Exit. SignInResult: {}.", result);
     return result;
   }
 
   /**
-   * SignUp a new PlatformUser.
+   * 手机密码登录.
    *
-   * @param signUp the signUp info
-   * @return SignInResult
+   * @param signIn
+   * @return
    */
-  private SignInResult signUpPlatformUser(QuickSignIn signUp) {
-    logger.debug("Enter. signUp: {}.", signUp);
+  public SignInResult signIn(SignIn signIn) {
+    logger.debug("Enter. signIn: {}.", signIn);
 
-    PlatformUser savedPlatformUser = createPlatformUser(signUp);
-    SignInResult result = signUpDeveloperUser(signUp, savedPlatformUser);
+    PlatformUser pUser = platformUserService.getWithPhone(signIn.getPhone());
+    if (pUser == null) {
+      throw new NotExistException("User not exit for phone: " + signIn.getPhone());
+    }
 
-    logger.debug("Exit. signInResult: {}.", result);
+    DeveloperUser dUser = developerUserService.getUserByPlatform(pUser.getId(), signIn
+        .getDeveloperId());
+    if (dUser == null) {
+      throw new NotExistException("User not exit for developer: " + signIn.getDeveloperId());
+    }
 
-    return result;
-  }
+    SignInResult result = signIn(pUser, dUser);
 
-  /**
-   * SignUp.
-   *
-   * @param signUp sign up info
-   * @param pUser  PlatformUser entity
-   * @return SignInResult
-   */
-  private SignInResult signUpDeveloperUser(QuickSignIn signUp, PlatformUser pUser) {
-    logger.debug("Enter. signUp: {}, platformUser: {}.", signUp, pUser);
-
-    DeveloperUser savedDeveloperUser = createDeveloperUser(signUp, pUser);
-    SignInResult result = signIn(pUser, savedDeveloperUser);
-
-    logger.debug("Exit. signInResult: {}.", result);
+    logger.debug("Exit. result: {}.", result);
     return result;
   }
 
@@ -136,7 +129,7 @@ public class SignInService {
    * @param dUser the DeveloperUser entity.
    * @return SignInResult
    */
-  private SignInResult signIn(PlatformUser pUser, DeveloperUser dUser) {
+  public SignInResult signIn(PlatformUser pUser, DeveloperUser dUser) {
     logger.debug("Enter. pUser: {}, dUser: {}.", pUser, dUser);
 
     UserView userView = UserViewMapper.toUserView(pUser, dUser);
@@ -185,35 +178,6 @@ public class SignInService {
 
     logger.debug("Exit. savedDpUser: {}.", savedUser);
     return savedUser;
-  }
-
-  /**
-   * check the ValidationCode.
-   *
-   * @param signIn the signIn info
-   */
-  private void checkValidationCode(QuickSignIn signIn) {
-    logger.debug("Enter. signIn: {}.", signIn);
-
-    String phoneNumber = signIn.getPhone();
-    String validationCode = signIn.getValidationCode();
-
-    String key = String.format(RedisUtils.PHONE_CODE_KEY_FORMAT, phoneNumber, validationCode);
-    String cachedCode = (String) redisTemplate.opsForValue().get(key);
-    if (StringUtils.isBlank(cachedCode)) {
-      logger.debug("Can not find validation code by phone: {}.", phoneNumber);
-      throw new NotExistException("Validation code not exist.");
-    }
-
-    if (!cachedCode.equals(validationCode)) {
-      logger.debug("Validation code not match. request code: {}, basic code: {}.",
-          validationCode, cachedCode);
-      throw new ParametersException("Validation code not match");
-    }
-
-    redisTemplate.delete(key);
-
-    logger.debug("Exit.");
   }
 
   /**

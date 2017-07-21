@@ -1,20 +1,18 @@
 package com.umasuo.user.application.service;
 
 import com.google.common.collect.Lists;
-import com.umasuo.user.application.dto.GroupView;
+import com.umasuo.exception.NotExistException;
+import com.umasuo.user.application.dto.ResetPassword;
+import com.umasuo.user.application.dto.SignInResult;
 import com.umasuo.user.application.dto.UserOperationData;
 import com.umasuo.user.application.dto.UserView;
-import com.umasuo.user.application.dto.mapper.GroupMapper;
 import com.umasuo.user.application.dto.mapper.OperationDataMapper;
 import com.umasuo.user.application.dto.mapper.UserViewMapper;
 import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
-
-import com.umasuo.user.infrastructure.update.UpdateAction;
-import com.umasuo.user.infrastructure.update.DeveloperUserUpdater;
-import com.umasuo.user.infrastructure.validator.VersionValidator;
+import com.umasuo.user.infrastructure.util.PasswordUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +40,13 @@ public class UserApplication {
 
   @Autowired
   private transient DeveloperUserService developerUserService;
+
+  @Autowired
+  private transient ValidationService validationService;
+
+  @Autowired
+  private transient SignInService signInService;
+
 
   public List<UserOperationData> getUsers(String developerId, String userId, String phone) {
     logger.info("Enter. developerId: {}, userId: {}, phone: {}.", developerId, userId, phone);
@@ -88,7 +93,7 @@ public class UserApplication {
     PlatformUser pUser = platformUserService.getWithId(dUser.getPUid());
 
     UserViewMapper.copyValue(pUser, dUser, userView);
-    
+
     pUser = platformUserService.save(pUser);
     dUser = developerUserService.save(dUser);
 
@@ -96,4 +101,33 @@ public class UserApplication {
     return UserViewMapper.toUserView(pUser, dUser);
   }
 
+  /**
+   * 重置用户密码.
+   *
+   * @param resetPassword
+   * @return
+   */
+  public SignInResult resetPassword(ResetPassword resetPassword) {
+    logger.debug("Enter. resetPassword: {}.", resetPassword);
+
+    validationService.validateCode(resetPassword.getPhone(), resetPassword.getSmsCode());
+    PlatformUser pUser = platformUserService.getWithPhone(resetPassword.getPhone());
+    if (pUser == null) {
+      throw new NotExistException("User not exit for phone: " + resetPassword.getPhone());
+    }
+
+    DeveloperUser dUser = developerUserService.getUserByPlatform(pUser.getPhone(), resetPassword
+        .getDeveloperId());
+    if (dUser == null) {
+      throw new NotExistException("User not exit for developer: " + resetPassword.getDeveloperId());
+    }
+
+    dUser.setPassword(PasswordUtil.hashPassword(resetPassword.getPassword()));
+    developerUserService.save(dUser);
+
+    SignInResult result = signInService.signIn(pUser, dUser);
+
+    logger.debug("Exit. result: {}.", result);
+    return result;
+  }
 }

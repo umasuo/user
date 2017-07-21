@@ -14,7 +14,7 @@ public class ReportView {
   private String developerId;
 
   /**
-   * The Register number.
+   * The RegisterInfo number.
    */
   private int increaseNumber;
 

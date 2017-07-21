@@ -1,10 +1,13 @@
 package com.umasuo.user.application.service;
 
 import com.umasuo.exception.AlreadyExistException;
+import com.umasuo.exception.NotExistException;
+import com.umasuo.exception.ParametersException;
 import com.umasuo.user.infrastructure.util.RedisUtils;
 import com.umasuo.user.infrastructure.util.ValidateCodeGenerator;
 import com.yunpian.sdk.YunpianException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +66,32 @@ public class ValidationService {
     redisTemplate.opsForValue().set(key, "", 60, TimeUnit.SECONDS);
 
     logger.debug("Exit.");
+  }
+
+
+  /**
+   * 检查code是否正确.
+   *
+   * @param phone
+   * @param smsCode
+   * @return
+   */
+  public void validateCode(String phone, String smsCode) {
+
+    String key = String.format(RedisUtils.PHONE_CODE_KEY_FORMAT, phone, smsCode);
+    String cachedCode = (String) redisTemplate.opsForValue().get(key);
+    if (StringUtils.isBlank(cachedCode)) {
+      logger.debug("Can not find validation code by phone: {}.", phone);
+      throw new NotExistException("Validation code not exist.");
+    }
+
+    if (!cachedCode.equals(smsCode)) {
+      logger.debug("Validation code not match. request code: {}, basic code: {}.",
+          smsCode, cachedCode);
+      throw new ParametersException("Validation code not match");
+    }
+
+    redisTemplate.delete(key);
   }
 
   /**

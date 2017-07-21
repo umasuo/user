@@ -1,10 +1,11 @@
 package com.umasuo.user.application.rest;
 
+import com.umasuo.user.application.dto.ResetPassword;
+import com.umasuo.user.application.dto.SignInResult;
 import com.umasuo.user.application.dto.UserOperationData;
 import com.umasuo.user.application.dto.UserView;
 import com.umasuo.user.application.service.UserApplication;
 import com.umasuo.user.infrastructure.Router;
-import com.umasuo.user.infrastructure.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +61,22 @@ public class UserController {
 
     logger.info("Exit. userView: {}.", updated);
     return updated;
+  }
+
+
+  /**
+   * 重置密码
+   *
+   * @param resetPassword
+   * @return
+   */
+  @PutMapping(Router.USER_RESET_PASSWORD)
+  public SignInResult resetPassword(ResetPassword resetPassword) {
+    logger.info("Enter. resetPassword: {}", resetPassword);
+
+    SignInResult signInResult = userApplication.resetPassword(resetPassword);
+
+    logger.info("Exit. signInResult: {}", signInResult);
+    return signInResult;
   }
 }
