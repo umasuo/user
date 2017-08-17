@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/umasuo/user.svg?branch=master)](https://travis-ci.org/umasuo/user)
 # user
 All User is unique in the platform.
 Every developer got it's own users, the they are totally segregated.
