@@ -130,4 +130,14 @@ public class UserApplication {
     logger.debug("Exit. result: {}.", result);
     return result;
   }
+
+  public Long countUsers() {
+    logger.debug("Enter.");
+
+    Long result = platformUserService.countUsers();
+
+    logger.debug("Exit. platform user count: {}.", result);
+
+    return result;
+  }
 }
