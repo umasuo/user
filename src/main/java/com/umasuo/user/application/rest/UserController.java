@@ -79,4 +79,15 @@ public class UserController {
     logger.info("Exit. signInResult: {}", signInResult);
     return signInResult;
   }
+
+  @GetMapping("/v1/admin/users/count")
+  public Long countUsers() {
+    logger.info("Enter.");
+
+    Long result = userApplication.countUsers();
+
+    logger.info("Exit. user count: {}.", result);
+
+    return result;
+  }
 }

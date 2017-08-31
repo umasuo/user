@@ -147,4 +147,14 @@ public class PlatformUserService {
     logger.debug("Exit.");
     return pUser;
   }
+
+  public Long countUsers() {
+    logger.debug("Enter.");
+
+    Long count = repository.count();
+
+    logger.debug("Exit. platform user count: {}.", count);
+
+    return count;
+  }
 }
