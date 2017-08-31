@@ -6,7 +6,6 @@ import java.util.List;
 
 /**
  * View model for group.
- * Created by Davis on 17/5/27.
  */
 @Data
 public class GroupView {
@@ -26,6 +25,9 @@ public class GroupView {
    */
   private String developerId;
 
+  /**
+   * owner id.
+   */
   private String ownerId;
 
   /**

@@ -21,6 +21,10 @@ import javax.persistence.Table;
 @Data
 @EntityListeners(AuditingEntityListener.class)
 public class PlatformUser {
+
+  /**
+   * User id.
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")

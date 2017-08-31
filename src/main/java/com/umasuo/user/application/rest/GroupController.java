@@ -7,6 +7,7 @@ import com.umasuo.user.infrastructure.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,21 +29,21 @@ import static com.umasuo.user.infrastructure.Router.GROUP_WITH_ID;
 
 /**
  * Rest controller for group.
- * Created by Davis on 17/5/27.
  */
 @RestController
+@CrossOrigin
 public class GroupController {
 
   /**
    * Logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(GroupController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupController.class);
 
   /**
    * The Group application.
    */
   @Autowired
-  private GroupApplication groupApplication;
+  private transient GroupApplication groupApplication;
 
   /**
    * Create group.
@@ -54,12 +55,12 @@ public class GroupController {
   public GroupView create(@RequestBody @Valid GroupDraft groupDraft,
                           @RequestHeader String userId,
                           @RequestHeader String developerId) {
-    logger.info("Enter. groupDraft: {}, userId: {}, developerId: {}.", groupDraft, userId,
+    LOGGER.info("Enter. groupDraft: {}, userId: {}, developerId: {}.", groupDraft, userId,
         developerId);
 
     GroupView result = groupApplication.create(groupDraft, userId, developerId);
 
-    logger.info("Exit. groupView: {}.", result);
+    LOGGER.info("Exit. groupView: {}.", result);
     return result;
   }
 
@@ -73,12 +74,12 @@ public class GroupController {
   public void delete(@PathVariable(GROUP_ID) String groupId,
                      @RequestParam("version") Integer version,
                      @RequestHeader String developerId) {
-    logger.info("Enter. groupId: {}, version: {}, developerId: {}.", groupId, version, developerId);
+    LOGGER.info("Enter. groupId: {}, version: {}, developerId: {}.", groupId, version, developerId);
 
     //todo developer id 没用，而且这个接口是给user用的，userID没有
     groupApplication.delete(groupId, version);
 
-    logger.info("Exit");
+    LOGGER.info("Exit");
   }
 
 
@@ -93,12 +94,12 @@ public class GroupController {
   @PutMapping(GROUP_WITH_ID)
   public GroupView update(@PathVariable(GROUP_ID) String groupId,
                           @RequestBody @Valid UpdateRequest updateRequest) {
-    logger.info("Enter. groupId: {}, updateRequest: {}.", groupId, updateRequest);
+    LOGGER.info("Enter. groupId: {}, updateRequest: {}.", groupId, updateRequest);
 
     GroupView result = groupApplication
         .updateGroup(groupId, updateRequest.getVersion(), updateRequest.getActions());
 
-    logger.info("Exit. groupView: {}.", result);
+    LOGGER.info("Exit. groupView: {}.", result);
     return result;
   }
 
@@ -110,11 +111,11 @@ public class GroupController {
    */
   @GetMapping(GROUP_WITH_ID)
   public GroupView findOne(@PathVariable(GROUP_ID) String groupId) {
-    logger.info("Enter. groupId: {}.", groupId);
+    LOGGER.info("Enter. groupId: {}.", groupId);
 
     GroupView result = groupApplication.findOne(groupId);
 
-    logger.info("Exit.");
+    LOGGER.info("Exit.");
 
     return result;
   }
@@ -127,11 +128,11 @@ public class GroupController {
    */
   @GetMapping(GROUP)
   public List<GroupView> findAll(@RequestParam(DEVELOPER_ID) String developerId) {
-    logger.info("Enter. developerId: {}.", developerId);
+    LOGGER.info("Enter. developerId: {}.", developerId);
 
     List<GroupView> result = groupApplication.findAll(developerId);
 
-    logger.info("Exit.");
+    LOGGER.info("Exit.");
 
     return result;
   }

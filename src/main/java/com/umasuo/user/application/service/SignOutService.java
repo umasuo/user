@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 public class SignOutService {
 
   /**
-   * logger.
+   * Logger.
    */
-  private final static Logger logger = LoggerFactory.getLogger(SignOutService.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(SignOutService.class);
 
   /**
    * redis ops.
@@ -37,14 +37,14 @@ public class SignOutService {
    * @param developerId
    */
   public void signOut(String userId, String developerId) {
-    logger.debug("Enter. userId: {}, developerId: {}.", userId, developerId);
+    LOGGER.debug("Enter. userId: {}, developerId: {}.", userId, developerId);
 
     String userKey = String.format(RedisUtils.USER_KEY_FORMAT, developerId, userId);
     redisTemplate.delete(userKey);
 
     messageApplication.deleteMqttUser(userId);
 
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
   }
 
 }

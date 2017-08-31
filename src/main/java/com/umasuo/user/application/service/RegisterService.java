@@ -6,12 +6,10 @@ import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
-import com.umasuo.user.infrastructure.config.AppConfig;
 import com.umasuo.user.infrastructure.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,21 +19,9 @@ import org.springframework.stereotype.Service;
 public class RegisterService {
 
   /**
-   * logger.
+   * Logger.
    */
-  private final static Logger logger = LoggerFactory.getLogger(RegisterService.class);
-
-  /**
-   * redis ops.
-   */
-  @Autowired
-  private transient RedisTemplate redisTemplate;
-
-  /**
-   * configs.
-   */
-  @Autowired
-  private transient AppConfig appConfig;
+  private final static Logger LOGGER = LoggerFactory.getLogger(RegisterService.class);
 
   /**
    * platform user service.
@@ -49,14 +35,17 @@ public class RegisterService {
   @Autowired
   private transient DeveloperUserService developerUserService;
 
+  /**
+   * Sign in service.
+   */
   @Autowired
-  private MessageApplication messageApplication;
+  private transient SignInService signInService;
 
+  /**
+   * Validation service.
+   */
   @Autowired
-  private SignInService signInService;
-
-  @Autowired
-  private ValidationService validationService;
+  private transient ValidationService validationService;
 
   /**
    * register.
@@ -66,7 +55,7 @@ public class RegisterService {
    * @return the sign in result
    */
   public SignInResult register(RegisterInfo register) {
-    logger.debug("Enter. register: {}", register);
+    LOGGER.debug("Enter. register: {}", register);
 
 
     validationService.validateCode(register.getPhone(), register.getSmsCode());
@@ -78,7 +67,7 @@ public class RegisterService {
     }
 
     DeveloperUser dUser = developerUserService.getUserByPlatform(pUser.getId(), register
-        .getDeveloperId());
+      .getDeveloperId());
     // 如果这个用户已经存在，也不用管，就当作是短信验证码登录了.
     if (dUser == null) {
       dUser = createDeveloperUser(pUser.getId(), register.getDeveloperId(), register.getPassword());
@@ -87,7 +76,7 @@ public class RegisterService {
     SignInResult result = signInService.signIn(pUser, dUser);
 
 
-    logger.debug("Exit. SignInResult: {}.", result);
+    LOGGER.debug("Exit. SignInResult: {}.", result);
     return result;
   }
 

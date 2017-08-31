@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 /**
- * Created by Davis on 17/7/7.
+ * User application.
  */
 @Service
 public class UserApplication {
@@ -33,23 +33,42 @@ public class UserApplication {
   /**
    * Logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(UserApplication.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserApplication.class);
 
+  /**
+   * Platform user service.
+   */
   @Autowired
   private transient PlatformUserService platformUserService;
 
+  /**
+   * Developer user service.
+   */
   @Autowired
   private transient DeveloperUserService developerUserService;
 
+  /**
+   * Validation service.
+   */
   @Autowired
   private transient ValidationService validationService;
 
+  /**
+   * Sign in service.
+   */
   @Autowired
   private transient SignInService signInService;
 
-
+  /**
+   * Get users.
+   *
+   * @param developerId
+   * @param userId
+   * @param phone
+   * @return
+   */
   public List<UserOperationData> getUsers(String developerId, String userId, String phone) {
-    logger.info("Enter. developerId: {}, userId: {}, phone: {}.", developerId, userId, phone);
+    LOGGER.info("Enter. developerId: {}, userId: {}, phone: {}.", developerId, userId, phone);
 
     List<UserOperationData> result = Lists.newArrayList();
 
@@ -65,15 +84,21 @@ public class UserApplication {
       result = OperationDataMapper.merge(platformUsers, developerUsers);
     }
 
-    logger.info("Exit. user size: {}.", result.size());
+    LOGGER.info("Exit. user size: {}.", result.size());
 
     return result;
   }
 
+  /**
+   * Get Platform user ids.
+   *
+   * @param developerUsers
+   * @return
+   */
   private List<String> getPlatformUserIds(List<DeveloperUser> developerUsers) {
 
     List<String> result = developerUsers.stream()
-        .map(user -> user.getPUid()).collect(Collectors.toList());
+      .map(user -> user.getPUid()).collect(Collectors.toList());
 
     return result;
   }
@@ -87,7 +112,7 @@ public class UserApplication {
    */
   @Transactional
   public UserView update(String id, UserView userView) {
-    logger.debug("Enter. groupId: {}, version: {}, userView: {}.", id, userView);
+    LOGGER.debug("Enter. groupId: {}, version: {}, userView: {}.", id, userView);
 
     DeveloperUser dUser = developerUserService.getUserById(id);
     PlatformUser pUser = platformUserService.getWithId(dUser.getPUid());
@@ -97,7 +122,7 @@ public class UserApplication {
     pUser = platformUserService.save(pUser);
     dUser = developerUserService.save(dUser);
 
-    logger.debug("Exit. CategoryId: {}.", id);
+    LOGGER.debug("Exit. CategoryId: {}.", id);
     return UserViewMapper.toUserView(pUser, dUser);
   }
 
@@ -108,7 +133,7 @@ public class UserApplication {
    * @return
    */
   public SignInResult resetPassword(ResetPassword resetPassword) {
-    logger.debug("Enter. resetPassword: {}.", resetPassword);
+    LOGGER.debug("Enter. resetPassword: {}.", resetPassword);
 
     validationService.validateCode(resetPassword.getPhone(), resetPassword.getSmsCode());
     PlatformUser pUser = platformUserService.getWithPhone(resetPassword.getPhone());
@@ -117,7 +142,7 @@ public class UserApplication {
     }
 
     DeveloperUser dUser = developerUserService.getUserByPlatform(pUser.getPhone(), resetPassword
-        .getDeveloperId());
+      .getDeveloperId());
     if (dUser == null) {
       throw new NotExistException("User not exit for developer: " + resetPassword.getDeveloperId());
     }
@@ -127,16 +152,21 @@ public class UserApplication {
 
     SignInResult result = signInService.signIn(pUser, dUser);
 
-    logger.debug("Exit. result: {}.", result);
+    LOGGER.debug("Exit. result: {}.", result);
     return result;
   }
 
+  /**
+   * Count users.
+   *
+   * @return
+   */
   public Long countUsers() {
-    logger.debug("Enter.");
+    LOGGER.debug("Enter.");
 
     Long result = platformUserService.countUsers();
 
-    logger.debug("Exit. platform user count: {}.", result);
+    LOGGER.debug("Exit. platform user count: {}.", result);
 
     return result;
   }

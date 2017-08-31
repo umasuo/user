@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Created by Davis on 17/6/16.
+ * Report.
  */
 @RestController
 public class ReportController {
@@ -22,9 +22,11 @@ public class ReportController {
   /**
    * Logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReportController.class);
 
-
+  /**
+   * Report application.
+   */
   @Autowired
   private transient ReportApplication reportApplication;
 
@@ -39,11 +41,11 @@ public class ReportController {
   @GetMapping(value = Router.REPORT_ROOT, params = {"startTime", "endTime"})
   public List<ReportView> getPeriodReport(@RequestParam("startTime") long startTime,
                                           @RequestParam("endTime") long endTime) {
-    logger.info("Enter. startTime: {}, endTime: {}.", startTime, endTime);
+    LOGGER.info("Enter. startTime: {}, endTime: {}.", startTime, endTime);
 
     List<ReportView> reports = reportApplication.getPeriodReport(startTime, endTime);
 
-    logger.info("Exit. report size: {}.", reports.size());
+    LOGGER.info("Exit. report size: {}.", reports.size());
 
     return reports;
   }
@@ -59,11 +61,11 @@ public class ReportController {
   public ReportView getDeveloperReport(@RequestHeader String developerId,
                                        @RequestParam("startTime") long startTime,
                                        @RequestParam("endTime") long endTime) {
-    logger.info("Enter. developerId: {}, startTime: {}.", developerId, startTime);
+    LOGGER.info("Enter. developerId: {}, startTime: {}.", developerId, startTime);
 
     ReportView report = reportApplication.getDeveloperReportByTime(developerId, startTime, endTime);
 
-    logger.info("Exit. report: {}.", report);
+    LOGGER.info("Exit. report: {}.", report);
 
     return report;
   }

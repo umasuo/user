@@ -93,18 +93,23 @@ public class DeveloperUser {
   @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
   private UserDetailInfo userDetail;
 
+  /**
+   * To string method.
+   *
+   * @return
+   */
   @Override
   public String toString() {
     return "DeveloperUser{"
-        + "id='" + id + '\''
-        + ", createdAt=" + createdAt
-        + ", lastModifiedAt=" + lastModifiedAt
-        + ", version=" + version
-        + ", pUid='" + pUid + '\''
-        + ", externalId='" + externalId + '\''
-        + ", developerId='" + developerId + '\''
-        + ", deviceDefinitionId='" + deviceDefinitionId + '\''
-        + ", userDetail=" + userDetail
-        + '}';
+      + "id='" + id + '\''
+      + ", createdAt=" + createdAt
+      + ", lastModifiedAt=" + lastModifiedAt
+      + ", version=" + version
+      + ", pUid='" + pUid + '\''
+      + ", externalId='" + externalId + '\''
+      + ", developerId='" + developerId + '\''
+      + ", deviceDefinitionId='" + deviceDefinitionId + '\''
+      + ", userDetail=" + userDetail
+      + '}';
   }
 }

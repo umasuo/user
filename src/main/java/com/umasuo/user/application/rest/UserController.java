@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Created by Davis on 17/7/7.
+ * User controller.
  */
 @CrossOrigin
 @RestController
@@ -30,20 +30,31 @@ public class UserController {
   /**
    * Logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
+  /**
+   * User application.
+   */
   @Autowired
   private transient UserApplication userApplication;
 
+  /**
+   * Get users.
+   *
+   * @param developerId
+   * @param userId
+   * @param phone
+   * @return
+   */
   @GetMapping(value = Router.USER_ROOT)
   public List<UserOperationData> getUsers(@RequestHeader String developerId,
                                           @RequestParam(required = false) String userId,
                                           @RequestParam(required = false) String phone) {
-    logger.info("Enter. developerId: {}, userId: {}, userPhone: {}.", developerId, userId, phone);
+    LOGGER.info("Enter. developerId: {}, userId: {}, userPhone: {}.", developerId, userId, phone);
 
     List<UserOperationData> result = userApplication.getUsers(developerId, userId, phone);
 
-    logger.info("Exit. user size: {}.", result.size());
+    LOGGER.info("Exit. user size: {}.", result.size());
 
     return result;
   }
@@ -55,11 +66,11 @@ public class UserController {
    */
   @PutMapping(Router.USER_WITH_ID)
   public UserView updateUserInfo(@PathVariable String id, @RequestBody UserView userView) {
-    logger.info("Enter. userId: {}, userView: {}.", id, userView);
+    LOGGER.info("Enter. userId: {}, userView: {}.", id, userView);
 
     UserView updated = userApplication.update(id, userView);
 
-    logger.info("Exit. userView: {}.", updated);
+    LOGGER.info("Exit. userView: {}.", updated);
     return updated;
   }
 
@@ -72,21 +83,26 @@ public class UserController {
    */
   @PutMapping(Router.USER_RESET_PASSWORD)
   public SignInResult resetPassword(ResetPassword resetPassword) {
-    logger.info("Enter. resetPassword: {}", resetPassword);
+    LOGGER.info("Enter. resetPassword: {}", resetPassword);
 
     SignInResult signInResult = userApplication.resetPassword(resetPassword);
 
-    logger.info("Exit. signInResult: {}", signInResult);
+    LOGGER.info("Exit. signInResult: {}", signInResult);
     return signInResult;
   }
 
-  @GetMapping("/v1/admin/users/count")
+  /**
+   * Count users.
+   *
+   * @return
+   */
+  @GetMapping(Router.USER_COUNT)
   public Long countUsers() {
-    logger.info("Enter.");
+    LOGGER.info("Enter.");
 
     Long result = userApplication.countUsers();
 
-    logger.info("Exit. user count: {}.", result);
+    LOGGER.info("Exit. user count: {}.", result);
 
     return result;
   }

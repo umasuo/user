@@ -13,15 +13,15 @@ import org.springframework.util.Assert;
 import java.util.List;
 
 /**
- * Created by umasuo on 17/3/8.
+ * Platform user service.
  */
 @Service
 public class PlatformUserService {
 
   /**
-   * logger.
+   * Logger.
    */
-  private final static Logger logger = LoggerFactory.getLogger(DeveloperUserService.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(DeveloperUserService.class);
 
   /**
    * repository.
@@ -39,7 +39,7 @@ public class PlatformUserService {
   public PlatformUser createUser(PlatformUser user) {
     Assert.notNull(user);
     Assert.notNull(user.getPhone());
-    logger.debug("CreateUser: user: {}", user);
+    LOGGER.debug("CreateUser: user: {}", user);
 
     Example<PlatformUser> userExample = Example.of(user);
     PlatformUser userInDb = repository.findOne(userExample);
@@ -47,7 +47,7 @@ public class PlatformUserService {
     if (userInDb == null) {
       userInDb = repository.save(user);
     }
-    logger.debug("CreateUser: userInDb: {}", userInDb);
+    LOGGER.debug("CreateUser: userInDb: {}", userInDb);
     return userInDb;
   }
 
@@ -59,7 +59,7 @@ public class PlatformUserService {
    */
   public PlatformUser createUserWithPhone(String phone) {
     Assert.notNull(phone, "Phone can not be null");
-    logger.debug("CreateUser: phone: {}", phone);
+    LOGGER.debug("CreateUser: phone: {}", phone);
     PlatformUser user = new PlatformUser();
     user.setPhone(phone);
     return createUser(user);
@@ -73,7 +73,7 @@ public class PlatformUserService {
    */
   public PlatformUser createUserWithEmail(String email) {
     Assert.notNull(email, "Email can not be null");
-    logger.debug("CreateUser: email: {}", email);
+    LOGGER.debug("CreateUser: email: {}", email);
     PlatformUser user = new PlatformUser();
     user.setEmail(email);
     return createUser(user);
@@ -87,11 +87,11 @@ public class PlatformUserService {
    */
   public PlatformUser getWithPhone(String phone) {
     Assert.notNull(phone, "Phone can not be null");
-    logger.debug("Enter. phone: {}", phone);
+    LOGGER.debug("Enter. phone: {}", phone);
 
     PlatformUser user = this.repository.findOneByPhone(phone);
 
-    logger.debug("Exit. user: {}.", user);
+    LOGGER.debug("Exit. user: {}.", user);
     return user;
   }
 
@@ -103,7 +103,7 @@ public class PlatformUserService {
    */
   public PlatformUser getWithEmail(String email) {
     Assert.notNull(email, "Email can not be null");
-    logger.debug("GetUser: email: {}", email);
+    LOGGER.debug("GetUser: email: {}", email);
 
     PlatformUser user = this.repository.findOneByEmail(email);
     if (user == null) {
@@ -112,24 +112,36 @@ public class PlatformUserService {
     return user;
   }
 
+  /**
+   * Get platform user with id list.
+   *
+   * @param platformUserIds
+   * @return
+   */
   public List<PlatformUser> getWithIds(List<String> platformUserIds) {
-    logger.debug("Enter. ids: {}.", platformUserIds);
+    LOGGER.debug("Enter. ids: {}.", platformUserIds);
 
     List<PlatformUser> users = repository.findAll(platformUserIds);
 
-    logger.debug("Exit. user size: {}.", users.size());
+    LOGGER.debug("Exit. user size: {}.", users.size());
     return users;
   }
 
+  /**
+   * Get platform with id.
+   *
+   * @param userPlatformId
+   * @return
+   */
   public PlatformUser getWithId(String userPlatformId) {
-    logger.debug("Enter. userPlatformId: {}.", userPlatformId);
+    LOGGER.debug("Enter. userPlatformId: {}.", userPlatformId);
 
     PlatformUser user = repository.findOne(userPlatformId);
     if (user == null) {
       throw new NotExistException("Platform User not exist for id: " + userPlatformId);
     }
 
-    logger.debug("Exit. user: {}.", user);
+    LOGGER.debug("Exit. user: {}.", user);
     return user;
   }
 
@@ -140,20 +152,25 @@ public class PlatformUserService {
    * @return
    */
   public PlatformUser save(PlatformUser user) {
-    logger.debug("Enter.");
+    LOGGER.debug("Enter.");
 
     PlatformUser pUser = repository.save(user);
 
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
     return pUser;
   }
 
+  /**
+   * Count users.
+   *
+   * @return
+   */
   public Long countUsers() {
-    logger.debug("Enter.");
+    LOGGER.debug("Enter.");
 
     Long count = repository.count();
 
-    logger.debug("Exit. platform user count: {}.", count);
+    LOGGER.debug("Exit. platform user count: {}.", count);
 
     return count;
   }

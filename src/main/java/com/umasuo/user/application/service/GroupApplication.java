@@ -20,8 +20,6 @@ import java.util.List;
 
 /**
  * The type Group application.
- * <p>
- * Created by Davis on 17/5/27.
  */
 @Service
 public class GroupApplication {
@@ -29,7 +27,7 @@ public class GroupApplication {
   /**
    * Logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(GroupApplication.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupApplication.class);
 
   /**
    * The Group service.
@@ -50,7 +48,7 @@ public class GroupApplication {
    */
   @Transactional
   public GroupView create(GroupDraft groupDraft, String userId, String developerId) {
-    logger.debug("Enter. groupDraft: {}.", groupDraft);
+    LOGGER.debug("Enter. groupDraft: {}.", groupDraft);
 
     Group createdGroup = GroupMapper.toEntity(groupDraft, userId, developerId);
     Group savedGroup = groupService.save(createdGroup);
@@ -68,7 +66,7 @@ public class GroupApplication {
 
     GroupView result = GroupMapper.toModel(savedGroup);
 
-    logger.debug("Exit. groupView: {}.", result);
+    LOGGER.debug("Exit. groupView: {}.", result);
     return result;
   }
 
@@ -79,28 +77,28 @@ public class GroupApplication {
    * @param version the version
    */
   public void delete(String groupId, Integer version) {
-    logger.debug("Enter. groupId: {}, version: {}.", groupId, version);
+    LOGGER.debug("Enter. groupId: {}, version: {}.", groupId, version);
 
     Group group = groupService.findOne(groupId);
 
     VersionValidator.validate(group.getVersion(), version);
 
     if (group.getUsers() != null &&
-        !group.getUsers().isEmpty()) {
-      logger.debug("Can not delete group when there is {} users.",
-          group.getUsers().size());
+      !group.getUsers().isEmpty()) {
+      LOGGER.debug("Can not delete group when there is {} users.",
+        group.getUsers().size());
       throw new ConflictException("Users is not null");
     }
 
     if (group.getChildrenId() != null && !group.getChildrenId().isEmpty()) {
-      logger.debug("Can not delete group when there is {} sub groups.",
-          group.getChildrenId().size());
+      LOGGER.debug("Can not delete group when there is {} sub groups.",
+        group.getChildrenId().size());
       throw new ConflictException("Sub groups is not null");
     }
 
     groupService.delete(groupId);
 
-    logger.debug("Exit");
+    LOGGER.debug("Exit");
   }
 
   /**
@@ -112,7 +110,7 @@ public class GroupApplication {
    * @return the group
    */
   public GroupView updateGroup(String id, Integer version, List<UpdateAction> actions) {
-    logger.debug("Enter. groupId: {}, version: {}, actions: {}.", id, version, actions);
+    LOGGER.debug("Enter. groupId: {}, version: {}, actions: {}.", id, version, actions);
 
     Group group = groupService.findOne(id);
     VersionValidator.validate(group.getVersion(), version);
@@ -121,8 +119,8 @@ public class GroupApplication {
 
     GroupView result = GroupMapper.toModel(updatedGroup);
 
-    logger.trace("Updated category: {}.", result);
-    logger.debug("Exit. CategoryId: {}.", id);
+    LOGGER.trace("Updated category: {}.", result);
+    LOGGER.debug("Exit. CategoryId: {}.", id);
     return result;
   }
 
@@ -147,13 +145,13 @@ public class GroupApplication {
    * @return the group view
    */
   public GroupView findOne(String groupId) {
-    logger.debug("Enter. groupId: {}.", groupId);
+    LOGGER.debug("Enter. groupId: {}.", groupId);
 
     Group group = groupService.findOne(groupId);
 
     GroupView result = GroupMapper.toModel(group);
 
-    logger.debug("Exit. groupView: {}.", result);
+    LOGGER.debug("Exit. groupView: {}.", result);
 
     return result;
   }
@@ -165,13 +163,13 @@ public class GroupApplication {
    * @return the list
    */
   public List<GroupView> findAll(String developerId) {
-    logger.debug("Enter. developerId: {}.", developerId);
+    LOGGER.debug("Enter. developerId: {}.", developerId);
 
     List<Group> groups = groupService.findAllGroup(developerId);
 
     List<GroupView> result = GroupMapper.toModel(groups);
 
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
 
     return result;
   }

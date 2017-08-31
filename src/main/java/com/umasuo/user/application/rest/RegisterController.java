@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 /**
- * Created by umasuo on 17/7/20.
+ * Register controller.
  */
 @RestController
 public class RegisterController {
 
   /**
-   * logger.
+   * LOGGER.
    */
-  private final static Logger logger = LoggerFactory.getLogger(RegisterController.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(RegisterController.class);
 
   /**
    * sign up service
@@ -38,11 +38,11 @@ public class RegisterController {
    */
   @PostMapping(value = Router.USER_REGISTER)
   public SignInResult register(@RequestBody @Valid RegisterInfo register) {
-    logger.info("Enter. register: {}", register);
+    LOGGER.info("Enter. register: {}", register);
 
     SignInResult signInResult = registerService.register(register);
 
-    logger.info("Exit. signInResult: {}", signInResult);
+    LOGGER.info("Exit. signInResult: {}", signInResult);
     return signInResult;
   }
 }

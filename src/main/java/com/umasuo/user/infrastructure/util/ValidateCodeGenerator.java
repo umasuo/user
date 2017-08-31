@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * The type Token generator.
  */
-public class ValidateCodeGenerator {
+public final class ValidateCodeGenerator {
 
   /**
    * Validate code length.

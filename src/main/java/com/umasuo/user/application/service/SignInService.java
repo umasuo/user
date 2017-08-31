@@ -12,7 +12,6 @@ import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.domain.service.DeveloperUserService;
 import com.umasuo.user.domain.service.PlatformUserService;
-import com.umasuo.user.infrastructure.config.AppConfig;
 import com.umasuo.user.infrastructure.util.RedisUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,21 +29,15 @@ import java.util.concurrent.TimeUnit;
 public class SignInService {
 
   /**
-   * logger.
+   * Logger.
    */
-  private final static Logger logger = LoggerFactory.getLogger(SignInService.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(SignInService.class);
 
   /**
    * redis ops.
    */
   @Autowired
   private transient RedisTemplate redisTemplate;
-
-  /**
-   * configs.
-   */
-  @Autowired
-  private transient AppConfig appConfig;
 
   /**
    * platform user service.
@@ -58,9 +51,15 @@ public class SignInService {
   @Autowired
   private transient DeveloperUserService developerUserService;
 
+  /**
+   * Message application.
+   */
   @Autowired
   private MessageApplication messageApplication;
 
+  /**
+   * Validation service.
+   */
   @Autowired
   private ValidationService validationService;
 
@@ -72,7 +71,7 @@ public class SignInService {
    * @return the sign in result
    */
   public SignInResult quickSignIn(QuickSignIn signIn) {
-    logger.debug("Enter. signIn: {}", signIn);
+    LOGGER.debug("Enter. signIn: {}", signIn);
 
     SignInResult result;
 
@@ -85,14 +84,14 @@ public class SignInService {
     }
 
     DeveloperUser dUser = developerUserService.getUserByPlatform(pUser.getId(), signIn
-        .getDeveloperId());
+      .getDeveloperId());
     if (dUser == null) {
       dUser = createDeveloperUser(signIn, pUser);
     }
 
     result = signIn(pUser, dUser);
 
-    logger.debug("Exit. SignInResult: {}.", result);
+    LOGGER.debug("Exit. SignInResult: {}.", result);
     return result;
   }
 
@@ -103,7 +102,7 @@ public class SignInService {
    * @return
    */
   public SignInResult signIn(SignIn signIn) {
-    logger.debug("Enter. signIn: {}.", signIn);
+    LOGGER.debug("Enter. signIn: {}.", signIn);
 
     PlatformUser pUser = platformUserService.getWithPhone(signIn.getPhone());
     if (pUser == null) {
@@ -111,14 +110,14 @@ public class SignInService {
     }
 
     DeveloperUser dUser = developerUserService.getUserByPlatform(pUser.getId(), signIn
-        .getDeveloperId());
+      .getDeveloperId());
     if (dUser == null) {
       throw new NotExistException("User not exit for developer: " + signIn.getDeveloperId());
     }
 
     SignInResult result = signIn(pUser, dUser);
 
-    logger.debug("Exit. result: {}.", result);
+    LOGGER.debug("Exit. result: {}.", result);
     return result;
   }
 
@@ -130,7 +129,7 @@ public class SignInService {
    * @return SignInResult
    */
   public SignInResult signIn(PlatformUser pUser, DeveloperUser dUser) {
-    logger.debug("Enter. pUser: {}, dUser: {}.", pUser, dUser);
+    LOGGER.debug("Enter. pUser: {}, dUser: {}.", pUser, dUser);
 
     UserView userView = UserViewMapper.toUserView(pUser, dUser);
 
@@ -140,7 +139,7 @@ public class SignInService {
 
     cacheSignInStatus(userView, token);
 
-    logger.debug("Exit. signInResult: {}.", signInResult);
+    LOGGER.debug("Exit. signInResult: {}.", signInResult);
     return signInResult;
   }
 
@@ -152,12 +151,12 @@ public class SignInService {
    * @return PlatformUser
    */
   private PlatformUser createPlatformUser(QuickSignIn signUp) {
-    logger.debug("Enter. signUpDeveloperUser: {}.", signUp);
+    LOGGER.debug("Enter. signUpDeveloperUser: {}.", signUp);
 
     PlatformUser platformUser = SignInMapper.toPlatformUser(signUp);
     PlatformUser savedPlatformUser = platformUserService.createUser(platformUser);
 
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
     return savedPlatformUser;
   }
 
@@ -169,14 +168,14 @@ public class SignInService {
    * @return DeveloperUser
    */
   private DeveloperUser createDeveloperUser(QuickSignIn signUp, PlatformUser platformUser) {
-    logger.debug("Enter. quickSignIn: {}, platformUser: {}.", signUp, platformUser);
+    LOGGER.debug("Enter. quickSignIn: {}, platformUser: {}.", signUp, platformUser);
 
     DeveloperUser dUser = SignInMapper.toDeveloperUser(signUp);
     dUser.setPUid(platformUser.getId());
     dUser.setDeveloperId(signUp.getDeveloperId());
     DeveloperUser savedUser = developerUserService.createUser(dUser);
 
-    logger.debug("Exit. savedDpUser: {}.", savedUser);
+    LOGGER.debug("Exit. savedDpUser: {}.", savedUser);
     return savedUser;
   }
 
@@ -184,10 +183,10 @@ public class SignInService {
    * cache the user's sign in status and info.
    */
   private void cacheSignInStatus(UserView userView, String token) {
-    logger.debug("Enter. userView: {}, token: {}.", userView, token);
+    LOGGER.debug("Enter. userView: {}, token: {}.", userView, token);
 
     String userKey = String.format(RedisUtils.USER_KEY_FORMAT,
-        userView.getDeveloperId(), userView.getUserId());
+      userView.getDeveloperId(), userView.getUserId());
 
     UserSession session = new UserSession(userView, token);
 
@@ -195,7 +194,7 @@ public class SignInService {
     redisTemplate.boundHashOps(userKey).put(RedisUtils.USER_SESSION_KEY, session);
     redisTemplate.expire(userKey, 30, TimeUnit.DAYS);//7天后过期
     messageApplication.addMqttUser(userView.getUserId(), token);
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
   }
 
 }

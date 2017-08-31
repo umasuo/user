@@ -12,16 +12,15 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by umasuo on 17/3/9.
  * Sign in status service.
  */
 @Service
 public class StatusService {
 
   /**
-   * logger.
+   * LOGGER.
    */
-  private final static Logger logger = LoggerFactory.getLogger(StatusService.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(StatusService.class);
 
   /**
    * redis ops.
@@ -29,6 +28,9 @@ public class StatusService {
   @Autowired
   private transient RedisTemplate redisTemplate;
 
+  /**
+   * Message application.
+   */
   @Autowired
   private transient MessageApplication messageApplication;
 
@@ -42,14 +44,14 @@ public class StatusService {
    * @return LoginStatus
    */
   public LoginStatus checkSignInStatus(String userId, String developerId, String token) {
-    logger.debug("CheckSignInStatus: id: {}", userId);
+    LOGGER.debug("CheckSignInStatus: id: {}", userId);
 
     LoginStatus loginStatus = new LoginStatus(developerId, userId, false);
 
     String userKey = String.format(RedisUtils.USER_KEY_FORMAT, developerId, userId);
 
     UserSession userSession = (UserSession) redisTemplate.opsForHash().get(userKey,
-        RedisUtils.USER_SESSION_KEY);
+      RedisUtils.USER_SESSION_KEY);
 
     if (userSession != null && userSession.getUserView().getDeveloperId().equals(developerId)) {
       loginStatus.setLogin(true);
@@ -86,7 +88,7 @@ public class StatusService {
       return false;
     }
 
-    long lifeTime = session.getLastActiveTime() + session.getExpireIn();
+    long lifeTime = session.getLastActiveTime() + UserSession.EXPIRE_IN;
     long curTime = System.currentTimeMillis();
     if (curTime > lifeTime) {
       // TODO: 17/6/19 这里是否需要把session删除了
@@ -96,7 +98,7 @@ public class StatusService {
     session.setLastActiveTime(curTime);
 
     String userKey = String.format(RedisUtils.USER_KEY_FORMAT,
-        session.getUserView().getDeveloperId(), session.getUserView().getUserId());
+      session.getUserView().getDeveloperId(), session.getUserView().getUserId());
 
     redisTemplate.boundHashOps(userKey).put(RedisUtils.USER_SESSION_KEY, session);
 

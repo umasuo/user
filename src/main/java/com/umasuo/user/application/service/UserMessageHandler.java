@@ -1,7 +1,5 @@
 package com.umasuo.user.application.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,16 +9,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserMessageHandler {
 
-  private static final Logger logger = LoggerFactory.getLogger(UserMessageHandler.class);
-
   /**
    * 这里处理与数据相关的消息。例如上传数据等.
    *
    * @param deviceId deviceId
-   * @param content  the real content
+   * @param payload  the real content
    * @return handler result
    */
-  public boolean handler(String deviceId, String content) {
+  public boolean handler(String deviceId, byte[] payload) {
 
     // TODO: 17/7/14 定义用户端能够处理的消息
     // app 与云端的所有通采用API的方式，APP与设备的通信需要采用MQTT，服务端不处理MQTT中的消息，除非下发通知之类的下发类操作.

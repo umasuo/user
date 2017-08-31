@@ -15,16 +15,16 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 /**
- * Created by umasuo on 17/3/9.
+ * User status controller.
  */
 @RestController
 public class StatusController {
 
 
   /**
-   * logger.
+   * LOGGER.
    */
-  private final static Logger logger = LoggerFactory.getLogger(StatusController.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(StatusController.class);
 
   /**
    * sign up service
@@ -44,11 +44,11 @@ public class StatusController {
   public LoginStatus signInStatus(@PathVariable @Valid @NotNull String id,
                                   @RequestHeader @Valid @NotNull String developerId,
                                   @RequestHeader @Valid @NotNull String token) {
-    logger.info("Enter. id: {}, developerId: {}, token: {}.", id, developerId, token);
+    LOGGER.info("Enter. id: {}, developerId: {}, token: {}.", id, developerId, token);
     //todo developer id 不需要了
     LoginStatus status = statusService.checkSignInStatus(id, developerId, token);
 
-    logger.info("Exit. status: {}.", status);
+    LOGGER.info("Exit. status: {}.", status);
     return status;
   }
 }

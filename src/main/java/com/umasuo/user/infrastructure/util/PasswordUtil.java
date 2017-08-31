@@ -4,14 +4,20 @@ package com.umasuo.user.infrastructure.util;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
- * Created by umasuo on 16/12/26.
+ * Password util.
  */
-public class PasswordUtil {
+public final class PasswordUtil {
 
   /**
    * encrypt tool.
    */
   private static BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+  /**
+   * private default constructor.
+   */
+  private PasswordUtil() {
+  }
 
   /**
    * hash raw password.

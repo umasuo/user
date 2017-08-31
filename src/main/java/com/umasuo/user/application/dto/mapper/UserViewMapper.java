@@ -6,12 +6,12 @@ import com.umasuo.user.domain.model.PlatformUser;
 import com.umasuo.user.domain.model.UserDetailInfo;
 
 /**
- * Created by umasuo on 17/3/9.
+ * User view mapper.
  */
 public final class UserViewMapper {
 
   /**
-   * Instantiates a new User view mapper.
+   * Private default constructor.
    */
   private UserViewMapper() {
   }
@@ -44,6 +44,13 @@ public final class UserViewMapper {
     return view;
   }
 
+  /**
+   * Copy value.
+   *
+   * @param pUser
+   * @param dUser
+   * @param userView
+   */
   public static void copyValue(PlatformUser pUser, DeveloperUser dUser, UserView userView) {
     pUser.setEmail(userView.getEmail());
 

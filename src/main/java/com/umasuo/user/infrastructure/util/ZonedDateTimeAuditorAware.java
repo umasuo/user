@@ -2,8 +2,6 @@ package com.umasuo.user.infrastructure.util;
 
 import org.springframework.data.domain.AuditorAware;
 
-import javax.persistence.Converter;
-
 /**
  * Zoned data time auditor.
  */

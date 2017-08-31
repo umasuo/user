@@ -1,13 +1,10 @@
 package com.umasuo.user.domain.service;
 
-import com.google.common.collect.Lists;
 import com.umasuo.exception.AlreadyExistException;
 import com.umasuo.exception.NotExistException;
-import com.umasuo.user.application.dto.UserView;
 import com.umasuo.user.domain.model.DeveloperUser;
 import com.umasuo.user.infrastructure.repository.UserInfoRepository;
 import com.umasuo.user.infrastructure.util.PasswordUtil;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,19 +13,19 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by umasuo on 17/3/8.
+ * Developer user service.
  */
 @Service
 public class DeveloperUserService {
 
   /**
-   * logger.
+   * Logger.
    */
-  private final static Logger logger = LoggerFactory.getLogger(DeveloperUserService.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(DeveloperUserService.class);
 
   /**
    * user info repository.
@@ -43,7 +40,7 @@ public class DeveloperUserService {
    * @return the developer user
    */
   public DeveloperUser createUser(DeveloperUser user) {
-    logger.debug("Enter. userInfo: {}", user);
+    LOGGER.debug("Enter. userInfo: {}", user);
     Assert.notNull(user);
     Assert.notNull(user.getPUid());
     Assert.notNull(user.getDeveloperId());
@@ -60,7 +57,7 @@ public class DeveloperUserService {
     }
     userInDb = repository.save(user);
     //TODO maybe we should set an numerical id?
-    logger.debug("Exit. userInDb: {}", userInDb);
+    LOGGER.debug("Exit. userInDb: {}", userInDb);
     return userInDb;
   }
 
@@ -72,7 +69,7 @@ public class DeveloperUserService {
    * @return user by platform
    */
   public DeveloperUser getUserByPlatform(String platformUserId, String developerId) {
-    logger.debug("Enter. userId: {}, developerId: {}", platformUserId, developerId);
+    LOGGER.debug("Enter. userId: {}, developerId: {}", platformUserId, developerId);
 
     DeveloperUser user = new DeveloperUser();
     user.setPUid(platformUserId);
@@ -80,7 +77,7 @@ public class DeveloperUserService {
     Example<DeveloperUser> example = Example.of(user);
     DeveloperUser userInDb = repository.findOne(example);
 
-    logger.debug("Exit. user: {}.", userInDb);
+    LOGGER.debug("Exit. user: {}.", userInDb);
     return userInDb;
   }
 
@@ -91,16 +88,16 @@ public class DeveloperUserService {
    * @return the user by id
    */
   public DeveloperUser getUserById(String userId) {
-    logger.debug("Enter. userId: {}.", userId);
+    LOGGER.debug("Enter. userId: {}.", userId);
     Assert.notNull(userId, "User id can not be null");
 
     DeveloperUser user = repository.findOne(userId);
     if (user == null) {
-      logger.debug("Can not find user: {}.", userId);
+      LOGGER.debug("Can not find user: {}.", userId);
       throw new NotExistException("User not exist");
     }
 
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
     return user;
   }
 
@@ -109,12 +106,12 @@ public class DeveloperUserService {
    *
    * @return the all report
    */
-  public List<HashMap> getTotalCountReport(long endTime) {
-    logger.debug("Enter.");
+  public List<Map> getTotalCountReport(long endTime) {
+    LOGGER.debug("Enter.");
 
-    List<HashMap> result = repository.getTotalCountReport(endTime);
+    List<Map> result = repository.getTotalCountReport(endTime);
 
-    logger.debug("Exit. result size: {}.", result.size());
+    LOGGER.debug("Exit. result size: {}.", result.size());
 
     return result;
   }
@@ -127,12 +124,12 @@ public class DeveloperUserService {
    * @param endTime   the end time
    * @return the registered report
    */
-  public List<HashMap> getIncreaseReport(long startTime, long endTime) {
-    logger.debug("Enter.");
+  public List<Map> getIncreaseReport(long startTime, long endTime) {
+    LOGGER.debug("Enter.");
 
-    List<HashMap> result = repository.getIncreaseReport(startTime, endTime);
+    List<Map> result = repository.getIncreaseReport(startTime, endTime);
 
-    logger.debug("Exit. result size: {}.", result.size());
+    LOGGER.debug("Exit. result size: {}.", result.size());
 
     return result;
   }
@@ -143,12 +140,12 @@ public class DeveloperUserService {
    * @param developerId the developer id
    * @return the developer all report
    */
-  public HashMap getTotalCountReport(String developerId) {
-    logger.debug("Enter. developerId: {}.", developerId);
+  public Map getTotalCountReport(String developerId) {
+    LOGGER.debug("Enter. developerId: {}.", developerId);
 
-    HashMap result = repository.getTotalCountReport(developerId);
+    Map result = repository.getTotalCountReport(developerId);
 
-    logger.debug("Exit. result: {}.", result);
+    LOGGER.debug("Exit. result: {}.", result);
 
     return result;
   }
@@ -161,18 +158,24 @@ public class DeveloperUserService {
    * @param startTime   the start time
    * @return the developer registered report
    */
-  public HashMap getIncreaseReport(String developerId, long startTime, long endTime) {
-    logger.debug("Enter. developerId: {}, startTime: {}.", developerId, startTime);
+  public Map getIncreaseReport(String developerId, long startTime, long endTime) {
+    LOGGER.debug("Enter. developerId: {}, startTime: {}.", developerId, startTime);
 
-    HashMap result = repository.getIncreaseReport(developerId, startTime, endTime);
+    Map result = repository.getIncreaseReport(developerId, startTime, endTime);
 
-    logger.debug("Exit. result: {}.", result);
+    LOGGER.debug("Exit. result: {}.", result);
 
     return result;
   }
 
+  /**
+   * Get users.
+   * @param developerId
+   * @param userId
+   * @return
+   */
   public List<DeveloperUser> getUsers(String developerId, String userId) {
-    logger.info("Enter. developerId: {}, developerUserId: {}.", developerId, userId);
+    LOGGER.info("Enter. developerId: {}, developerUserId: {}.", developerId, userId);
 
     DeveloperUser sample = new DeveloperUser();
     sample.setDeveloperId(developerId);
@@ -184,17 +187,22 @@ public class DeveloperUserService {
 
     List<DeveloperUser> users = repository.findAll(example);
 
-    logger.info("Exit. user size: {}.", users.size());
+    LOGGER.info("Exit. user size: {}.", users.size());
 
     return users;
   }
 
+  /**
+   * Save user.
+   * @param user
+   * @return
+   */
   public DeveloperUser save(DeveloperUser user) {
-    logger.debug("Enter.");
+    LOGGER.debug("Enter.");
 
     DeveloperUser dUser = repository.save(user);
 
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
     return dUser;
   }
 }

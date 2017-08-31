@@ -12,7 +12,6 @@ import com.umasuo.user.domain.service.ResourceRequestService;
 import com.umasuo.user.infrastructure.enums.ReplyRequest;
 import com.umasuo.user.infrastructure.validator.ExistRequestValidator;
 import com.umasuo.user.infrastructure.validator.FeedBackValidator;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +22,6 @@ import java.util.function.Consumer;
 
 /**
  * ResourceRequest application.
- *
- * Created by Davis on 17/6/9.
  */
 @Service
 public class ResourceRequestApplication {
@@ -32,7 +29,7 @@ public class ResourceRequestApplication {
   /**
    * Logger.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(ResourceRequestApplication.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ResourceRequestApplication.class);
 
   /**
    * The Resource request service.
@@ -53,12 +50,12 @@ public class ResourceRequestApplication {
    * @return the all request for applicant user
    */
   public List<ResourceRequestView> getAllRequestForApplicantUser(String applicantUserId) {
-    LOG.debug("Enter. applicantUserId: {}.", applicantUserId);
+    LOGGER.debug("Enter. applicantUserId: {}.", applicantUserId);
 
     List<ResourceRequest> requests = requestService.getAllRequestForApplicantUser(applicantUserId);
     List<ResourceRequestView> result = ResourceRequestMapper.toModel(requests);
 
-    LOG.debug("Exit. applicant user request size: {}.", result.size());
+    LOGGER.debug("Exit. applicant user request size: {}.", result.size());
 
     return result;
   }
@@ -70,12 +67,12 @@ public class ResourceRequestApplication {
    * @return the all request for acceptor user
    */
   public List<ResourceRequestView> getAllRequestForAcceptor(String acceptorUserId) {
-    LOG.debug("Enter. acceptorUserId: {}.", acceptorUserId);
+    LOGGER.debug("Enter. acceptorUserId: {}.", acceptorUserId);
 
     List<ResourceRequest> requests = requestService.getAllRequestForAcceptorUser(acceptorUserId);
     List<ResourceRequestView> result = ResourceRequestMapper.toModel(requests);
 
-    LOG.debug("Exit. acceptor user request size: {}.", result.size());
+    LOGGER.debug("Exit. acceptor user request size: {}.", result.size());
 
     return result;
   }
@@ -83,22 +80,22 @@ public class ResourceRequestApplication {
   /**
    * Reply request.
    *
-   * @param userId the developer id
+   * @param userId    the developer id
    * @param requestId the request id
-   * @param reply the reply
+   * @param reply     the reply
    * @return the resource request view
    */
   public ResourceRequestView replyRequest(String userId, String requestId, ReplyRequest reply) {
-    LOG.debug("Enter. userId: {}, requestId: {}, reply: {}.", userId, requestId, reply);
+    LOGGER.debug("Enter. userId: {}, requestId: {}, reply: {}.", userId, requestId, reply);
 
     ResourceRequest request = requestService.findOne(requestId);
     if (request == null) {
-      LOG.debug("Can not find this resource request: {}.", requestId);
+      LOGGER.debug("Can not find this resource request: {}.", requestId);
       throw new NotExistException("ResourceRequest not exist");
     }
 
     if (!request.getAcceptorUserId().equals(userId)) {
-      LOG.debug("User: {} can not handle this request: {}.", userId, requestId);
+      LOGGER.debug("User: {} can not handle this request: {}.", userId, requestId);
       throw new AuthFailedException("User do not have authorization to handle request");
     }
 
@@ -107,7 +104,7 @@ public class ResourceRequestApplication {
     ResourceRequest updatedRequest = requestService.save(request);
     ResourceRequestView result = ResourceRequestMapper.toModel(updatedRequest);
 
-    LOG.debug("Exit. reply result: {}.", result);
+    LOGGER.debug("Exit. reply result: {}.", result);
 
     return result;
   }
@@ -116,7 +113,7 @@ public class ResourceRequestApplication {
    * Handle reply.
    *
    * @param request the ResourceRequest
-   * @param reply the ReplyRequest
+   * @param reply   the ReplyRequest
    */
   private void handlerReply(ResourceRequest request, ReplyRequest reply) {
     request.setReplyRequest(reply);
@@ -126,6 +123,10 @@ public class ResourceRequestApplication {
         ResourcePermission permission = ResourcePermissionMapper.build(request);
         permissionService.save(permission);
         break;
+      case VIEWED:
+      case DISAGREE:
+      case UNVIEWED:
+        break;
       default:
         break;
     }
@@ -134,12 +135,12 @@ public class ResourceRequestApplication {
   /**
    * Feed back for applicant user.
    *
-   * @param userId the user id
+   * @param userId    the user id
    * @param requestId the request id
    * @return the list
    */
   public List<ResourceRequestView> feedBackForApplicant(String userId, List<String> requestId) {
-    LOG.debug("Enter. userId: {}, requestId: {}.", userId, requestId);
+    LOGGER.debug("Enter. userId: {}, requestId: {}.", userId, requestId);
 
     List<ResourceRequest> requests = requestService.findAll(requestId);
 
@@ -154,7 +155,7 @@ public class ResourceRequestApplication {
 
     List<ResourceRequestView> result = ResourceRequestMapper.toModel(feedBackedRequests);
 
-    LOG.debug("Exit. feedback size: {}.", result.size());
+    LOGGER.debug("Exit. feedback size: {}.", result.size());
 
     return result;
   }
@@ -163,12 +164,12 @@ public class ResourceRequestApplication {
   /**
    * Feed back for acceptor.
    *
-   * @param userId the user id
+   * @param userId    the user id
    * @param requestId the request id
    * @return the list
    */
   public List<ResourceRequestView> feedBackForAcceptor(String userId, List<String> requestId) {
-    LOG.debug("Enter. userId: {}, requestId: {}.", userId, requestId);
+    LOGGER.debug("Enter. userId: {}, requestId: {}.", userId, requestId);
 
     List<ResourceRequest> requests = requestService.findAll(requestId);
 
@@ -176,7 +177,7 @@ public class ResourceRequestApplication {
     FeedBackValidator.validateAcceptorFeedBackAuth(userId, requests);
 
     Consumer<ResourceRequest> feedBackConsumer =
-        request -> request.setReplyRequest(ReplyRequest.VIEWED);
+      request -> request.setReplyRequest(ReplyRequest.VIEWED);
 
     requests.stream().forEach(feedBackConsumer);
 
@@ -184,7 +185,7 @@ public class ResourceRequestApplication {
 
     List<ResourceRequestView> result = ResourceRequestMapper.toModel(feedBackedRequests);
 
-    LOG.debug("Exit. feedback size: {}.", result.size());
+    LOGGER.debug("Exit. feedback size: {}.", result.size());
 
     return result;
   }

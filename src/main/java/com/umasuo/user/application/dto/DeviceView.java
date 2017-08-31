@@ -5,12 +5,15 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Created by Davis on 17/6/12.
+ * Device view.
  */
 @Getter
 @Setter
 @ToString
 public class DeviceView {
+  /**
+   * Device id.
+   */
   private String id;
 
   /**
@@ -38,7 +41,13 @@ public class DeviceView {
    */
   private String customizedId;
 
+  /**
+   * Owner id.
+   */
   private String ownerId;
 
+  /**
+   * Developer id.
+   */
   private String developerId;
 }

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class SignOutController {
 
   /**
-   * logger.
+   * LOGGER.
    */
-  private final static Logger logger = LoggerFactory.getLogger(SignOutController.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(SignOutController.class);
 
   /**
    * sign up service
@@ -36,11 +35,11 @@ public class SignOutController {
    */
   @DeleteMapping(value = Router.USER_SIGN_OUT)
   public void quickSignIn(@PathVariable String userId, @RequestHeader String developerId) {
-    logger.info("Enter. userId: {}, developerId: {}.", userId, developerId);
+    LOGGER.info("Enter. userId: {}, developerId: {}.", userId, developerId);
 
     signOutService.signOut(userId, developerId);
 
-    logger.info("Exit.");
+    LOGGER.info("Exit.");
   }
 
 }

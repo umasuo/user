@@ -13,30 +13,33 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by umasuo on 17/6/27.
+ * Message application.
  */
 @Service
 public class MessageApplication implements CommandLineRunner {
   /**
    * Logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(MessageApplication.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MessageApplication.class);
 
+  /**
+   * Mqtt user prefix.
+   */
   private static final String USERNAME_PREFIX = "mqtt_user:";
-  private static final String DEVICE_TOPIC_SUB_PREFIX = "device/sub/";
-  private static final String DEVICE_TOPIC_PUB_PREFIX = "device/pub/";
 
-  private static final String USER_TOPIC_SUB_PREFIX = "user/sub/";
-  private static final String USER_TOPIC_PUB_PREFIX = "user/pub/";
-
-  private transient AppConfig appConfig;
-
-  private transient MQTT mqtt;
-
+  /**
+   * Mqtt connection.
+   */
   private transient BlockingConnection connection;
 
+  /**
+   * Redis client.
+   */
   private transient StringRedisTemplate redisTemplate;
 
+  /**
+   * User message handler.s
+   */
   private transient UserMessageHandler userMessageHandler;
 
   /**
@@ -46,13 +49,12 @@ public class MessageApplication implements CommandLineRunner {
   public MessageApplication(StringRedisTemplate redisTemplate,
                             UserMessageHandler deviceMessageHandler,
                             AppConfig appConfig) {
-    this.appConfig = appConfig;
     this.redisTemplate = redisTemplate;
     this.userMessageHandler = deviceMessageHandler;
     redisTemplate.boundHashOps(USERNAME_PREFIX + appConfig.getUsername()).put("password",
-        appConfig.getPassword());
+      appConfig.getPassword());
 
-    mqtt = new MQTT();
+    MQTT mqtt = new MQTT();
     mqtt.setUserName(appConfig.getUsername());
     mqtt.setPassword(appConfig.getPassword());
 
@@ -61,9 +63,9 @@ public class MessageApplication implements CommandLineRunner {
 
       connection = mqtt.blockingConnection();
       connection.connect();
-      logger.info("Connect to message broker: " + appConfig.getMsgBrokerHost());
+      LOGGER.info("Connect to message broker: " + appConfig.getMsgBrokerHost());
     } catch (Exception e) {
-      logger.error("Connect message broker failed.", e);
+      LOGGER.error("Connect message broker failed.", e);
     }
   }
 
@@ -71,15 +73,20 @@ public class MessageApplication implements CommandLineRunner {
    * 添加broker user.
    */
   public void addMqttUser(String userId, String token) {
-    logger.debug("Add broker user: {}.", userId);
+    LOGGER.debug("Add broker user: {}.", userId);
     BoundHashOperations setOperations = redisTemplate.boundHashOps(USERNAME_PREFIX + userId);
     //TODO MQTT 的的密码需要采用加密模式
     //TODO 这里其实需要考虑redis失效的场景
     setOperations.put("password", token);//为用户的APP添加用户名密码
   }
 
+  /**
+   * Delete mqtt user.
+   *
+   * @param userId
+   */
   public void deleteMqttUser(String userId) {
-    logger.debug("Delete broker userId: {}.", userId);
+    LOGGER.debug("Delete broker userId: {}.", userId);
     redisTemplate.delete(USERNAME_PREFIX + userId);
 
   }
@@ -92,12 +99,12 @@ public class MessageApplication implements CommandLineRunner {
    */
   @Override
   public void run(String... args) throws Exception {
-    logger.info("start process data.");
+    LOGGER.info("start process data.");
     while (true) {
       Message message = connection.receive();
       if (message != null) {
         String topic = message.getTopic();//从这里可以获得UserId，
-        boolean handlerResult = userMessageHandler.handler(topic, new String(message.getPayload()));
+        boolean handlerResult = userMessageHandler.handler(topic, message.getPayload());
         if (handlerResult) {
           message.ack();
         }

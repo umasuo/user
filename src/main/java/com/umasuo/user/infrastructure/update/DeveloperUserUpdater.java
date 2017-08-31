@@ -2,7 +2,6 @@ package com.umasuo.user.infrastructure.update;
 
 import com.umasuo.model.Updater;
 import com.umasuo.user.domain.model.DeveloperUser;
-import com.umasuo.user.domain.model.Group;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;

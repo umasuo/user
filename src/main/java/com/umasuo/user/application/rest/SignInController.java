@@ -5,7 +5,6 @@ import com.umasuo.user.application.dto.SignIn;
 import com.umasuo.user.application.dto.SignInResult;
 import com.umasuo.user.application.service.SignInService;
 import com.umasuo.user.infrastructure.Router;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 /**
- * Created by umasuo on 17/3/9.
+ * Sign in controller.
  */
 @RestController
 public class SignInController {
 
   /**
-   * logger.
+   * LOGGER.
    */
-  private final static Logger logger = LoggerFactory.getLogger(SignInController.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(SignInController.class);
 
   /**
    * sign up service
@@ -40,11 +39,11 @@ public class SignInController {
    */
   @PostMapping(value = Router.USER_SIGN_IN)
   public SignInResult quickSignIn(@RequestBody @Valid QuickSignIn signIn) {
-    logger.info("Enter. quickSignIn: {}", signIn);
+    LOGGER.info("Enter. quickSignIn: {}", signIn);
 
     SignInResult signInResult = signInService.quickSignIn(signIn);
 
-    logger.info("Exit. signInResult: {}", signInResult);
+    LOGGER.info("Exit. signInResult: {}", signInResult);
     return signInResult;
   }
 
@@ -57,11 +56,11 @@ public class SignInController {
    */
   @PostMapping(value = Router.USER_SIGN_IN_PWD)
   public SignInResult signin(@RequestBody @Valid SignIn signIn) {
-    logger.info("Enter. quickSignIn: {}", signIn);
+    LOGGER.info("Enter. quickSignIn: {}", signIn);
 
     SignInResult signInResult = signInService.signIn(signIn);
 
-    logger.info("Exit. signInResult: {}", signInResult);
+    LOGGER.info("Exit. signInResult: {}", signInResult);
     return signInResult;
   }
 }

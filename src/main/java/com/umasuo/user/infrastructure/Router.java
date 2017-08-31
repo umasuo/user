@@ -1,10 +1,13 @@
 package com.umasuo.user.infrastructure;
 
 /**
- * Created by umasuo on 17/3/9.
+ * User service's router.
  */
 public class Router {
 
+  /**
+   * Api version.
+   */
   public static final String VERSION = "/v1";
   /**
    * user root.
@@ -85,4 +88,9 @@ public class Router {
    * The constant REPORT_ROOT.
    */
   public static final String REPORT_ROOT = USER_ROOT + "/reports";
+
+  /**
+   * User count api.
+   */
+  public static final String USER_COUNT = "/v1/admin/users/count";
 }

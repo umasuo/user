@@ -3,7 +3,6 @@ package com.umasuo.user.domain.service;
 import com.umasuo.exception.NotExistException;
 import com.umasuo.user.domain.model.Group;
 import com.umasuo.user.infrastructure.repository.GroupRepository;
-import com.umasuo.user.infrastructure.update.GroupUpdaterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import java.util.function.Predicate;
 
 /**
  * Service for group.
- * Created by Davis on 17/5/27.
  */
 @Service
 public class GroupService {
@@ -22,18 +20,13 @@ public class GroupService {
   /**
    * Logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GroupService.class);
 
   /**
    * The Group repository.
    */
   @Autowired
-  private GroupRepository groupRepository;
-
-  /**
-   * Update service.
-   */
-  private transient GroupUpdaterService updateService;
+  private transient GroupRepository groupRepository;
 
   /**
    * Create group.
@@ -42,11 +35,11 @@ public class GroupService {
    * @return the group
    */
   public Group save(Group group) {
-    logger.debug("Enter. group: {}.", group);
+    LOGGER.debug("Enter. group: {}.", group);
 
     Group savedGroup = groupRepository.save(group);
 
-    logger.debug("Exit. savedGroup: {}.", savedGroup);
+    LOGGER.debug("Exit. savedGroup: {}.", savedGroup);
     return savedGroup;
   }
 
@@ -56,12 +49,12 @@ public class GroupService {
    * @param groupId the group id
    */
   public void delete(String groupId) {
-    logger.debug("Enter. groupId: {}.", groupId);
+    LOGGER.debug("Enter. groupId: {}.", groupId);
 
     groupRepository.delete(groupId);
     removeFromParentGroup(groupId);
 
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
   }
 
   /**
@@ -71,16 +64,16 @@ public class GroupService {
    * @return the group
    */
   public Group findOne(String groupId) {
-    logger.debug("Enter. groupId: {}.", groupId);
+    LOGGER.debug("Enter. groupId: {}.", groupId);
 
     Group result = groupRepository.findOne(groupId);
     if (result == null) {
-      logger.debug("Can not null group by id: {}.", groupId);
+      LOGGER.debug("Can not null group by id: {}.", groupId);
       throw new NotExistException("Group not exist");
     }
 
-    logger.debug("Find group: {}.", result);
-    logger.debug("Exit.");
+    LOGGER.debug("Find group: {}.", result);
+    LOGGER.debug("Exit.");
 
     return result;
   }
@@ -92,12 +85,12 @@ public class GroupService {
    * @return the group
    */
   public Group findParentGroup(String groupId) {
-    logger.debug("Enter. groupId: {}.", groupId);
+    LOGGER.debug("Enter. groupId: {}.", groupId);
 
     Group result = groupRepository.findByChildrenId(groupId);
 
-    logger.trace("Parent group: {}.", result);
-    logger.debug("Exit.");
+    LOGGER.trace("Parent group: {}.", result);
+    LOGGER.debug("Exit.");
     return result;
   }
 
@@ -108,12 +101,12 @@ public class GroupService {
    * @return the sub group
    */
   public List<Group> getSubGroup(String groupId) {
-    logger.debug("Enter. groupId: {}.", groupId);
+    LOGGER.debug("Enter. groupId: {}.", groupId);
 
     List<Group> result = groupRepository.findByParent(groupId);
 
-    logger.trace("subGroup: {}.", result);
-    logger.debug("Exit. subGroup count: {}.", result.size());
+    LOGGER.trace("subGroup: {}.", result);
+    LOGGER.debug("Exit. subGroup count: {}.", result.size());
 
     return result;
   }
@@ -125,11 +118,11 @@ public class GroupService {
    * @return the list
    */
   public List<Group> findAllGroup(String developerId) {
-    logger.debug("Enter. developerId: {}.", developerId);
+    LOGGER.debug("Enter. developerId: {}.", developerId);
 
     List<Group> groups = groupRepository.findByDeveloperId(developerId);
 
-    logger.debug("Exit. group count: {}.", groups.size());
+    LOGGER.debug("Exit. group count: {}.", groups.size());
 
     return groups;
   }

@@ -1,25 +1,22 @@
 package com.umasuo.user.application.service;
 
-import static com.yunpian.sdk.util.HttpUtil.post;
-
 import com.umasuo.user.infrastructure.util.SmsUrlUtils;
 import com.yunpian.sdk.YunpianException;
-
 import lombok.Getter;
 import lombok.Setter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static com.yunpian.sdk.util.HttpUtil.post;
 
 /**
  * Service for Sms.
- * Created by Davis on 17/5/26.
  */
 @Getter
 @Setter
@@ -29,7 +26,7 @@ public class SmsService {
   /**
    * Logger.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(SmsService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SmsService.class);
 
   /**
    * Api key for yunpian.
@@ -45,8 +42,8 @@ public class SmsService {
    */
   @Async
   public String sendValidationCode(String validationCode, String phoneNumber)
-      throws YunpianException {
-    Map<String, String> params = new HashMap<String, String>();
+    throws YunpianException {
+    Map<String, String> params = new ConcurrentHashMap<>();
 
     params.put("apikey", yunpianApiKey);
     params.put("text", createSmsText(validationCode));

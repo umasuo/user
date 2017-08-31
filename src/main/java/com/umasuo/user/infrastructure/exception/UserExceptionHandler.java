@@ -4,7 +4,7 @@ import com.umasuo.exception.AlreadyExistException;
 import com.umasuo.exception.NotExistException;
 import com.umasuo.exception.PasswordErrorException;
 import com.umasuo.exception.handler.ExceptionHandler;
-import com.umasuo.user.infrastructure.util.JsonUtils;
+import com.umasuo.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,13 +17,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by umasuo on 17/3/2.
+ * User exception handler.
  */
 @Component
 public class UserExceptionHandler implements ExceptionHandler, HandlerExceptionResolver {
 
-  private static Logger logger = LoggerFactory.getLogger(UserExceptionHandler.class);
+  /**
+   * Sub logger.
+   */
+  private static final Logger LOGGER1 = LoggerFactory.getLogger(UserExceptionHandler.class);
 
+  /**
+   * Resolve exception.
+   *
+   * @param request
+   * @param response
+   * @param handler
+   * @param ex
+   * @return
+   */
   @Override
   public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response,
                                        Object handler, Exception ex) {
@@ -45,7 +57,7 @@ public class UserExceptionHandler implements ExceptionHandler, HandlerExceptionR
         response.getWriter().print(JsonUtils.serialize(body));
       }
     } catch (IOException e) {
-      logger.error("failed to write response JSON", e);
+      LOGGER1.error("failed to write response JSON", e);
       throw new IllegalStateException(e);
     }
   }
@@ -59,16 +71,16 @@ public class UserExceptionHandler implements ExceptionHandler, HandlerExceptionR
   private ExceptionBody getBody(Exception ex) {
     ExceptionBody body = null;
     if (ex instanceof NotExistException) {
-      body = ExceptionBody.of(ExceptionBody.DEVELOPER_NOT_EXIST_CODE, ExceptionBody
-          .DEVELOPER_NOT_EXIST_MESSAGE);
+      body = ExceptionBody.of(ExceptionBody.USER_NOT_EXIST_CODE, ExceptionBody
+        .USER_NOT_EXIST_MESSAGE);
     }
     if (ex instanceof AlreadyExistException) {
-      body = ExceptionBody.of(ExceptionBody.DEVELOPER_ALREADY_EXIST_CODE, ExceptionBody
-          .DEVELOPER_ALREADY_EXIST_MESSAGE);
+      body = ExceptionBody.of(ExceptionBody.USER_ALREADY_EXIST_CODE, ExceptionBody
+        .USER_ALREADY_EXIST_MESSAGE);
     }
     if (ex instanceof PasswordErrorException) {
       body = ExceptionBody.of(ExceptionBody.EMAIL_OR_PASSWORD_ERROR_CODE, ExceptionBody
-          .EMAIL_OR_PASSWORD_ERROR_MESSAGE);
+        .EMAIL_OR_PASSWORD_ERROR_MESSAGE);
     }
     return body;
   }

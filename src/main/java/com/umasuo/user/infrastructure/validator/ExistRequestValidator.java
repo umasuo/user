@@ -2,7 +2,6 @@ package com.umasuo.user.infrastructure.validator;
 
 import com.umasuo.exception.NotExistException;
 import com.umasuo.user.domain.model.ResourceRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,14 +9,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by Davis on 17/6/11.
+ * Exist request validator.
  */
 public final class ExistRequestValidator {
 
   /**
    * Logger.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(ExistRequestValidator.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExistRequestValidator.class);
 
   /**
    * Instantiates a new Exist request validator.
@@ -37,8 +36,8 @@ public final class ExistRequestValidator {
         requests.stream().map(ResourceRequest::getId).collect(Collectors.toList());
 
     requestId.removeAll(existRequestId);
-    if (requestId.size() > 0) {
-      LOG.debug("Request: {} not exist.", requestId);
+    if (requestId.isEmpty()) {
+      LOGGER.debug("Request: {} not exist.", requestId);
       throw new NotExistException("Request not exist: " + requestId);
     }
   }

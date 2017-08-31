@@ -25,7 +25,7 @@ public class ValidationService {
   /**
    * Logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(ValidationService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ValidationService.class);
 
   /**
    * Validation code expire time;
@@ -50,7 +50,7 @@ public class ValidationService {
    * @param phoneNumber the phone number
    */
   public void sendValidationCode(String phoneNumber) throws YunpianException {
-    logger.debug("Enter. phoneNumber: {}.", phoneNumber);
+    LOGGER.debug("Enter. phoneNumber: {}.", phoneNumber);
 
     String code = ValidateCodeGenerator.generate();
 
@@ -65,7 +65,7 @@ public class ValidationService {
     redisTemplate.opsForValue().set(codeKey, code, EXPIRE_TIME, TimeUnit.SECONDS);
     redisTemplate.opsForValue().set(key, "", 60, TimeUnit.SECONDS);
 
-    logger.debug("Exit.");
+    LOGGER.debug("Exit.");
   }
 
 
@@ -81,12 +81,12 @@ public class ValidationService {
     String key = String.format(RedisUtils.PHONE_CODE_KEY_FORMAT, phone, smsCode);
     String cachedCode = (String) redisTemplate.opsForValue().get(key);
     if (StringUtils.isBlank(cachedCode)) {
-      logger.debug("Can not find validation code by phone: {}.", phone);
+      LOGGER.debug("Can not find validation code by phone: {}.", phone);
       throw new NotExistException("Validation code not exist.");
     }
 
     if (!cachedCode.equals(smsCode)) {
-      logger.debug("Validation code not match. request code: {}, basic code: {}.",
+      LOGGER.debug("Validation code not match. request code: {}, basic code: {}.",
           smsCode, cachedCode);
       throw new ParametersException("Validation code not match");
     }
@@ -102,7 +102,7 @@ public class ValidationService {
   private void validateExistPhone(String key) {
     String existValidationCode = (String) redisTemplate.opsForValue().get(key);
     if (existValidationCode != null) {
-      logger.debug("This phone has an exist validation code: {}.", existValidationCode);
+      LOGGER.debug("This phone has an exist validation code: {}.", existValidationCode);
       throw new AlreadyExistException("ValidationCode already exist");
     }
   }

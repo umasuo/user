@@ -3,7 +3,7 @@ package com.umasuo.user.application.dto;
 import lombok.Data;
 
 /**
- * Created by Davis on 17/6/16.
+ * Report view.
  */
 @Data
 public class ReportView {

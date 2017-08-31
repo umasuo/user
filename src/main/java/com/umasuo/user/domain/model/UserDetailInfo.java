@@ -10,13 +10,16 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * Created by umasuo on 17/3/8.
+ * User detail info..
  */
 @Entity
 @Table(name = "user_detail_info")
 @Data
 public class UserDetailInfo {
 
+  /**
+   * User detail info.
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -33,9 +36,18 @@ public class UserDetailInfo {
    */
   private String icon;
 
+  /**
+   * Age.
+   */
   private int age;
 
+  /**
+   * signature.
+   */
   private String signature;
 
+  /**
+   * Country.
+   */
   private String country;
 }

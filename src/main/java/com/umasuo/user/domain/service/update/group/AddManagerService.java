@@ -14,39 +14,38 @@ import static com.umasuo.user.infrastructure.util.GroupActionUtils.ADD_MANAGER;
 
 /**
  * AddManager service.
- *
- * Created by Davis on 17/6/2.
  */
 @Service(ADD_MANAGER)
-public class AddManagerService implements Updater<Group, UpdateAction>{
+public class AddManagerService implements Updater<Group, UpdateAction> {
 
   /**
    * Logger.
    */
-  private static final Logger LOG = LoggerFactory.getLogger(AddManagerService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AddManagerService.class);
 
   /**
    * Add manager.
    *
-   * @param group the group
+   * @param group        the group
    * @param updateAction AddManager action
    */
   @Override
   public void handle(Group group, UpdateAction updateAction) {
-    AddManager addManager = (AddManager) updateAction;
-    String managerId = addManager.getManagerId();
 
-    if (group.getUsers() == null ||
-        group.getUsers().isEmpty()) {
-      LOG.debug("Can not add manager when there is no user in the group.");
+    if (group.getUsers() == null || group.getUsers().isEmpty()) {
+      LOGGER.debug("Can not add manager when there is no user in the group.");
       throw new ParametersException("User is null");
     }
-    if (! group.getUsers().contains(managerId)) {
-      LOG.debug("Can not add a manager who is not user in the group.");
+
+
+    AddManager addManager = (AddManager) updateAction;
+    String managerId = addManager.getManagerId();
+    if (!group.getUsers().contains(managerId)) {
+      LOGGER.debug("Can not add a manager who is not user in the group.");
       throw new ParametersException("Manager not a user");
     }
     if (group.getManagers().contains(managerId)) {
-      LOG.debug("Manager is exist.");
+      LOGGER.debug("Manager is exist.");
       throw new AlreadyExistException("Manager is exist");
     }
     group.getManagers().add(managerId);
